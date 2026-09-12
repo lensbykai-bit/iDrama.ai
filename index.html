@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="km">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#ff365d" />
+  <meta name="description" content="iDrama.ai — មើលរឿងខ្លី និង AI Drama ក្នុងប្លង់សាមញ្ញ លឿន និងងាយប្រើ" />
+  <title>iDrama.ai — មើលរឿងអេអាយ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;600;700&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#f7f8fa;--card:#fff;--ink:#17191d;--muted:#858a94;--line:#eceef2;--brand:#ff365d;--brand2:#ff7043;--shadow:0 12px 30px rgba(22,24,35,.08);--radius:18px}
+    *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Battambang",system-ui,sans-serif}.km{font-family:"Battambang",Inter,sans-serif}
+    a{text-decoration:none;color:inherit} button,input{font:inherit} button{cursor:pointer}
+    .topbar{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+    .nav{max-width:1260px;margin:auto;height:72px;display:flex;align-items:center;gap:28px;padding:0 24px}.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:24px;letter-spacing:-1px}.logo-badge{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--brand),var(--brand2));display:grid;place-items:center;color:#fff;box-shadow:0 8px 20px rgba(255,54,93,.28)}.logo em{font-style:normal;color:var(--brand)}
+    .links{display:flex;align-items:center;gap:6px}.navbtn{border:0;background:transparent;padding:10px 13px;border-radius:12px;font-weight:700;color:#51555e}.navbtn:hover,.navbtn.active{color:var(--brand);background:#fff0f3}
+    .search{margin-left:auto;position:relative;min-width:290px}.search input{width:100%;border:1px solid var(--line);background:#f4f5f7;border-radius:999px;padding:12px 44px 12px 18px;outline:0}.search input:focus{background:#fff;border-color:#ffc0cc;box-shadow:0 0 0 4px #fff0f3}.search span{position:absolute;right:16px;top:50%;transform:translateY(-50%);color:#777}
+    .container{max-width:1260px;margin:auto;padding:28px 24px 60px}.hero{background:radial-gradient(circle at 76% 20%,rgba(255,255,255,.25),transparent 28%),linear-gradient(135deg,#ff365d 0%,#ff7043 58%,#ff9f43 100%);border-radius:26px;min-height:270px;padding:38px 42px;color:#fff;display:flex;align-items:center;overflow:hidden;position:relative}.hero:after{content:"AI";position:absolute;right:30px;bottom:-80px;font-size:240px;font-weight:900;opacity:.09;letter-spacing:-20px}.hero-copy{max-width:650px;z-index:1}.eyebrow{font-size:13px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;opacity:.9}.hero h1{font-family:"Battambang",Inter,sans-serif;font-size:42px;line-height:1.3;margin:8px 0 10px}.hero p{font-family:"Battambang",Inter,sans-serif;font-size:18px;opacity:.92;margin:0 0 20px}.hero-actions{display:flex;gap:10px}.primary,.ghost{border:0;border-radius:999px;padding:12px 18px;font-weight:800}.primary{background:#fff;color:#ff365d}.ghost{background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.32)}
+    .chips{display:flex;gap:10px;overflow:auto;padding:20px 2px 4px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}.chip{white-space:nowrap;border:1px solid var(--line);background:#fff;color:#555;padding:9px 14px;border-radius:999px;font-weight:700}.chip.active,.chip:hover{background:#1f2024;color:#fff;border-color:#1f2024}
+    .section{margin-top:34px}.head{display:flex;align-items:end;justify-content:space-between;margin-bottom:16px}.title{font-family:"Battambang",Inter,sans-serif;font-size:26px;font-weight:700;margin:0}.subtitle{font-size:13px;color:var(--muted);margin-top:2px}.more{border:0;background:transparent;color:var(--brand);font-weight:800}
+    .grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:18px}.card{min-width:0;cursor:pointer}.poster{aspect-ratio:3/4.15;border-radius:15px;overflow:hidden;position:relative;background:#ddd;box-shadow:0 7px 22px rgba(16,20,30,.08);transition:.22s transform,.22s box-shadow}.card:hover .poster{transform:translateY(-4px);box-shadow:0 14px 32px rgba(16,20,30,.16)}.poster-bg{position:absolute;inset:0;display:flex;align-items:flex-end;padding:14px;color:white}.poster-bg:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 34%,rgba(0,0,0,.72) 100%)}.poster-word{position:relative;font-size:34px;font-weight:900;line-height:.9;letter-spacing:-2px;opacity:.96}.badge{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.58);backdrop-filter:blur(5px);color:#fff;border-radius:999px;padding:5px 8px;font-size:11px;font-weight:700}.play{position:absolute;left:12px;top:12px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.9);color:var(--brand);font-size:12px;opacity:0;transform:scale(.8);transition:.2s}.card:hover .play{opacity:1;transform:scale(1)}.card h3{font-family:"Battambang",Inter,sans-serif;font-size:15px;line-height:1.6;margin:10px 0 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.meta{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .rank-layout{display:grid;grid-template-columns:1.7fr 1fr;gap:24px}.rank-panel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px}.rank-list{display:grid;gap:4px}.rank-row{display:grid;grid-template-columns:38px 58px 1fr auto;gap:12px;align-items:center;padding:9px;border-radius:13px}.rank-row:hover{background:#f7f7f9}.rank-num{font-size:20px;font-weight:900;color:#b9bdc5}.rank-row:nth-child(1) .rank-num,.rank-row:nth-child(2) .rank-num,.rank-row:nth-child(3) .rank-num{color:var(--brand)}.thumb{width:58px;height:72px;border-radius:9px}.rank-name{font-family:"Battambang";font-weight:700}.views{font-size:12px;color:var(--muted)}
+    .feature{background:#1f2024;border-radius:20px;color:#fff;padding:24px;position:relative;overflow:hidden}.feature:after{content:"iD";position:absolute;right:-20px;bottom:-44px;font-size:150px;font-weight:900;opacity:.05}.feature h3{font-family:"Battambang";font-size:24px;margin:0 0 8px}.feature p{font-family:"Battambang";color:#d0d2d8;line-height:1.8;margin:0 0 16px}.stat{display:flex;gap:22px;margin-top:26px}.stat b{display:block;font-size:24px}.stat span{color:#9ea3ad;font-size:12px}
+    footer{border-top:1px solid var(--line);background:#fff}.footer{max-width:1260px;margin:auto;padding:28px 24px;display:flex;justify-content:space-between;gap:20px;color:#777;font-size:13px}.footer strong{color:#222}
+    .modal{position:fixed;inset:0;z-index:80;background:rgba(12,13,16,.72);display:none;align-items:center;justify-content:center;padding:20px}.modal.show{display:flex}.dialog{width:min(880px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:24px;box-shadow:0 24px 80px rgba(0,0,0,.34)}.video{aspect-ratio:16/9;background:linear-gradient(135deg,#18191d,#34363d);display:grid;place-items:center;color:white;position:relative;border-radius:24px 24px 0 0}.video .bigplay{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;background:var(--brand);font-size:26px}.close{position:absolute;right:16px;top:16px;border:0;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;font-size:20px}.detail{padding:22px 24px 26px}.detail h2{font-family:"Battambang";margin:0 0 8px}.tags{display:flex;gap:8px;flex-wrap:wrap}.tag{font-size:12px;background:#f4f5f7;padding:6px 9px;border-radius:999px;color:#61656d}.detail p{font-family:"Battambang";line-height:1.85;color:#666}.episodes{display:grid;grid-template-columns:repeat(10,1fr);gap:7px}.ep{border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 4px}.ep:hover,.ep.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+    .empty{display:none;text-align:center;padding:60px 20px;color:#888;font-family:"Battambang"}
+    @media(max-width:1050px){.grid{grid-template-columns:repeat(4,1fr)}.links{display:none}.rank-layout{grid-template-columns:1fr}.search{min-width:230px}.hero h1{font-size:34px}}
+    @media(max-width:720px){.nav{height:64px;padding:0 14px;gap:12px}.logo{font-size:20px}.logo-badge{width:34px;height:34px}.search{min-width:0;flex:1}.search input{padding:10px 38px 10px 14px}.container{padding:18px 14px 42px}.hero{min-height:230px;padding:26px 24px;border-radius:20px}.hero h1{font-size:28px}.hero p{font-size:15px}.grid{grid-template-columns:repeat(3,1fr);gap:12px}.poster{border-radius:12px}.section{margin-top:28px}.title{font-size:22px}.card h3{font-size:13px}.meta{font-size:11px}.rank-panel{padding:13px}.rank-row{grid-template-columns:28px 48px 1fr}.thumb{width:48px;height:60px}.views{display:none}.footer{flex-direction:column}.episodes{grid-template-columns:repeat(6,1fr)}}
+    @media(max-width:460px){.grid{grid-template-columns:repeat(2,1fr)}.hero h1{font-size:25px}.hero-actions{display:none}.poster-word{font-size:28px}.episodes{grid-template-columns:repeat(5,1fr)}}
+  </style>
+</head>
+<body>
+<header class="topbar">
+  <nav class="nav">
+    <a class="logo" href="#home"><span class="logo-badge">▶</span><span>iDrama<em>.ai</em></span></a>
+    <div class="links">
+      <button class="navbtn active" data-filter="all">ទំព័រដើម</button>
+      <button class="navbtn" data-filter="live">រឿងមនុស្ស</button>
+      <button class="navbtn" data-filter="anime">រឿងគំនូរ</button>
+      <button class="navbtn" data-filter="ai">AI Drama</button>
+      <button class="navbtn" data-jump="ranking">តារាងពេញនិយម</button>
+    </div>
+    <label class="search"><input id="search" class="km" placeholder="ស្វែងរករឿង..." /><span>⌕</span></label>
+  </nav>
+</header>
+
+<main class="container" id="home">
+  <section class="hero">
+    <div class="hero-copy">
+      <div class="eyebrow">iDrama.ai • Short Drama</div>
+      <h1>តោះមើលរឿងអេអាយជាមួយខ្ញុំទាំងអស់គ្នា</h1>
+      <p>រឿងខ្លីៗងាយមើល ស្វែងរកលឿន និងរៀបចំជាប្រភេទច្បាស់ៗ សម្រាប់ទូរស័ព្ទ និងកុំព្យូទ័រ។</p>
+      <div class="hero-actions"><button class="primary" data-filter="ai">មើល AI Drama</button><button class="ghost" data-jump="ranking">មើលតារាងពេញនិយម</button></div>
+    </div>
+  </section>
+
+  <div class="chips" id="chips">
+    <button class="chip active" data-filter="all">ទាំងអស់</button><button class="chip" data-filter="ai">AI Drama</button><button class="chip" data-filter="live">រឿងមនុស្ស</button><button class="chip" data-filter="anime">រឿងគំនូរ</button><button class="chip" data-filter="romance">ស្នេហា</button><button class="chip" data-filter="reborn">កើតឡើងវិញ</button><button class="chip" data-filter="ancient">បុរាណ</button><button class="chip" data-filter="family">គ្រួសារ</button>
+  </div>
+
+  <section class="section">
+    <div class="head"><div><h2 class="title">រឿងកំពុងពេញនិយម</h2><div class="subtitle">រឿងខ្លីដែលអ្នកមើលចូលចិត្តនៅលើ iDrama.ai</div></div><button class="more" data-filter="all">មើលទាំងអស់ →</button></div>
+    <div class="grid" id="dramaGrid"></div>
+    <div class="empty" id="empty">រកមិនឃើញរឿងដែលត្រូវនឹងការស្វែងរកទេ។</div>
+  </section>
+
+  <section class="section" id="aiSection">
+    <div class="head"><div><h2 class="title">AI Drama</h2><div class="subtitle">រឿងដែលបង្កើត ឬកែច្នៃដោយបច្ចេកវិទ្យា AI</div></div><button class="more" data-filter="ai">មើលទាំងអស់ →</button></div>
+    <div class="grid" id="aiGrid"></div>
+  </section>
+
+  <section class="section" id="ranking">
+    <div class="head"><div><h2 class="title">តារាងពេញនិយម</h2><div class="subtitle">Top drama ដែលមានការចាប់អារម្មណ៍ខ្លាំង</div></div></div>
+    <div class="rank-layout">
+      <div class="rank-panel"><div class="rank-list" id="rankList"></div></div>
+      <aside class="feature"><div class="eyebrow">WHY iDrama.ai</div><h3>ស្អាត • លឿន • ងាយរក</h3><p>រចនាថ្មីសម្រាប់ការមើលរឿងខ្លី។ អ្នកអាចស្វែងរកតាមចំណងជើង ប្រភេទ និងជ្រើសភាគបានយ៉ាងរហ័ស។</p><div class="stat"><div><b>4+</b><span>ប្រភេទសំខាន់</span></div><div><b>100%</b><span>Responsive UI</span></div><div><b>AI</b><span>Focused</span></div></div></aside>
+    </div>
+  </section>
+</main>
+
+<footer><div class="footer"><div><strong>iDrama.ai</strong> — មើលរឿងអេអាយ</div><div>© 2026 iDrama.ai • Original interface for iDrama.ai</div></div></footer>
+
+<div class="modal" id="modal" aria-hidden="true"><div class="dialog"><div class="video"><button class="close" id="close">×</button><div class="bigplay">▶</div></div><div class="detail"><h2 id="detailTitle"></h2><div class="tags" id="detailTags"></div><p id="detailDesc"></p><h3 class="km">ជ្រើសរើសភាគ</h3><div class="episodes" id="episodes"></div></div></div></div>
+
+<script>
+const dramas=[
+ {id:1,title:'នាងតូចត្រឡប់មកវិញ',type:'ai',tags:['AI Drama','កើតឡើងវិញ'],cats:['ai','reborn'],eps:82,views:'1.28M',grad:'linear-gradient(145deg,#ff6a88,#ff9a8b)',word:'BACK',desc:'រឿងខ្លីបែបកើតឡើងវិញ ដែលតួអង្គសំខាន់ចាប់ផ្តើមជីវិតថ្មី និងប្តូរវាសនារបស់ខ្លួន។'},
+ {id:2,title:'មេគ្រួសារលាក់អត្តសញ្ញាណ',type:'live',tags:['រឿងមនុស្ស','គ្រួសារ'],cats:['live','family'],eps:76,views:'980K',grad:'linear-gradient(145deg,#2c3e50,#4ca1af)',word:'HOME',desc:'រឿងគ្រួសារខ្លីដែលមានអាថ៌កំបាំង និងការប្រែប្រួលទំនាក់ទំនងក្នុងគ្រួសារ។'},
+ {id:3,title:'ព្រះនាងក្នុងពិភពថ្មី',type:'anime',tags:['រឿងគំនូរ','បុរាណ'],cats:['anime','ancient'],eps:120,views:'872K',grad:'linear-gradient(145deg,#8360c3,#2ebf91)',word:'MOON',desc:'ដំណើរផ្សងព្រេងបែបបុរាណក្នុងពិភពគំនូរ ជាមួយការសម្រេចចិត្តដែលផ្លាស់ប្តូរវាសនា។'},
+ {id:4,title:'ស្នេហ៍ក្រោយការចងចាំ',type:'ai',tags:['AI Drama','ស្នេហា'],cats:['ai','romance'],eps:64,views:'756K',grad:'linear-gradient(145deg,#ff9966,#ff5e62)',word:'LOVE',desc:'រឿងស្នេហាខ្លីបែប AI អំពីការចងចាំដែលបាត់បង់ និងការជួបគ្នាម្តងទៀត។'},
+ {id:5,title:'កូនស្រីអ្នកមានត្រឡប់មកផ្ទះ',type:'live',tags:['រឿងមនុស្ស','គ្រួសារ'],cats:['live','family'],eps:91,views:'698K',grad:'linear-gradient(145deg,#0f2027,#2c5364)',word:'HER',desc:'បន្ទាប់ពីបែកគ្នាយូរ តួអង្គសំខាន់ត្រឡប់មករកគ្រួសារ និងស្វែងរកការពិតពីអតីតកាល។'},
+ {id:6,title:'អ្នកប្រយុទ្ធឆ្លងពិភព',type:'anime',tags:['រឿងគំនូរ','កើតឡើងវិញ'],cats:['anime','reborn'],eps:148,views:'621K',grad:'linear-gradient(145deg,#f7971e,#ffd200)',word:'FIRE',desc:'រឿងគំនូរបែបផ្សងព្រេង អំពីអ្នកប្រយុទ្ធដែលទទួលបានឱកាសថ្មីក្នុងពិភពផ្សេង។'},
+ {id:7,title:'មួយថ្ងៃខ្ញុំក្លាយជាមហាសេដ្ឋី',type:'ai',tags:['AI Drama','គ្រួសារ'],cats:['ai','family'],eps:88,views:'589K',grad:'linear-gradient(145deg,#11998e,#38ef7d)',word:'RICH',desc:'ការផ្លាស់ប្តូរជីវិតយ៉ាងរហ័សធ្វើឱ្យតួអង្គសំខាន់ត្រូវសម្រេចចិត្តរវាងទ្រព្យសម្បត្តិ និងមនុស្សជាទីស្រឡាញ់។'},
+ {id:8,title:'ព្រះអង្គម្ចាស់មិនធម្មតា',type:'ai',tags:['AI Drama','បុរាណ'],cats:['ai','ancient'],eps:105,views:'540K',grad:'linear-gradient(145deg,#654ea3,#eaafc8)',word:'KING',desc:'រឿង AI បែបបុរាណនិងកំប្លែង ដែលព្រះអង្គម្ចាស់ម្នាក់ប្រើវិធីមិនធម្មតាដើម្បីដោះស្រាយបញ្ហារាជវាំង។'},
+ {id:9,title:'ពេលវេលានាំយើងជួបគ្នា',type:'live',tags:['រឿងមនុស្ស','ស្នេហា'],cats:['live','romance'],eps:70,views:'497K',grad:'linear-gradient(145deg,#ee0979,#ff6a00)',word:'TIME',desc:'រឿងស្នេហាដែលតួអង្គពីរនាក់ជួបគ្នាឡើងវិញនៅពេលដែលជីវិតរបស់ពួកគេបានផ្លាស់ប្តូរ។'},
+ {id:10,title:'អាថ៌កំបាំងនៃទីក្រុងពពក',type:'anime',tags:['រឿងគំនូរ','បុរាណ'],cats:['anime','ancient'],eps:132,views:'463K',grad:'linear-gradient(145deg,#4568dc,#b06ab3)',word:'SKY',desc:'រឿងគំនូរផ្សងព្រេងដែលនាំអ្នកមើលទៅកាន់ទីក្រុងលើមេឃ និងអាថ៌កំបាំងដ៏ច្រើន។'},
+ {id:11,title:'ម្ដាយខ្ញុំជាវីរនារី',type:'ai',tags:['AI Drama','គ្រួសារ'],cats:['ai','family'],eps:79,views:'431K',grad:'linear-gradient(145deg,#fc466b,#3f5efb)',word:'MOM',desc:'រឿង AI ខ្លីបែបកក់ក្តៅ អំពីម្តាយដែលលាក់សមត្ថភាពពិសេសដើម្បីការពារគ្រួសារ។'},
+ {id:12,title:'សន្យាក្រោមភ្លៀង',type:'live',tags:['រឿងមនុស្ស','ស្នេហា'],cats:['live','romance'],eps:66,views:'405K',grad:'linear-gradient(145deg,#00c6ff,#0072ff)',word:'RAIN',desc:'ស្នេហាដែលចាប់ផ្តើមពីការសន្យាតូចមួយ និងត្រូវសាកល្បងដោយពេលវេលា។'}
+];
+const grid=document.getElementById('dramaGrid'), aiGrid=document.getElementById('aiGrid'), rank=document.getElementById('rankList'), empty=document.getElementById('empty');
+let filter='all', query='';
+function card(d){return `<article class="card" data-id="${d.id}"><div class="poster"><div class="poster-bg" style="background:${d.grad}"><div class="poster-word">${d.word}</div></div><span class="play">▶</span><span class="badge">${d.eps} ភាគ</span></div><h3>${d.title}</h3><div class="meta">${d.tags.join(' · ')}</div></article>`}
+function render(){const list=dramas.filter(d=>(filter==='all'||d.cats.includes(filter))&&d.title.toLowerCase().includes(query.toLowerCase()));grid.innerHTML=list.map(card).join('');empty.style.display=list.length?'none':'block';aiGrid.innerHTML=dramas.filter(d=>d.type==='ai').slice(0,6).map(card).join('');rank.innerHTML=dramas.slice().sort((a,b)=>parseFloat(b.views)-parseFloat(a.views)).slice(0,7).map((d,i)=>`<div class="rank-row" data-id="${d.id}"><div class="rank-num">${String(i+1).padStart(2,'0')}</div><div class="thumb" style="background:${d.grad}"></div><div><div class="rank-name">${d.title}</div><div class="meta">${d.eps} ភាគ · ${d.tags[0]}</div></div><div class="views">${d.views} views</div></div>`).join('');bindCards()}
+function setFilter(f){filter=f;document.querySelectorAll('[data-filter]').forEach(x=>x.classList.toggle('active',x.dataset.filter===f));document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('active',x.dataset.filter===f));render();document.querySelector('.section').scrollIntoView({behavior:'smooth',block:'start'})}
+function bindCards(){document.querySelectorAll('[data-id]').forEach(el=>el.onclick=()=>openDrama(+el.dataset.id))}
+function openDrama(id){const d=dramas.find(x=>x.id===id);if(!d)return;document.getElementById('detailTitle').textContent=d.title;document.getElementById('detailTags').innerHTML=d.tags.map(t=>`<span class="tag">${t}</span>`).join('')+`<span class="tag">${d.eps} ភាគ</span>`;document.getElementById('detailDesc').textContent=d.desc;document.getElementById('episodes').innerHTML=Array.from({length:Math.min(d.eps,30)},(_,i)=>`<button class="ep ${i===0?'active':''}">${i+1}</button>`).join('');document.getElementById('modal').classList.add('show');document.body.style.overflow='hidden'}
+document.addEventListener('click',e=>{const f=e.target.closest('[data-filter]');if(f)setFilter(f.dataset.filter);const j=e.target.closest('[data-jump]');if(j)document.getElementById(j.dataset.jump).scrollIntoView({behavior:'smooth'})});
+document.getElementById('search').addEventListener('input',e=>{query=e.target.value.trim();render()});
+document.getElementById('close').onclick=closeModal;document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});function closeModal(){document.getElementById('modal').classList.remove('show');document.body.style.overflow=''}
+render();
+</script>
+</body>
+</html>
