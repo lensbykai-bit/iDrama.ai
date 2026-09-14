@@ -6,7 +6,8 @@
   const registerForm=byId('registerForm');
   if(!authMsg||!loginForm||!registerForm) return;
 
-  const authBox=document.querySelector('.authbox');
+  const LIVE_URL='https://idrama-ai.onrender.com/';
+  const RECOVERY_URL=LIVE_URL+'?recovery=1';
   const tabs=document.querySelector('.tabs2');
   let lastSignupEmail='';
 
@@ -66,7 +67,6 @@
     return b;
   }
 
-  // Replace the original signup handler with clearer duplicate-user handling.
   registerForm.onsubmit=async e=>{
     e.preventDefault();
     clearActions();
@@ -81,17 +81,12 @@
       password:byId('regPassword').value,
       options:{
         data:{full_name:name,phone},
-        emailRedirectTo:location.origin+location.pathname
+        emailRedirectTo:LIVE_URL
       }
     });
 
-    if(error){
-      msg(error.message||'មិនអាចបង្កើតគណនីបានទេ',true);
-      return;
-    }
+    if(error){ msg(error.message||'មិនអាចបង្កើតគណនីបានទេ',true); return; }
 
-    // Supabase intentionally returns an obfuscated user with no identities when
-    // this email is already registered. No confirmation email is sent.
     const identities=data?.user?.identities;
     if(Array.isArray(identities)&&identities.length===0){
       byId('loginEmail').value=email;
@@ -107,13 +102,13 @@
       return;
     }
 
-    msg('បានបង្កើតគណនីថ្មី។ សូមពិនិត្យ Inbox និង Spam/Junk របស់ Email ដើម្បីបញ្ជាក់គណនី។');
+    msg('បានបង្កើតគណនីថ្មី។ សូមពិនិត្យ Inbox និង Spam/Junk ដើម្បីបញ្ជាក់គណនី។');
     addAction('ផ្ញើ Confirmation Email ម្តងទៀត',async()=>{
       msg('កំពុងផ្ញើ Email ម្តងទៀត...');
       const {error:re}=await db.auth.resend({
         type:'signup',
         email:lastSignupEmail,
-        options:{emailRedirectTo:location.origin+location.pathname}
+        options:{emailRedirectTo:LIVE_URL}
       });
       if(re) msg(re.message||'មិនអាចផ្ញើ Email ម្តងទៀតបានទេ',true);
       else msg('បានផ្ញើ Confirmation Email ម្តងទៀត ✓ សូមពិនិត្យ Inbox និង Spam/Junk។');
@@ -129,7 +124,7 @@
       return;
     }
     msg('កំពុងផ្ញើ Reset Password Email...');
-    const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
+    const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:RECOVERY_URL});
     if(error) msg(error.message||'មិនអាចផ្ញើ Reset Email បានទេ',true);
     else msg('បានផ្ញើ Reset Password Email ✓ សូមពិនិត្យ Inbox និង Spam/Junk។');
   };
@@ -144,13 +139,16 @@
     const {error}=await db.auth.updateUser({password:p1});
     if(error) return msg(error.message||'មិនអាចកែ Password បានទេ',true);
     msg('កែ Password រួចរាល់ ✓ អ្នកអាចចូលគណនីបានហើយ។');
+    history.replaceState({},document.title,LIVE_URL);
     setTimeout(()=>showLogin('Password ថ្មីត្រូវបានរក្សាទុករួចរាល់។'),700);
   };
 
-  // Recovery links establish a temporary session and emit PASSWORD_RECOVERY.
   db.auth.onAuthStateChange((event)=>{
     if(event==='PASSWORD_RECOVERY') setTimeout(showReset,0);
   });
 
-  if(location.hash.includes('type=recovery')) setTimeout(showReset,0);
+  const params=new URLSearchParams(location.search);
+  if(location.hash.includes('type=recovery')||params.get('recovery')==='1'){
+    setTimeout(showReset,100);
+  }
 })();
