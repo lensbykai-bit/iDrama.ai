@@ -45,7 +45,23 @@
     if(raw.includes('rate limit')||raw.includes('too many requests')||error?.status===429){
       return 'បានស្នើ Email ច្រើនដងពេក។ សូមរង់ចាំបន្តិច ហើយសាកល្បងម្តងទៀត។';
     }
+    if(raw.includes('invalid login credentials')) return 'Email ឬ Password មិនត្រឹមត្រូវ។';
+    if(raw.includes('email not confirmed')) return 'Email នេះមិនទាន់បានបញ្ជាក់នៅឡើយទេ។';
     return error?.message||'មានបញ្ហាក្នុងការផ្ញើ Email។ សូមសាកល្បងម្តងទៀត។';
+  }
+  function finishLogin(s){
+    if(!s) return false;
+    session=s;
+    byId('authModal')?.classList.remove('show');
+    if(typeof updateAccount==='function') updateAccount();
+    if(currentMovie) openDrama(currentMovie.id);
+    return true;
+  }
+  async function directLogin(email,password){
+    const {data,error}=await db.auth.signInWithPassword({email,password});
+    if(error) return {ok:false,error};
+    if(data?.session){ finishLogin(data.session); return {ok:true}; }
+    return {ok:false,error:null};
   }
   function setCooldown(ms=COOLDOWN_MS){
     const until=Date.now()+ms;
@@ -112,15 +128,16 @@
   registerForm.onsubmit=async e=>{
     e.preventDefault();
     clearActions();
-    msg('កំពុងបង្កើតគណនី...');
+    msg('កំពុងចូលគណនី...');
     const email=byId('regEmail').value.trim();
+    const password=byId('regPassword').value;
     const name=byId('regName').value.trim();
     const phone=byId('regPhone').value.trim();
     lastSignupEmail=email;
 
     const {data,error}=await db.auth.signUp({
       email,
-      password:byId('regPassword').value,
+      password,
       options:{
         data:{full_name:name,phone},
         emailRedirectTo:LIVE_URL
@@ -133,45 +150,56 @@
       return;
     }
 
+    if(data?.session){
+      finishLogin(data.session);
+      return;
+    }
+
+    // Existing email: Supabase may return an obfuscated user with no identities.
+    // Try the password immediately so registration also acts as one-step login.
     const identities=data?.user?.identities;
     if(Array.isArray(identities)&&identities.length===0){
+      msg('កំពុងចូលគណនី...');
+      const r=await directLogin(email,password);
+      if(r.ok) return;
       byId('loginEmail').value=email;
-      showLogin('Email នេះមានគណនីរួចហើយ។ សូមចូលគណនី ឬចុច “ភ្លេច Password?” ប្រសិនបើមិនចាំ Password។');
-      return;
-    }
-
-    if(data?.session){
-      session=data.session;
-      byId('authModal')?.classList.remove('show');
-      if(typeof updateAccount==='function') updateAccount();
-      if(currentMovie) openDrama(currentMovie.id);
-      return;
-    }
-
-    msg('បានបង្កើតគណនីថ្មី។ សូមពិនិត្យ Inbox និង Spam/Junk ដើម្បីបញ្ជាក់គណនី។');
-    const resendBtn=addAction('ផ្ញើ Confirmation Email ម្តងទៀត',async()=>{
-      if(resendBtn.disabled) return;
-      msg('កំពុងផ្ញើ Email ម្តងទៀត...');
-      resendBtn.disabled=true;
-      const {error:re}=await db.auth.resend({
-        type:'signup',
-        email:lastSignupEmail,
-        options:{emailRedirectTo:LIVE_URL}
-      });
-      if(re){
-        resendBtn.disabled=false;
-        msg(friendlyAuthError(re),true);
-        return;
+      if(r.error && String(r.error.message||'').toLowerCase().includes('invalid login credentials')){
+        msg('Email នេះមានគណនីរួចហើយ ប៉ុន្តែ Password មិនត្រឹមត្រូវ។ សូមពិនិត្យ Password ម្តងទៀត។',true);
+      }else{
+        msg(friendlyAuthError(r.error),true);
       }
-      msg('បានផ្ញើ Confirmation Email ម្តងទៀត ✓ សូមពិនិត្យ Inbox និង Spam/Junk។');
-      let left=60;
-      resendBtn.textContent=`ផ្ញើម្តងទៀត (${left}s)`;
-      const t=setInterval(()=>{
-        left--;
-        if(left<=0){ clearInterval(t); resendBtn.disabled=false; resendBtn.textContent='ផ្ញើ Confirmation Email ម្តងទៀត'; }
-        else resendBtn.textContent=`ផ្ញើម្តងទៀត (${left}s)`;
-      },1000);
-    });
+      return;
+    }
+
+    // New account: try immediate login. This succeeds when email confirmation is disabled.
+    const loginResult=await directLogin(email,password);
+    if(loginResult.ok) return;
+
+    if(loginResult.error && String(loginResult.error.message||'').toLowerCase().includes('email not confirmed')){
+      msg('គណនីត្រូវបានបង្កើតរួច ប៉ុន្តែ Supabase នៅតម្រូវឱ្យបញ្ជាក់ Email មុនពេលចូល។',true);
+      const resendBtn=addAction('ផ្ញើ Confirmation Email ម្តងទៀត',async()=>{
+        if(resendBtn.disabled) return;
+        msg('កំពុងផ្ញើ Email ម្តងទៀត...');
+        resendBtn.disabled=true;
+        const {error:re}=await db.auth.resend({
+          type:'signup',
+          email:lastSignupEmail,
+          options:{emailRedirectTo:LIVE_URL}
+        });
+        if(re){ resendBtn.disabled=false; msg(friendlyAuthError(re),true); return; }
+        msg('បានផ្ញើ Confirmation Email ម្តងទៀត ✓ សូមពិនិត្យ Inbox និង Spam/Junk។');
+        let left=60;
+        resendBtn.textContent=`ផ្ញើម្តងទៀត (${left}s)`;
+        const t=setInterval(()=>{
+          left--;
+          if(left<=0){ clearInterval(t); resendBtn.disabled=false; resendBtn.textContent='ផ្ញើ Confirmation Email ម្តងទៀត'; }
+          else resendBtn.textContent=`ផ្ញើម្តងទៀត (${left}s)`;
+        },1000);
+      });
+      return;
+    }
+
+    msg(loginResult.error?friendlyAuthError(loginResult.error):'គណនីត្រូវបានបង្កើតរួច។ សូមចូលគណនី។',!!loginResult.error);
   };
 
   forgot.onclick=async()=>{
