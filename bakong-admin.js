@@ -57,4 +57,6 @@
     $('settingsMsg').className=r.error?'msg err':'msg';
     $('settingsMsg').textContent=r.error?r.error.message:'រក្សាទុក Bakong KHQR Settings រួចរាល់ ✓';
   };
+
+  if(!$('app').classList.contains('hide')) loadSettings();
 })();
