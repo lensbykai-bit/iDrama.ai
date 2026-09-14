@@ -8,8 +8,11 @@
 
   const LIVE_URL='https://idrama-ai.onrender.com/';
   const RECOVERY_URL=LIVE_URL+'?recovery=1';
+  const COOLDOWN_MS=60000;
+  const COOLDOWN_KEY='idrama_auth_email_cooldown_until';
   const tabs=document.querySelector('.tabs2');
   let lastSignupEmail='';
+  let cooldownTimer=null;
 
   const actions=document.createElement('div');
   actions.id='authExtraActions';
@@ -37,6 +40,44 @@
     authMsg.className='msg'+(error?' err':'');
     authMsg.textContent=text||'';
   }
+  function friendlyAuthError(error){
+    const raw=String(error?.message||error||'').toLowerCase();
+    if(raw.includes('rate limit')||raw.includes('too many requests')||error?.status===429){
+      return 'បានស្នើ Email ច្រើនដងពេក។ សូមរង់ចាំបន្តិច ហើយសាកល្បងម្តងទៀត។';
+    }
+    return error?.message||'មានបញ្ហាក្នុងការផ្ញើ Email។ សូមសាកល្បងម្តងទៀត។';
+  }
+  function setCooldown(ms=COOLDOWN_MS){
+    const until=Date.now()+ms;
+    try{ localStorage.setItem(COOLDOWN_KEY,String(until)); }catch(e){}
+    runCooldown(until);
+  }
+  function runCooldown(until){
+    clearInterval(cooldownTimer);
+    const tick=()=>{
+      const left=Math.max(0,Math.ceil((until-Date.now())/1000));
+      if(left<=0){
+        clearInterval(cooldownTimer);
+        forgot.disabled=false;
+        forgot.style.opacity='';
+        forgot.textContent='ភ្លេច Password?';
+        try{ localStorage.removeItem(COOLDOWN_KEY); }catch(e){}
+        return;
+      }
+      forgot.disabled=true;
+      forgot.style.opacity='.65';
+      forgot.textContent=`សូមរង់ចាំ ${left} វិនាទី`;
+    };
+    tick();
+    cooldownTimer=setInterval(tick,1000);
+  }
+  function restoreCooldown(){
+    try{
+      const until=Number(localStorage.getItem(COOLDOWN_KEY)||0);
+      if(until>Date.now()) runCooldown(until);
+      else localStorage.removeItem(COOLDOWN_KEY);
+    }catch(e){}
+  }
   function showLogin(message=''){
     loginForm.classList.remove('hide');
     registerForm.classList.add('hide');
@@ -47,6 +88,7 @@
     if(rt) rt.className='btn dark';
     clearActions();
     if(message) msg(message,false);
+    restoreCooldown();
   }
   function showReset(){
     loginForm.classList.add('hide');
@@ -85,7 +127,11 @@
       }
     });
 
-    if(error){ msg(error.message||'មិនអាចបង្កើតគណនីបានទេ',true); return; }
+    if(error){
+      if(String(error.message||'').toLowerCase().includes('rate limit')||error.status===429) setCooldown();
+      msg(friendlyAuthError(error),true);
+      return;
+    }
 
     const identities=data?.user?.identities;
     if(Array.isArray(identities)&&identities.length===0){
@@ -103,19 +149,33 @@
     }
 
     msg('បានបង្កើតគណនីថ្មី។ សូមពិនិត្យ Inbox និង Spam/Junk ដើម្បីបញ្ជាក់គណនី។');
-    addAction('ផ្ញើ Confirmation Email ម្តងទៀត',async()=>{
+    const resendBtn=addAction('ផ្ញើ Confirmation Email ម្តងទៀត',async()=>{
+      if(resendBtn.disabled) return;
       msg('កំពុងផ្ញើ Email ម្តងទៀត...');
+      resendBtn.disabled=true;
       const {error:re}=await db.auth.resend({
         type:'signup',
         email:lastSignupEmail,
         options:{emailRedirectTo:LIVE_URL}
       });
-      if(re) msg(re.message||'មិនអាចផ្ញើ Email ម្តងទៀតបានទេ',true);
-      else msg('បានផ្ញើ Confirmation Email ម្តងទៀត ✓ សូមពិនិត្យ Inbox និង Spam/Junk។');
+      if(re){
+        resendBtn.disabled=false;
+        msg(friendlyAuthError(re),true);
+        return;
+      }
+      msg('បានផ្ញើ Confirmation Email ម្តងទៀត ✓ សូមពិនិត្យ Inbox និង Spam/Junk។');
+      let left=60;
+      resendBtn.textContent=`ផ្ញើម្តងទៀត (${left}s)`;
+      const t=setInterval(()=>{
+        left--;
+        if(left<=0){ clearInterval(t); resendBtn.disabled=false; resendBtn.textContent='ផ្ញើ Confirmation Email ម្តងទៀត'; }
+        else resendBtn.textContent=`ផ្ញើម្តងទៀត (${left}s)`;
+      },1000);
     });
   };
 
   forgot.onclick=async()=>{
+    if(forgot.disabled) return;
     clearActions();
     const email=byId('loginEmail').value.trim();
     if(!email){
@@ -123,10 +183,25 @@
       byId('loginEmail').focus();
       return;
     }
+
+    forgot.disabled=true;
+    forgot.style.opacity='.65';
     msg('កំពុងផ្ញើ Reset Password Email...');
     const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:RECOVERY_URL});
-    if(error) msg(error.message||'មិនអាចផ្ញើ Reset Email បានទេ',true);
-    else msg('បានផ្ញើ Reset Password Email ✓ សូមពិនិត្យ Inbox និង Spam/Junk។');
+    if(error){
+      if(String(error.message||'').toLowerCase().includes('rate limit')||error.status===429){
+        setCooldown();
+        msg('បានស្នើ Reset Password Email ច្រើនដងពេក។ សូមរង់ចាំយ៉ាងហោចណាស់ 60 វិនាទី ហើយសាកល្បងម្តងទៀត។',true);
+      }else{
+        forgot.disabled=false;
+        forgot.style.opacity='';
+        msg(friendlyAuthError(error),true);
+      }
+      return;
+    }
+
+    msg('បានផ្ញើ Reset Password Email ✓ សូមពិនិត្យ Inbox និង Spam/Junk។');
+    setCooldown();
   };
 
   resetForm.onsubmit=async e=>{
@@ -151,4 +226,6 @@
   if(location.hash.includes('type=recovery')||params.get('recovery')==='1'){
     setTimeout(showReset,100);
   }
+
+  restoreCooldown();
 })();
