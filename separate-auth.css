@@ -1,0 +1,31 @@
+/* Separate iDrama.ai Login / Register modals */
+#authModal,#registerModal{background:rgba(4,8,15,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+#authModal .authbox,#registerModal .authbox{position:relative;width:min(610px,94vw);max-height:92vh;overflow:auto;background:linear-gradient(180deg,#111927 0%,#0c131f 100%);border:1px solid #33435a;border-radius:28px;padding:34px 38px 30px;box-shadow:0 30px 90px rgba(0,0,0,.62),0 0 0 1px rgba(255,62,104,.08) inset}
+#authModal .authbox:before,#registerModal .authbox:before{content:'';position:absolute;inset:0;border-radius:28px;pointer-events:none;background:radial-gradient(circle at 50% 0%,rgba(255,62,104,.09),transparent 32%)}
+#authModal .authbox>h2,#authModal .tabs2{display:none!important}
+.auth-brand{position:relative;z-index:1;text-align:center;margin:2px 0 26px}
+.auth-brand-logo{font:800 38px/1 Inter,Battambang,sans-serif;letter-spacing:-1.6px;color:#fff}.auth-brand-logo b{color:#ff4f78}.auth-brand-tag{margin-top:8px;color:#8492a7;font:700 10px/1.5 Inter,sans-serif;letter-spacing:4px}.auth-brand-line{width:48px;height:3px;margin:12px auto 0;border-radius:999px;background:linear-gradient(90deg,#ff3e68,#ff7090)}
+.auth-title{position:relative;z-index:1;text-align:center;font-family:Battambang,Inter,sans-serif;font-size:27px;font-weight:700;color:#f7f9fc;line-height:1.5}.auth-title span{color:#ff527a}.auth-subtitle{position:relative;z-index:1;text-align:center;color:#8fa0b7;font-family:Battambang,Inter,sans-serif;font-size:13px;line-height:1.8;margin:4px auto 23px;max-width:460px}
+#authModal .close,#registerModal .close{position:absolute!important;right:18px!important;top:18px!important;float:none!important;width:42px;height:42px;border:1px solid #344154;background:#202938;color:#fff;z-index:5;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+#authModal form,#registerModal form{position:relative;z-index:1}
+#authModal .f,#registerModal .f{display:grid;gap:8px;margin-top:15px}
+#authModal .f label,#registerModal .f label{font-family:Battambang,Inter,sans-serif;font-size:13px;font-weight:700;color:#dce5f1}
+#authModal .f label:before,#registerModal .f label:before{content:'* ';color:#ff4f78}
+#authModal .f input,#registerModal .f input{width:100%;min-height:54px;border:1px solid #40516a;background:#111b29;color:#fff;border-radius:14px;padding:13px 15px;outline:none;font-size:15px;transition:border-color .18s ease,box-shadow .18s ease,background .18s ease}
+#authModal .f input::placeholder,#registerModal .f input::placeholder{color:#68778c}
+#authModal .f input:focus,#registerModal .f input:focus{border-color:#ff5c82;box-shadow:0 0 0 4px rgba(255,62,104,.11);background:#142031}
+#authModal form>.btn.pink,#registerModal form>.btn.pink{width:100%;min-height:56px;margin-top:22px!important;border:1px solid #ff6588;border-radius:14px;background:linear-gradient(135deg,#ff3e68,#d93661);color:#fff;font-family:Battambang,Inter,sans-serif;font-size:17px;font-weight:700;box-shadow:0 12px 28px rgba(255,62,104,.18);transition:transform .18s ease,filter .18s ease,box-shadow .18s ease}
+#authModal form>.btn.pink:hover,#registerModal form>.btn.pink:hover{transform:translateY(-1px);filter:brightness(1.07);box-shadow:0 16px 34px rgba(255,62,104,.24)}
+#authModal #loginForm>.btn.dark{width:auto!important;min-height:auto!important;padding:4px 0!important;margin:12px 0 2px auto!important;display:block;background:transparent!important;border:0!important;color:#ff7897!important;font-family:Battambang,Inter,sans-serif;font-size:13px;font-weight:700;box-shadow:none!important;text-align:right}
+#authModal #loginForm>.btn.dark:hover{color:#ffa0b5!important;text-decoration:underline}
+#authModal #loginForm>.btn.dark:before,#authModal #loginForm>.btn.dark:after{display:none!important;content:none!important}
+#authModal .password-eye-btn,#registerModal .password-eye-btn{color:#8191a6}.password-eye-wrap{width:100%}
+#authModal .msg,#registerModal .msg{position:relative;z-index:1;margin-top:12px;font-family:Battambang,Inter,sans-serif;font-size:13px;line-height:1.7;color:#72e0bd}.msg.err{color:#ff7580!important}
+.auth-switch{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;margin-top:22px;padding-top:19px;border-top:1px solid #263347;color:#8795a8;font-family:Battambang,Inter,sans-serif;font-size:13px}.auth-switch button{border:0;background:transparent;color:#ff6f90;padding:0;font:700 13px Battambang,Inter,sans-serif;cursor:pointer}.auth-switch button:hover{text-decoration:underline;color:#ff9ab0}
+#registerModal{display:none}.modal#registerModal.show{display:flex}
+#registerModal .authbox{width:min(650px,94vw)}
+#registerModal #registerForm{display:block!important}
+#registerModal #registerForm .f:first-child{margin-top:0}
+#registerModal #regPhone{font-variant-numeric:tabular-nums}
+#userResetForm:not(.hide){display:block!important}
+@media(max-width:680px){#authModal,#registerModal{padding:10px}#authModal .authbox,#registerModal .authbox{width:100%;padding:28px 20px 24px;border-radius:22px}.auth-brand-logo{font-size:31px}.auth-title{font-size:23px}.auth-subtitle{font-size:12px;margin-bottom:18px}#authModal .close,#registerModal .close{right:12px!important;top:12px!important;width:38px;height:38px}#authModal .f input,#registerModal .f input{min-height:50px}.auth-switch{margin-top:18px}}
