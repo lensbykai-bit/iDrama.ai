@@ -1,0 +1,13 @@
+.movie-dialog{position:relative;width:min(760px,100%);overflow:hidden}
+.movie-info{display:grid;grid-template-columns:minmax(220px,300px) 1fr;min-height:420px}
+.detail-poster{background:#0a0e14;min-height:420px;position:relative;overflow:hidden}
+.detail-poster img{width:100%;height:100%;display:block;object-fit:cover}
+.detail-poster .fill{position:absolute;inset:0}
+.detail-fill .word{font-size:38px}
+.movie-dialog>.close{right:14px;top:14px;background:#111827cc;border:1px solid #ffffff24;z-index:5}
+.movie-info .detail{padding:32px 28px;display:flex;flex-direction:column;min-width:0}
+.movie-info .detail h2{font-size:28px;margin:0 44px 18px 0;line-height:1.55}
+.story-title{font-family:Battambang,sans-serif;font-size:13px;font-weight:700;color:#ff9bb0;margin-bottom:7px}
+.story{font-family:Battambang,sans-serif;color:#c7d0de;font-size:15px;line-height:1.95;white-space:pre-line;overflow-wrap:anywhere}
+.movie-info .buybox{margin-top:auto;padding-top:16px}
+@media(max-width:680px){.movie-dialog{width:min(430px,100%)}.movie-info{display:block}.detail-poster{width:100%;min-height:0;aspect-ratio:3/4}.movie-info .detail{padding:22px 18px}.movie-info .detail h2{font-size:22px;margin-right:36px}.story{font-size:14px}.movie-info .buybox{margin-top:20px}}
