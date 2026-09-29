@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="km">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>iDrama Pay</title>
+<style>
+:root{--bg:#fff7fb;--card:#fff;--text:#24151f;--muted:#806777;--pink:#ff2b7a;--pink2:#ff5ba0;--line:#ffd4e5;--shadow:0 14px 40px rgba(255,43,122,.13)}
+[data-theme=dark]{--bg:#120d11;--card:#1c151a;--text:#fff5fa;--muted:#b89aaa;--line:#3a2530;--shadow:0 14px 40px rgba(0,0,0,.3)}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Noto Sans Khmer",sans-serif;background:var(--bg);color:var(--text)}
+.wrap{max-width:520px;margin:auto;padding:18px 16px 96px}.top{display:flex;align-items:center;justify-content:space-between;margin:6px 0 18px}.brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:22px}.mark{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--pink),var(--pink2));display:grid;place-items:center;color:white;box-shadow:var(--shadow)}
+.toggle{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:14px;padding:10px 12px;font-weight:800}.hero{background:linear-gradient(135deg,#ff2b7a,#ff6aac);color:#fff;border-radius:26px;padding:22px;box-shadow:var(--shadow)}.hero small{opacity:.85}.hero h1{font-size:30px;margin:8px 0 4px}.hero p{margin:0;opacity:.92}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:16px;box-shadow:var(--shadow)}.card b{display:block;margin-top:8px}.icon{font-size:26px}.section{font-weight:900;font-size:18px;margin:22px 2px 12px}.qrbox{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:18px;text-align:center}.qrfake{width:170px;height:170px;margin:8px auto;border:10px solid #fff;background:repeating-conic-gradient(#111 0 25%,#fff 0 50%) 0/18px 18px;border-radius:14px;box-shadow:0 0 0 1px #eee}.btn{width:100%;border:0;border-radius:16px;padding:14px 16px;font-weight:900;font-size:16px}.primary{background:linear-gradient(135deg,var(--pink),var(--pink2));color:white}.secondary{margin-top:10px;background:var(--card);color:var(--text);border:1px solid var(--line)}.hint{font-size:13px;color:var(--muted);line-height:1.5;margin-top:10px}.nav{position:fixed;left:0;right:0;bottom:0;background:color-mix(in srgb,var(--card) 92%,transparent);backdrop-filter:blur(18px);border-top:1px solid var(--line);display:flex;justify-content:center}.navin{width:min(520px,100%);display:grid;grid-template-columns:repeat(4,1fr);padding:10px 8px env(safe-area-inset-bottom)}.nav a{text-decoration:none;color:var(--muted);text-align:center;font-size:12px;font-weight:800}.nav a span{display:block;font-size:20px;margin-bottom:3px}.nav a.active{color:var(--pink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><div class="brand"><div class="mark">♥</div>iDrama Pay</div><button class="toggle" id="theme">🌙</button></div>
+  <div class="hero"><small>Personal Wallet</small><h1>iDrama Pay</h1><p>ទទួលប្រាក់តាម Bakong KHQR ដោយងាយស្រួល</p></div>
+  <div class="grid">
+    <div class="card"><div class="icon">▦</div><b>Generate QR</b><span class="hint">បង្កើត KHQR សម្រាប់ទទួលប្រាក់</span></div>
+    <div class="card"><div class="icon">↗</div><b>Receive Money</b><span class="hint">ទទួលប្រាក់ដោយផ្ទាល់</span></div>
+    <div class="card"><div class="icon">◷</div><b>History</b><span class="hint">មើលប្រវត្តិការទូទាត់</span></div>
+    <div class="card"><div class="icon">⚙</div><b>Settings</b><span class="hint">កំណត់ iDrama Pay</span></div>
+  </div>
+  <div class="section">Bakong KHQR</div>
+  <div class="qrbox"><div class="qrfake" aria-hidden="true"></div><b>Generate your real KHQR</b><div class="hint">ចុចខាងក្រោមដើម្បីបើកផ្ទាំង Bakong KHQR របស់ iDrama Pay។</div><button class="btn primary" onclick="location.href='https://idramaai.onrender.com/payments-admin.html'">បង្កើត KHQR</button><button class="btn secondary" onclick="location.reload()">Refresh App</button></div>
+</div>
+<div class="nav"><div class="navin"><a class="active" href="#"><span>⌂</span>Home</a><a href="https://idramaai.onrender.com/payments-admin.html"><span>▦</span>QR</a><a href="#"><span>◷</span>History</a><a href="#"><span>⚙</span>Settings</a></div></div>
+<script>
+const root=document.documentElement,btn=document.getElementById('theme');
+function apply(t){root.dataset.theme=t;localStorage.setItem('idrama_theme',t);btn.textContent=t==='dark'?'☀️':'🌙'}
+apply(localStorage.getItem('idrama_theme')||'light');btn.onclick=()=>apply(root.dataset.theme==='dark'?'light':'dark');
+</script>
+</body></html>
