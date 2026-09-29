@@ -1,6 +1,7 @@
-// Always show a clear price label on every movie card.
+// Keep movie cards focused on Poster + Trailer + Price.
 (function(){
   if(typeof card!=='function') return;
+
   const displayPrice=(x)=>{
     if(x.paid){
       return x.currency==='KHR'
@@ -18,11 +19,11 @@
     return `<article class="card" data-id="${x.id}">
       <div class="poster">
         ${poster}
-        <span class="badge">${x.eps} ភាគ</span>
+        <span class="badge">▶ Trailer</span>
         <span class="price ${x.paid?'':'free'}">${price}</span>
       </div>
       <h3>${esc(x.title)}</h3>
-      <div class="meta">${esc(({ai:'AI Drama',live:'រឿងមនុស្ស',anime:'រឿងគំនូរ'})[x.category]||x.category)}${x.genre?' · '+esc(x.genre):''}</div>
+      <div class="meta">Trailer ខ្លី • រឿងពេញនៅ Telegram</div>
       <div class="card-price">តម្លៃ: <b>${price}</b></div>
     </article>`;
   };
@@ -35,6 +36,5 @@
   `;
   document.head.appendChild(style);
 
-  // Re-render after this enhancement loads.
   try{ if(typeof render==='function') render(); }catch(e){}
 })();
