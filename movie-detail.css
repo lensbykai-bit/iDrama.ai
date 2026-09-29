@@ -1,4 +1,4 @@
-.movie-dialog{position:relative;width:min(760px,100%);overflow:hidden}
+.movie-dialog{position:relative;width:min(820px,100%);overflow:hidden}
 .movie-info{display:grid;grid-template-columns:minmax(220px,300px) 1fr;min-height:420px}
 .detail-poster{background:#0a0e14;min-height:420px;position:relative;overflow:hidden}
 .detail-poster img{width:100%;height:100%;display:block;object-fit:cover}
@@ -7,7 +7,13 @@
 .movie-dialog>.close{right:14px;top:14px;background:#111827cc;border:1px solid #ffffff24;z-index:5}
 .movie-info .detail{padding:32px 28px;display:flex;flex-direction:column;min-width:0}
 .movie-info .detail h2{font-size:28px;margin:0 44px 18px 0;line-height:1.55}
-.story-title{font-family:Battambang,sans-serif;font-size:13px;font-weight:700;color:#ff9bb0;margin-bottom:7px}
+.story-title,.trailer-title{font-family:Battambang,sans-serif;font-size:13px;font-weight:700;color:#ff9bb0;margin-bottom:7px}
 .story{font-family:Battambang,sans-serif;color:#c7d0de;font-size:15px;line-height:1.95;white-space:pre-line;overflow-wrap:anywhere}
-.movie-info .buybox{margin-top:auto;padding-top:16px}
-@media(max-width:680px){.movie-dialog{width:min(430px,100%)}.movie-info{display:block}.detail-poster{width:100%;min-height:0;aspect-ratio:3/4}.movie-info .detail{padding:22px 18px}.movie-info .detail h2{font-size:22px;margin-right:36px}.story{font-size:14px}.movie-info .buybox{margin-top:20px}}
+.trailer-title{margin-top:18px}
+.trailer-box{width:100%;aspect-ratio:16/9;background:#090d13;border:1px solid #283142;border-radius:14px;overflow:hidden;display:grid;place-items:center}
+.trailer-box video{width:100%;height:100%;object-fit:contain;background:#000}
+.trailer-empty{font-family:Battambang,sans-serif;color:#7f8a9b;font-size:13px;text-align:center;padding:18px}
+.trailer-link{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#fff;font-family:Battambang,sans-serif;background:radial-gradient(circle at center,#ff3e6824,transparent 48%)}
+.trailer-play{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#ff3e68,#ff6d78);font-family:Inter,sans-serif;font-size:20px;box-shadow:0 12px 28px #ff3e6840}
+.movie-info .buybox{margin-top:18px}
+@media(max-width:680px){.movie-dialog{width:min(430px,100%)}.movie-info{display:block}.detail-poster{width:100%;min-height:0;aspect-ratio:3/4}.movie-info .detail{padding:22px 18px}.movie-info .detail h2{font-size:22px;margin-right:36px}.story{font-size:14px}.trailer-box{margin-top:2px}.movie-info .buybox{margin-top:18px}}
