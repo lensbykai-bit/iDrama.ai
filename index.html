@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0d1016">
-<title>iDrama.ai — Trailer និងរឿងពេញក្នុង Telegram</title>
+<title>iDrama.ai — រឿងខ្លី និងរឿងពេញក្នុង Telegram</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;600;700&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -29,7 +29,7 @@
     <div>
       <div class="ey">iDrama.ai • Short Drama</div>
       <h1>ជ្រើសរឿង → ទូទាត់ Bakong → បើក Telegram ភ្លាម</h1>
-      <p>មិនចាំបាច់ចុះឈ្មោះ ឬ Login ទេ។ មើល Poster និង Trailer ខ្លីៗ ជ្រើសរឿងដែលចូលចិត្ត ទូទាត់តាម Bakong KHQR ហើយប្រព័ន្ធនឹងបើក Telegram រឿងពេញដោយស្វ័យប្រវត្តិ ពេលការទូទាត់ត្រូវបានបញ្ជាក់។</p>
+      <p>មិនចាំបាច់ចុះឈ្មោះ ឬ Login ទេ។ មើលរូប Poster អានសេចក្ដីសង្ខេបសាច់រឿង និងតម្លៃ ជ្រើសរឿងដែលចូលចិត្ត ទូទាត់តាម Bakong KHQR ហើយប្រព័ន្ធនឹងបើក Telegram រឿងពេញ បន្ទាប់ពីការទូទាត់ត្រូវបានបញ្ជាក់។</p>
     </div>
   </section>
 
@@ -48,7 +48,7 @@
     <div class="head">
       <div>
         <h2>ជ្រើសរើសរឿង</h2>
-        <div class="sub">ចុចលើរូបភាព ដើម្បីមើល Trailer និងតម្លៃ</div>
+        <div class="sub">ចុចលើរូបភាព ដើម្បីមើលសាច់រឿង និងតម្លៃ</div>
       </div>
     </div>
     <div id="grid" class="grid"></div>
@@ -58,21 +58,22 @@
 
 <footer>
   <div class="foot">
-    <div><b>iDrama.ai</b> — Trailer នៅ Website • រឿងពេញនៅ Telegram</div>
+    <div><b>iDrama.ai</b> — Poster និងសាច់រឿងនៅ Website • រឿងពេញនៅ Telegram</div>
     <div>© 2026 iDrama.ai • <a class="admin" href="admin.html">Admin</a></div>
   </div>
 </footer>
 
 <div id="movieModal" class="modal">
-  <div class="dialog">
-    <div id="video" class="video">
-      <button id="movieClose" class="close">×</button>
-      <div class="play">▶</div>
-    </div>
-    <div class="detail">
-      <h2 id="dt"></h2>
-      <div id="tags" class="tags"></div>
-      <div id="buybox" class="buybox"></div>
+  <div class="dialog movie-dialog">
+    <button id="movieClose" class="close">×</button>
+    <div class="movie-info">
+      <div id="detailPoster" class="detail-poster"></div>
+      <div class="detail">
+        <h2 id="dt"></h2>
+        <div class="story-title">សង្ខេបសាច់រឿង</div>
+        <div id="story" class="story"></div>
+        <div id="buybox" class="buybox"></div>
+      </div>
     </div>
   </div>
 </div>
