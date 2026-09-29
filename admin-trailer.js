@@ -1,78 +1,20 @@
-// Trailer manager + direct video upload for iDrama.ai Admin.
+// Trailer manager for iDrama.ai Admin.
+// Trailer upload/link stays in the separate Trailer tab; it is no longer shown inside Add/Edit Movie.
 (function(){
   const tab=document.getElementById('tabEps');
   const section=document.getElementById('eps');
   const form=document.getElementById('epForm');
   const movieSelect=document.getElementById('movieSelect');
   const epList=document.getElementById('epList');
-  const movieForm=document.getElementById('movieForm');
-  if(!tab||!section||!form||!movieSelect||!epList||!movieForm||typeof db==='undefined') return;
+  if(!tab||!section||!form||!movieSelect||!epList||typeof db==='undefined') return;
 
   const MAX_BYTES=50*1024*1024;
   const allowedTypes=new Set(['video/mp4','video/webm','video/quicktime']);
 
-  // ---- Visible upload field directly inside Add/Edit Movie ----
-  const posterFile=document.getElementById('posterFile');
-  const posterWrap=posterFile?.closest('.f');
-  if(posterWrap && !document.getElementById('trailerFile')){
-    const wrap=document.createElement('div');
-    wrap.className='f full';
-    wrap.id='mainTrailerUploadWrap';
-    wrap.innerHTML=`
-      <label>Upload Video Trailer</label>
-      <input id="trailerFile" type="file" accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov">
-      <div class="muted" style="margin-top:7px;line-height:1.7">ជ្រើសវីដេអូ Trailer ពីកុំព្យូទ័រ/ទូរស័ព្ទ។ MP4, WEBM ឬ MOV មិនលើស 50MB។ បើកែរឿងហើយមិនជ្រើស Video ថ្មី Trailer ចាស់នឹងនៅដដែល។</div>
-      <div id="mainTrailerStatus" class="muted" style="margin-top:8px"></div>
-      <video id="mainTrailerPreview" controls playsinline style="display:none;margin-top:10px;width:min(360px,100%);max-height:240px;background:#000;border-radius:12px"></video>`;
-    posterWrap.after(wrap);
-  }
+  // Safety cleanup: remove the old inline Trailer upload field from Add/Edit Movie if it exists.
+  document.getElementById('mainTrailerUploadWrap')?.remove();
 
-  const mainFile=document.getElementById('trailerFile');
-  const mainPreview=document.getElementById('mainTrailerPreview');
-  const mainStatus=document.getElementById('mainTrailerStatus');
-  let mainObjectUrl='';
-
-  window.setMainTrailerStatus=function(url){
-    if(mainObjectUrl){URL.revokeObjectURL(mainObjectUrl);mainObjectUrl=''}
-    if(mainFile) mainFile.value='';
-    const clean=String(url||'').trim();
-    if(!clean){
-      if(mainStatus) mainStatus.textContent='មិនទាន់មាន Trailer';
-      if(mainPreview){mainPreview.pause();mainPreview.removeAttribute('src');mainPreview.style.display='none'}
-      return;
-    }
-    if(mainStatus) mainStatus.textContent='Trailer មានរួច ✓ — ជ្រើស Video ថ្មី ប្រសិនបើចង់ប្ដូរ';
-    if(mainPreview){
-      if(/^https?:\/\//i.test(clean) && !/(tiktok\.com|youtu\.be|youtube\.com|facebook\.com|instagram\.com)/i.test(clean)){
-        mainPreview.src=clean;
-        mainPreview.style.display='block';
-      }else{
-        mainPreview.removeAttribute('src');
-        mainPreview.style.display='none';
-      }
-    }
-  };
-
-  mainFile?.addEventListener('change',()=>{
-    const file=mainFile.files?.[0];
-    if(mainObjectUrl){URL.revokeObjectURL(mainObjectUrl);mainObjectUrl=''}
-    if(!file){window.setMainTrailerStatus('');return}
-    if(!allowedTypes.has(file.type)){
-      mainFile.value='';
-      if(mainStatus) mainStatus.textContent='សូមជ្រើស Video MP4, WEBM ឬ MOV។';
-      return;
-    }
-    if(file.size>MAX_BYTES){
-      mainFile.value='';
-      if(mainStatus) mainStatus.textContent='Video ធំពេក។ សូមប្រើ Trailer មិនលើស 50MB។';
-      return;
-    }
-    mainObjectUrl=URL.createObjectURL(file);
-    if(mainPreview){mainPreview.src=mainObjectUrl;mainPreview.style.display='block'}
-    if(mainStatus) mainStatus.textContent=`រួចរាល់សម្រាប់ Upload: ${file.name}`;
-  });
-
-  // ---- Trailer tab kept for old links and direct uploads ----
+  // Trailer is managed only from this dedicated tab.
   tab.classList.remove('hide');
   tab.textContent='Trailer';
 
@@ -96,6 +38,7 @@
   const saveBtn=form.querySelector('button:not([type="button"])');
   const cancelBtn=document.getElementById('cancelEp');
 
+  // Hide technical fields from normal Admin use.
   [epn,ept,epd].forEach(el=>{const w=el?.closest('.f');if(w)w.style.display='none'});
   [eppreview,epp].forEach(el=>{const l=el?.closest('label');if(l)l.style.display='none'});
 
@@ -105,6 +48,7 @@
     if(label) label.textContent='Trailer Link (optional)';
     epv.placeholder='https://www.tiktok.com/... ឬ https://youtu.be/... ឬ https://...mp4';
     epv.required=false;
+
     if(wrap && !document.getElementById('trailerTabFile')){
       const upload=document.createElement('div');
       upload.style.marginBottom='14px';
@@ -115,6 +59,7 @@
       wrap.insertBefore(upload,epv);
     }
   }
+
   if(saveBtn) saveBtn.textContent='រក្សាទុក Trailer';
   if(cancelBtn) cancelBtn.textContent='សម្អាត';
 
@@ -133,7 +78,8 @@
       if(ept) ept.value='Trailer';
       if(eppreview) eppreview.checked=true;
       if(epp) epp.checked=true;
-      const f=document.getElementById('trailerTabFile');if(f)f.value='';
+      const f=document.getElementById('trailerTabFile');
+      if(f) f.value='';
     };
   }
   prepareTrailerFields();
