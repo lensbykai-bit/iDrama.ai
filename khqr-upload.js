@@ -99,3 +99,79 @@
     }
   };
 })();
+
+// Clear, guided Dynamic KHQR setup inside the Admin website.
+(function(){
+  const form=document.getElementById('settingsForm');
+  const enabled=document.getElementById('bakongEnabled');
+  const accountId=document.getElementById('bakongAccountId');
+  const accountName=document.getElementById('bakongAccountName');
+  const city=document.getElementById('bakongCity');
+  const store=document.getElementById('bakongStore');
+  const qrUrl=document.getElementById('qrUrl');
+  if(!form||!enabled||!accountId||!accountName) return;
+
+  const tab=document.getElementById('tabSettings');
+  if(tab) tab.textContent='Bakong KHQR / ទូទាត់';
+  const title=form.closest('.panel')?.querySelector('.head h2');
+  if(title) title.textContent='រៀបចំប្រព័ន្ធទូទាត់ Bakong KHQR';
+
+  // Add simple Khmer helper text directly under the fields.
+  function helper(input,text){
+    const wrap=input.closest('.f');
+    if(!wrap||wrap.querySelector('.bakong-help')) return;
+    const d=document.createElement('div');
+    d.className='muted bakong-help';
+    d.style.cssText='margin-top:6px;line-height:1.65';
+    d.textContent=text;
+    wrap.appendChild(d);
+  }
+  helper(accountId,'បញ្ចូល Bakong Account ID របស់អ្នក (ទម្រង់ប្រហែល username@bank)។');
+  helper(accountName,'បញ្ចូលឈ្មោះគណនីឲ្យដូចឈ្មោះដែលបង្ហាញក្នុង Bakong។');
+  if(city) helper(city,'ទុក PHNOM PENH បាន ប្រសិនបើអ្នកមិនចង់កែ។');
+  if(store) helper(store,'ឈ្មោះហាងដែលបង្ហាញលើ KHQR។ ទុក iDrama.ai បាន។');
+
+  const guide=document.createElement('div');
+  guide.id='dynamicKhqrGuide';
+  guide.style.cssText='margin:0 0 18px;padding:16px;border:1px solid #334057;border-radius:16px;background:#101620;line-height:1.75';
+  guide.innerHTML=`
+    <div style="font-weight:800;font-size:16px;margin-bottom:8px">Dynamic KHQR — បង្កើត QR តាម Order ដោយស្វ័យប្រវត្តិ</div>
+    <div style="font-family:Battambang,sans-serif;color:#cbd4df">
+      ① បើក <b>Enable Bakong KHQR</b> → ② បញ្ចូល <b>Bakong Account ID</b> → ③ បញ្ចូល <b>Account / Merchant Name</b> → ④ ចុច <b>រក្សាទុក</b>។<br>
+      ពេលរួច អតិថិជនចុចទិញរឿង នឹងឃើញ QR ដែលមានតម្លៃរបស់ Order នោះភ្លាមៗ។
+    </div>
+    <div id="dynamicKhqrState" style="margin-top:12px"></div>
+    <div style="margin-top:12px;padding-top:12px;border-top:1px solid #283142;color:#9aa5b5;font-family:Battambang,sans-serif">
+      សម្រាប់ Auto Verify ការទូទាត់ ត្រូវមាន Secret <code>BAKONG_ACCESS_TOKEN</code> នៅ Supabase។ Token មិនត្រូវរក្សាទុកក្នុងគេហទំព័រ ដើម្បីការពារសុវត្ថិភាព។
+    </div>`;
+  form.insertBefore(guide,form.firstChild);
+
+  const dynamicFields=[enabled,accountId,accountName,city,store];
+  function renderState(){
+    const state=document.getElementById('dynamicKhqrState');
+    if(!state) return;
+    const hasAccount=!!accountId.value.trim();
+    const hasName=!!accountName.value.trim();
+    const ready=enabled.checked&&hasAccount&&hasName;
+    const staticQr=!!qrUrl?.value?.trim();
+    state.innerHTML=`
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <span style="padding:6px 10px;border-radius:999px;background:${enabled.checked?'#12352b':'#2a2024'};color:${enabled.checked?'#72e0bd':'#ff9baa'}">${enabled.checked?'✓ Dynamic KHQR ON':'○ Dynamic KHQR OFF'}</span>
+        <span style="padding:6px 10px;border-radius:999px;background:${hasAccount?'#12352b':'#2a2024'};color:${hasAccount?'#72e0bd':'#ff9baa'}">${hasAccount?'✓ Account ID':'○ Account ID'}</span>
+        <span style="padding:6px 10px;border-radius:999px;background:${hasName?'#12352b':'#2a2024'};color:${hasName?'#72e0bd':'#ff9baa'}">${hasName?'✓ Account Name':'○ Account Name'}</span>
+        <span style="padding:6px 10px;border-radius:999px;background:${staticQr?'#12352b':'#202938'};color:${staticQr?'#72e0bd':'#c5cfdd'}">${staticQr?'✓ Fallback QR':'○ Fallback QR optional'}</span>
+      </div>
+      <div style="margin-top:9px;font-family:Battambang,sans-serif;color:${ready?'#72e0bd':'#ffcf72'}">${ready?'✓ Dynamic KHQR Settings រួចរាល់សម្រាប់បង្កើត QR។':'សូមបំពេញចំណុចដែលនៅសល់ខាងលើ។'}</div>`;
+  }
+
+  dynamicFields.forEach(el=>{
+    el.addEventListener(el.type==='checkbox'?'change':'input',renderState);
+  });
+  qrUrl?.addEventListener('change',renderState);
+
+  // Refresh the status after settings finish loading from Supabase.
+  const refreshLater=()=>setTimeout(renderState,150);
+  document.getElementById('tabSettings')?.addEventListener('click',refreshLater);
+  form.addEventListener('submit',()=>setTimeout(renderState,500));
+  refreshLater();
+})();
