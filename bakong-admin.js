@@ -60,3 +60,120 @@
 
   if(!$('app').classList.contains('hide')) loadSettings();
 })();
+
+// Admin login reliability + password recovery.
+(function(){
+  const form=document.getElementById('loginForm');
+  const email=document.getElementById('email');
+  const password=document.getElementById('password');
+  const msg=document.getElementById('loginMsg');
+  if(!form||!email||!password||!msg) return;
+
+  const tools=document.createElement('div');
+  tools.id='adminLoginTools';
+  tools.style.cssText='display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap';
+  tools.innerHTML='<button type="button" id="showAdminPw" class="btn soft" style="padding:7px 10px">បង្ហាញ Password</button><button type="button" id="forgotAdminPw" class="btn soft" style="padding:7px 10px">ភ្លេច Password?</button>';
+  msg.before(tools);
+
+  document.getElementById('showAdminPw').onclick=()=>{
+    const show=password.type==='password';
+    password.type=show?'text':'password';
+    document.getElementById('showAdminPw').textContent=show?'លាក់ Password':'បង្ហាញ Password';
+  };
+
+  async function verifyAndOpen(user){
+    const check=await db.from('admins').select('user_id').eq('user_id',user.id).maybeSingle();
+    if(check.error){
+      await db.auth.signOut();
+      msg.className='msg err';
+      msg.textContent='មិនអាចពិនិត្យសិទ្ធិ Admin បាន៖ '+check.error.message;
+      return false;
+    }
+    if(!check.data){
+      await db.auth.signOut();
+      msg.className='msg err';
+      msg.textContent='គណនីនេះមិនមានសិទ្ធិ Admin ទេ';
+      return false;
+    }
+    document.getElementById('login').classList.add('hide');
+    document.getElementById('app').classList.remove('hide');
+    msg.textContent='';
+    await loadAll();
+    return true;
+  }
+
+  form.onsubmit=async e=>{
+    e.preventDefault();
+    msg.className='msg';
+    msg.textContent='កំពុងចូល...';
+    const {data,error}=await db.auth.signInWithPassword({email:email.value.trim(),password:password.value});
+    if(error){
+      msg.className='msg err';
+      if(/invalid login credentials/i.test(error.message)) msg.textContent='Email ឬ Password មិនត្រឹមត្រូវ។ បើភ្លេច Password សូមចុច “ភ្លេច Password?”';
+      else if(/email not confirmed/i.test(error.message)) msg.textContent='Email មិនទាន់បានបញ្ជាក់។ សូមពិនិត្យ Inbox/Spam។';
+      else msg.textContent='ចូលមិនបាន៖ '+error.message;
+      return;
+    }
+    await verifyAndOpen(data.user);
+  };
+
+  document.getElementById('forgotAdminPw').onclick=async()=>{
+    const value=email.value.trim();
+    if(!value){
+      msg.className='msg err';
+      msg.textContent='សូមបញ្ចូល Email ជាមុនសិន';
+      email.focus();
+      return;
+    }
+    msg.className='msg';
+    msg.textContent='កំពុងផ្ញើ Recovery Email...';
+    const redirectTo=location.origin+location.pathname+'?reset=1';
+    const {error}=await db.auth.resetPasswordForEmail(value,{redirectTo});
+    if(error){
+      msg.className='msg err';
+      msg.textContent='ផ្ញើ Recovery Email មិនបាន៖ '+error.message;
+    }else{
+      msg.className='msg';
+      msg.textContent='បានផ្ញើ Recovery Email រួច។ សូមពិនិត្យ Inbox/Spam ហើយចុច Link ក្នុង Email។';
+    }
+  };
+
+  function showReset(){
+    if(document.getElementById('adminResetBox')) return;
+    document.getElementById('login').classList.add('hide');
+    document.getElementById('app').classList.add('hide');
+    const wrap=document.createElement('div');
+    wrap.id='adminResetBox';
+    wrap.className='login';
+    wrap.innerHTML=`<form id="adminResetForm" class="box">
+      <div class="brand">iDrama<b>.ai</b></div>
+      <div class="muted">កំណត់ Password ថ្មី</div>
+      <div class="f"><label>Password ថ្មី</label><input id="adminNewPassword" type="password" minlength="8" required></div>
+      <div class="f"><label>បញ្ជាក់ Password ថ្មី</label><input id="adminConfirmPassword" type="password" minlength="8" required></div>
+      <button class="btn pink" style="width:100%;margin-top:16px">រក្សាទុក Password ថ្មី</button>
+      <div id="adminResetMsg" class="msg"></div>
+    </form>`;
+    document.body.appendChild(wrap);
+    document.getElementById('adminResetForm').onsubmit=async e=>{
+      e.preventDefault();
+      const p=document.getElementById('adminNewPassword').value;
+      const c=document.getElementById('adminConfirmPassword').value;
+      const rm=document.getElementById('adminResetMsg');
+      if(p!==c){rm.className='msg err';rm.textContent='Password ទាំងពីរមិនដូចគ្នា';return}
+      rm.className='msg';rm.textContent='កំពុងរក្សាទុក...';
+      const {data,error}=await db.auth.updateUser({password:p});
+      if(error){rm.className='msg err';rm.textContent=error.message;return}
+      history.replaceState({},'',location.pathname);
+      wrap.remove();
+      await verifyAndOpen(data.user);
+    };
+  }
+
+  db.auth.onAuthStateChange((event,session)=>{
+    if(event==='PASSWORD_RECOVERY'||(event==='SIGNED_IN'&&session&&location.search.includes('reset=1'))) showReset();
+  });
+
+  if(location.search.includes('reset=1')){
+    db.auth.getSession().then(({data})=>{if(data.session) showReset()});
+  }
+})();
