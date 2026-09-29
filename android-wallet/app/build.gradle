@@ -1,0 +1,16 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'ai.idrama.pay'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'ai.idrama.pay'
+        minSdk 24
+        targetSdk 35
+        versionCode 14
+        versionName '1.4'
+    }
+}
