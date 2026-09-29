@@ -9,7 +9,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;600;700&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="app.css">
-<link rel="stylesheet" href="separate-auth.css">
 </head>
 <body>
 <header class="top">
@@ -22,11 +21,6 @@
       <button data-f="ai">AI Drama</button>
     </div>
     <label class="search"><input id="q" placeholder="ស្វែងរករឿង..."></label>
-    <div class="account">
-      <span id="userPill" class="userpill hide"></span>
-      <button id="authBtn" class="btn soft">ចូល / ចុះឈ្មោះ</button>
-      <button id="logoutBtn" class="btn dark hide">ចាកចេញ</button>
-    </div>
   </nav>
 </header>
 
@@ -34,8 +28,8 @@
   <section class="hero">
     <div>
       <div class="ey">iDrama.ai • Short Drama</div>
-      <h1>មើល Trailer ខ្លីៗ រួចជ្រើសទិញរឿងដែលអ្នកចូលចិត្ត</h1>
-      <p>នៅលើគេហទំព័រ មានតែ Poster, Trailer ខ្លី និងតម្លៃ។ រឿងពេញទទួលបានតាម Telegram បន្ទាប់ពីការទូទាត់ Bakong KHQR ត្រូវបានបញ្ជាក់។</p>
+      <h1>ជ្រើសរឿង → ទូទាត់ Bakong → បើក Telegram ភ្លាម</h1>
+      <p>មិនចាំបាច់ចុះឈ្មោះ ឬ Login ទេ។ មើល Poster និង Trailer ខ្លីៗ ជ្រើសរឿងដែលចូលចិត្ត ទូទាត់តាម Bakong KHQR ហើយប្រព័ន្ធនឹងបើក Telegram រឿងពេញដោយស្វ័យប្រវត្តិ ពេលការទូទាត់ត្រូវបានបញ្ជាក់។</p>
     </div>
   </section>
 
@@ -83,27 +77,6 @@
   </div>
 </div>
 
-<div id="authModal" class="modal">
-  <div class="authbox">
-    <button id="authClose" class="close modal-close">×</button>
-    <h2>គណនី iDrama.ai</h2>
-    <div class="tabs2"><button id="loginTab" class="btn pink">ចូល</button><button id="registerTab" class="btn dark">ចុះឈ្មោះ</button></div>
-    <form id="loginForm">
-      <div class="f"><label>Email</label><input id="loginEmail" type="email" required></div>
-      <div class="f"><label>Password</label><input id="loginPassword" type="password" minlength="6" required></div>
-      <button class="btn pink fullbtn">ចូលគណនី</button>
-    </form>
-    <form id="registerForm" class="hide">
-      <div class="f"><label>ឈ្មោះ</label><input id="regName" required></div>
-      <div class="f"><label>Email</label><input id="regEmail" type="email" required></div>
-      <div class="f"><label>លេខទូរស័ព្ទ</label><input id="regPhone" inputmode="tel"></div>
-      <div class="f"><label>Password</label><input id="regPassword" type="password" minlength="6" required></div>
-      <button class="btn pink fullbtn">បង្កើតគណនី</button>
-    </form>
-    <div id="authMsg" class="msg"></div>
-  </div>
-</div>
-
 <div id="payModal" class="modal">
   <div class="paybox">
     <button id="payClose" class="close modal-close">×</button>
@@ -116,11 +89,5 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.min.js"></script>
 <script src="app.js"></script>
 <script src="bakong.js"></script>
-<script src="price-display.js"></script>
-<script src="account-name.js"></script>
-<script src="auth-fix.js"></script>
-<script src="password-toggle.js"></script>
-<script src="header-auth-buttons.js"></script>
-<script src="separate-auth.js"></script>
 </body>
 </html>
