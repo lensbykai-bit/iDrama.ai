@@ -1,83 +1,147 @@
-/* Compact desktop sizing for the cinematic movie detail popup. */
+/* Compact cinematic movie detail — tuned to the reference layout. */
 @media (min-width:781px){
+  .movie-modal{padding:18px;background:#03060bd9;backdrop-filter:blur(12px)}
   .movie-dialog{
-    width:min(1020px,calc(100vw - 56px));
-    max-height:84vh;
-    border-radius:24px;
+    width:min(1120px,calc(100vw - 44px));
+    max-height:90vh;
+    border-radius:26px;
+    border:1px solid #ff7f7a88;
+    box-shadow:0 30px 100px #000e,0 0 32px #ff884c2b,0 0 0 1px #ff4d7a26 inset;
+  }
+  .movie-shade{
+    background:
+      radial-gradient(circle at 17% 35%,#ffbd5d26,transparent 25%),
+      radial-gradient(circle at 75% 18%,#ff3f7a1f,transparent 29%),
+      linear-gradient(90deg,#080c13f8 0%,#0c111aed 38%,#0c111add 67%,#070b12f2 100%)
   }
   .movie-showcase{
-    grid-template-columns:300px minmax(0,1fr);
-    gap:25px;
-    padding:23px 27px 23px 23px;
-    max-height:84vh;
+    grid-template-columns:330px minmax(0,1fr);
+    gap:31px;
+    padding:28px 30px 25px 28px;
+    max-height:90vh;
   }
-  .movie-left{gap:9px}
-  .poster-frame{border-radius:22px}
-  .detail-poster{border-radius:20px}
-  .poster-stats{padding:7px 9px;border-radius:13px}
-  .poster-rating span{font-size:12px}
-  .poster-rating b{font-size:11px}
-  .poster-view{font-size:9.5px}
+  .movie-left{gap:11px;top:0}
+  .poster-frame{
+    border-radius:24px;
+    padding:2px;
+    background:linear-gradient(145deg,#ffd36f,#ffae58 35%,#ff4c80 72%,#70446e);
+    box-shadow:0 0 28px #ffae5950,0 20px 46px #0009
+  }
+  .detail-poster{border-radius:22px}
+  .poster-action{
+    position:absolute;
+    left:50%;
+    bottom:14px;
+    transform:translateX(-50%);
+    z-index:5;
+    width:72%;
+    min-height:46px;
+    border:1px solid #ff98ae;
+    border-radius:999px;
+    background:linear-gradient(135deg,#ff4f7d,#ff2e69);
+    color:#fff;
+    font-family:Battambang,sans-serif;
+    font-weight:700;
+    font-size:13px;
+    box-shadow:0 10px 28px #ff2e6959,0 0 20px #ff6e8c33;
+    cursor:pointer;
+  }
+  .poster-action span{margin-right:6px}
+  .poster-action:hover{filter:brightness(1.08);transform:translateX(-50%) translateY(-1px)}
+  .poster-thumbs{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    overflow-x:auto;
+    padding:1px 0 3px;
+    scrollbar-width:none
+  }
+  .poster-thumbs::-webkit-scrollbar{display:none}
+  .poster-thumb{
+    flex:0 0 58px;
+    height:66px;
+    padding:0;
+    border:1px solid #374256;
+    border-radius:10px;
+    overflow:hidden;
+    background:#0b1017;
+    position:relative;
+    cursor:pointer
+  }
+  .poster-thumb.active{border-color:#ff4c80;box-shadow:0 0 0 1px #ff4c80,0 0 16px #ff4c8040}
+  .poster-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .poster-thumb .fill{position:absolute;inset:0;padding:5px}.poster-thumb .word{font-size:9px}
+  .thumb-arrow{
+    flex:0 0 28px;
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    border:1px solid #455064;
+    background:#0d131ddb;
+    color:#fff;
+    font-size:20px;
+    display:grid;
+    place-items:center;
+    cursor:pointer
+  }
 
-  .movie-right{padding:7px 0 0}
-  .detail-kicker{padding:5px 9px;font-size:10.5px}
+  .movie-right{padding:8px 0 0}
+  .detail-kicker{padding:6px 10px;font-size:11px;border-color:#a63f61;background:linear-gradient(135deg,#451725,#2c121d)}
   .movie-right h2{
-    font-size:29px;
-    line-height:1.42;
-    margin-top:7px;
-    margin-bottom:2px;
+    font-size:32px;
+    line-height:1.46;
+    margin:8px 60px 2px 0;
+    color:#fff0ca;
+    text-shadow:0 2px 0 #6c3b1d,0 5px 18px #ffbc5b42
   }
-  .title-swoosh{height:12px;margin-bottom:7px;max-width:430px}
-  .title-swoosh:before{top:5px;height:2px}
-  .title-swoosh span{width:17px;height:17px;border-width:2px}
-  .detail-meta{gap:6px;margin-bottom:10px}
-  .meta-chip{min-height:29px;padding:5px 9px;font-size:10.5px}
-  .meta-stars{font-size:11px}
+  .title-swoosh{height:14px;margin-bottom:10px;max-width:500px}
+  .title-swoosh:before{top:6px;height:2px}
+  .title-swoosh span{width:18px;height:18px;border-width:2px}
+  .detail-meta{gap:7px;margin:3px 0 12px}
+  .meta-chip{min-height:31px;padding:6px 10px;font-size:11px;background:#0f1621d9;border-color:#374154}
+  .meta-stars{font-size:12px}.accent-chip{background:#421526;border-color:#9b3758;color:#ffa0b5}
 
-  .story-panel{padding:13px 15px 12px;border-radius:15px}
-  .story-title{font-size:13px;margin-bottom:7px;gap:8px}
-  .story-icon{width:23px;height:23px;font-size:12px}
-  .story{font-size:12.8px;line-height:1.78;max-height:145px;padding-left:12px}
+  .story-panel{padding:15px 17px 14px;border-radius:17px;background:linear-gradient(145deg,#111925ef,#0e151fef);border-color:#3b465a}
+  .story-title{font-size:14px;margin-bottom:8px}.story-icon{width:25px;height:25px;font-size:13px}
+  .story{font-size:13.5px;line-height:1.86;max-height:156px;padding-left:14px;border-left-width:3px}
 
-  .detail-info-grid{gap:7px;margin-top:9px}
-  .info-tile{min-height:58px;padding:8px 9px;border-radius:13px;gap:8px}
-  .info-icon{width:28px;height:28px;flex-basis:28px;font-size:13px}
-  .info-tile b{font-size:10.5px}
-  .info-tile small{font-size:8.5px;margin-top:2px}
+  .detail-info-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:11px}
+  .info-tile{min-height:63px;padding:9px 10px;border-radius:14px;gap:9px;background:linear-gradient(145deg,#101722ec,#0c121bec)}
+  .info-icon{width:31px;height:31px;flex-basis:31px;font-size:14px}
+  .info-tile b{font-size:11px}.info-tile small{font-size:9px;margin-top:2px}
 
   .movie-info .buybox,.movie-right .buybox{
-    margin-top:10px;
-    padding:11px 13px;
-    min-height:80px;
-    border-radius:16px;
+    margin-top:12px;
+    padding:13px 15px;
+    min-height:88px;
+    border-radius:18px;
+    border-color:#9a3154;
+    background:linear-gradient(135deg,#36121fef,#54162cef 60%,#2d111cef);
+    box-shadow:0 16px 36px #0005,inset 0 1px 0 #ffffff0c
   }
   .movie-right .buybox:before{
-    flex-basis:44px;
-    width:44px;
-    height:44px;
-    border-radius:12px;
-    font-size:19px;
+    flex-basis:50px;width:50px;height:50px;border-radius:14px;font-size:21px;
+    background:linear-gradient(145deg,#ff4a7a,#7a1537)
   }
-  .movie-right .buybox b{font-size:23px}
-  .movie-right .buybox small{font-size:10.5px;margin-top:2px}
-  .purchase-label{font-size:10px}
+  .movie-right .buybox b{font-size:25px}.movie-right .buybox small{font-size:11px;margin-top:3px}
   .purchase-btn,.movie-right .buybox .btn{
-    min-width:145px;
-    min-height:45px;
-    font-size:13px;
-    border-radius:13px!important;
+    min-width:168px;min-height:50px;border-radius:14px!important;font-size:14px;
+    background:linear-gradient(135deg,#ff4a7a,#ff2f69)!important;
+    box-shadow:0 10px 26px #ff3e6844
   }
-  .movie-close{
-    width:38px!important;
-    height:38px!important;
-    top:12px!important;
-    right:12px!important;
-  }
+  .movie-close{width:40px!important;height:40px!important;top:13px!important;right:13px!important}
 }
 
 @media (min-width:781px) and (max-width:1100px){
-  .movie-dialog{width:min(910px,calc(100vw - 30px));max-height:88vh}
-  .movie-showcase{grid-template-columns:270px minmax(0,1fr);gap:20px;padding:20px;max-height:88vh}
-  .movie-right h2{font-size:26px}
+  .movie-dialog{width:min(960px,calc(100vw - 24px))}
+  .movie-showcase{grid-template-columns:285px minmax(0,1fr);gap:23px;padding:22px}
+  .movie-right h2{font-size:27px}
   .detail-info-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .poster-thumb{flex-basis:52px;height:59px}
+}
+
+@media(max-width:780px){
+  .poster-action{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);z-index:5;width:72%;min-height:44px;border:0;border-radius:999px;background:linear-gradient(135deg,#ff4f7d,#ff2e69);color:#fff;font-family:Battambang,sans-serif;font-weight:700}
+  .poster-thumbs{display:flex;gap:7px;overflow-x:auto;margin-top:8px;padding-bottom:4px;scrollbar-width:none}.poster-thumbs::-webkit-scrollbar{display:none}
+  .poster-thumb{flex:0 0 54px;height:61px;padding:0;border:1px solid #354054;border-radius:9px;overflow:hidden;background:#0b1017;position:relative}.poster-thumb.active{border-color:#ff4c80}.poster-thumb img{width:100%;height:100%;object-fit:cover}.poster-thumb .fill{position:absolute;inset:0;padding:4px}.poster-thumb .word{font-size:8px}.thumb-arrow{display:none}
 }
