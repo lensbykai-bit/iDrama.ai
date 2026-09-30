@@ -50,7 +50,7 @@
     <div class="head">
       <div>
         <h2>ជ្រើសរើសរឿង</h2>
-        <div class="sub">ចុចលើរូបភាព ដើម្បីមើល Trailer សាច់រឿង និងតម្លៃ</div>
+        <div class="sub">ចុចលើរូបភាព ដើម្បីមើលសាច់រឿង ពិន្ទុ និងតម្លៃ</div>
       </div>
     </div>
     <div id="grid" class="grid"></div>
@@ -106,17 +106,35 @@
   </div>
 </footer>
 
-<div id="movieModal" class="modal">
-  <div class="dialog movie-dialog">
-    <button id="movieClose" class="close">×</button>
-    <div class="movie-info">
-      <div id="detailPoster" class="detail-poster"></div>
-      <div class="detail">
+<div id="movieModal" class="modal movie-modal">
+  <div id="movieDialog" class="dialog movie-dialog">
+    <div id="movieBackdrop" class="movie-backdrop" aria-hidden="true"></div>
+    <div class="movie-shade" aria-hidden="true"></div>
+    <button id="movieClose" class="close movie-close" aria-label="បិទ">×</button>
+
+    <div class="movie-showcase">
+      <aside class="movie-left">
+        <div class="poster-frame">
+          <div id="detailPoster" class="detail-poster"></div>
+          <div class="poster-glow" aria-hidden="true"></div>
+        </div>
+        <div id="posterStats" class="poster-stats"></div>
+      </aside>
+
+      <section class="detail movie-right">
+        <div id="detailKicker" class="detail-kicker">រឿងពេញនិយម</div>
         <h2 id="dt"></h2>
-        <div class="story-title">សង្ខេបសាច់រឿង</div>
-        <div id="story" class="story"></div>
+        <div class="title-swoosh"><span></span></div>
+        <div id="detailMeta" class="detail-meta"></div>
+
+        <div class="story-panel">
+          <div class="story-title"><span class="story-icon">▤</span> សង្ខេបសាច់រឿង</div>
+          <div id="story" class="story"></div>
+        </div>
+
+        <div id="detailInfo" class="detail-info-grid"></div>
         <div id="buybox" class="buybox"></div>
-      </div>
+      </section>
     </div>
   </div>
 </div>
