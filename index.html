@@ -13,27 +13,38 @@
 <link rel="stylesheet" href="movie-detail.css">
 <link rel="stylesheet" href="movie-detail-compact.css">
 <link rel="stylesheet" href="footer.css">
+<link rel="stylesheet" href="reference-ui.css">
 </head>
 <body>
-<header class="top">
+<header class="top app-topbar">
   <nav class="nav">
-    <a class="logo" href="#">iDrama<b>.ai</b></a>
+    <a class="logo" href="#"><span class="logo-play">▶</span><span>iDrama<b>.ai</b></span></a>
     <div class="links">
-      <button class="active" data-f="all">ទាំងអស់</button>
-      <button data-f="live">រឿងមនុស្ស</button>
-      <button data-f="anime">រឿងគំនូរ</button>
-      <button data-f="ai">AI Drama</button>
+      <button class="active" data-f="all">⌂ ទំព័រដើម</button>
+      <button data-f="ai">▣ ភាពយន្ត AI</button>
+      <button data-f="live">▦ រឿងមនុស្ស</button>
+      <button data-f="romance">♡ ស្នេហា</button>
     </div>
     <label class="search"><input id="q" placeholder="ស្វែងរករឿង..."></label>
+    <div class="top-actions" aria-hidden="true"><span class="top-icon">♧</span><span class="profile-dot">iD</span></div>
   </nav>
 </header>
 
-<main class="wrap">
+<aside class="side-nav" aria-label="ប្រភេទរឿង">
+  <button class="side-item active" data-f="all"><span>⌂</span><span>ទំព័រដើម</span></button>
+  <button class="side-item" data-f="ai"><span>♛</span><span>ភាពយន្ត AI</span></button>
+  <button class="side-item" data-f="live"><span>▦</span><span>រឿងមនុស្ស</span></button>
+  <button class="side-item" data-f="romance"><span>♡</span><span>ស្នេហា</span></button>
+  <button class="side-item" data-f="reborn"><span>◷</span><span>កើតឡើងវិញ</span></button>
+  <button class="side-item" data-f="family"><span>▢</span><span>គ្រួសារ</span></button>
+</aside>
+
+<main class="wrap app-main">
   <section class="hero">
     <div>
       <div class="ey">iDrama.ai • Short Drama</div>
       <h1>ជ្រើសរឿង → ទូទាត់ Bakong → បើក Telegram ភ្លាម</h1>
-      <p>មិនចាំបាច់ចុះឈ្មោះ ឬ Login ទេ។ មើលរូប Poster, Trailer ខ្លី, អានសេចក្ដីសង្ខេបសាច់រឿង និងតម្លៃ រួចទូទាត់តាម Bakong KHQR ដើម្បីបើក Telegram រឿងពេញ។</p>
+      <p>មិនចាំបាច់ចុះឈ្មោះ ឬ Login ទេ។ មើលរូប Poster, អានសេចក្ដីសង្ខេបសាច់រឿង និងតម្លៃ រួចទូទាត់តាម Bakong KHQR ដើម្បីទទួលលីងរឿងពេញ។</p>
     </div>
   </section>
 
@@ -64,7 +75,7 @@
   <div class="footer-main">
     <div class="footer-brand">
       <a class="footer-logo" href="#">iDrama<span>.ai</span></a>
-      <p>មើល Poster, Trailer និងសង្ខេបសាច់រឿងបានងាយៗ ហើយទូទាត់តាម KHQR ដើម្បីទទួលលីងរឿងពេញ។</p>
+      <p>មើល Poster និងសង្ខេបសាច់រឿងបានងាយៗ ហើយទូទាត់តាម KHQR ដើម្បីទទួលលីងរឿងពេញ។</p>
       <div class="footer-note">🎬 រឿងខ្លី • 💳 KHQR • 📲 Telegram</div>
     </div>
     <div class="footer-col">
