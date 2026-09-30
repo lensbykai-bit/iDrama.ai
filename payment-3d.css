@@ -1,0 +1,235 @@
+/* Compact 3D Bakong payment popup */
+html body #payModal.modal{
+  align-items:center!important;
+  justify-content:center!important;
+  overflow:auto!important;
+  padding:20px!important;
+  background:rgba(3,6,11,.72)!important;
+  backdrop-filter:blur(13px) saturate(115%)!important;
+  perspective:1200px!important;
+}
+
+html body #payModal.modal.show .paybox{
+  animation:idramaPay3dIn .34s cubic-bezier(.2,.82,.24,1) both!important;
+}
+
+html body #payModal .paybox{
+  width:min(392px,calc(100vw - 28px))!important;
+  max-height:min(720px,calc(100vh - 40px))!important;
+  margin:auto!important;
+  padding:18px 18px 16px!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  border:1px solid rgba(121,143,174,.46)!important;
+  border-radius:24px!important;
+  background:
+    linear-gradient(155deg,rgba(255,255,255,.055),transparent 28%),
+    linear-gradient(180deg,#192231 0%,#111824 54%,#0d131d 100%)!important;
+  box-shadow:
+    0 34px 80px rgba(0,0,0,.58),
+    0 12px 24px rgba(0,0,0,.42),
+    inset 0 1px 0 rgba(255,255,255,.09),
+    inset 0 -1px 0 rgba(0,0,0,.55)!important;
+  transform-style:preserve-3d!important;
+  scrollbar-width:thin;
+  scrollbar-color:#425069 transparent;
+}
+
+html body #payModal .paybox::before{
+  content:''!important;
+  position:absolute!important;
+  inset:1px 1px auto 1px!important;
+  height:48%!important;
+  border-radius:23px 23px 50% 50%!important;
+  background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,0))!important;
+  pointer-events:none!important;
+  opacity:.9!important;
+}
+
+html body #payModal .paybox::after{
+  content:'';
+  position:absolute;
+  left:10%;right:10%;bottom:-14px;
+  height:22px;
+  border-radius:50%;
+  background:rgba(0,0,0,.42);
+  filter:blur(12px);
+  transform:translateZ(-25px);
+  pointer-events:none;
+  z-index:-1;
+}
+
+html body #payModal .paybox h2{
+  margin:0 46px 13px 0!important;
+  min-height:38px!important;
+  font:800 21px/1.25 Inter,Battambang,sans-serif!important;
+  letter-spacing:-.25px!important;
+  position:relative!important;
+  z-index:1!important;
+}
+
+html body #payModal .paybox h2::before{
+  width:31px!important;
+  height:31px!important;
+  border-radius:10px!important;
+  font-size:16px!important;
+  box-shadow:0 7px 18px rgba(255,62,104,.3),inset 0 1px 0 rgba(255,255,255,.22)!important;
+}
+
+html body #payModal #payClose{
+  right:14px!important;
+  top:14px!important;
+  width:34px!important;
+  height:34px!important;
+  border-radius:11px!important;
+  border:1px solid rgba(119,137,162,.38)!important;
+  background:linear-gradient(180deg,#2b3545,#202938)!important;
+  color:#fff!important;
+  box-shadow:0 7px 15px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.08)!important;
+  transform:translateZ(18px)!important;
+}
+
+html body #payModal #payClose:hover{
+  transform:translateZ(18px) translateY(-1px)!important;
+}
+
+html body #payModal #payContent{
+  gap:10px!important;
+  margin-top:8px!important;
+  position:relative!important;
+  z-index:1!important;
+}
+
+html body #payModal #payContent .payment-summary{
+  gap:6px!important;
+  padding:10px 12px!important;
+  border-radius:14px!important;
+  border:1px solid rgba(78,95,121,.5)!important;
+  background:linear-gradient(180deg,#111925,#0d141f)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 8px 20px rgba(0,0,0,.16)!important;
+  transform:translateZ(8px)!important;
+}
+
+html body #payModal #payContent .payment-row{
+  grid-template-columns:58px minmax(0,1fr)!important;
+  gap:8px!important;
+  font-size:11.5px!important;
+  line-height:1.48!important;
+}
+
+html body #payModal #payContent .payment-value.price-value{
+  font-size:14px!important;
+}
+
+html body #payModal #payContent .qr-wrap{
+  padding:1px 0!important;
+  transform:translateZ(22px)!important;
+}
+
+html body #payModal #payContent .qr-card{
+  width:208px!important;
+  padding:9px!important;
+  border-radius:18px!important;
+  border:1px solid rgba(255,255,255,.92)!important;
+  background:linear-gradient(145deg,#fff,#eef1f5)!important;
+  box-shadow:
+    0 18px 34px rgba(0,0,0,.38),
+    0 5px 10px rgba(0,0,0,.26),
+    inset 0 1px 0 #fff!important;
+}
+
+html body #payModal #payContent .qr-card .qr{
+  width:188px!important;
+  border-radius:7px!important;
+}
+
+html body #payModal #payContent .payment-help{
+  grid-template-columns:30px minmax(0,1fr)!important;
+  gap:9px!important;
+  padding:10px 11px!important;
+  border-radius:14px!important;
+  border:1px solid rgba(73,90,116,.48)!important;
+  background:linear-gradient(180deg,#131c29,#0e151f)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03)!important;
+  transform:translateZ(7px)!important;
+}
+
+html body #payModal #payContent .help-icon{
+  width:30px!important;
+  height:30px!important;
+  border-radius:9px!important;
+  font-size:15px!important;
+}
+
+html body #payModal #payContent .help-title{
+  font-size:12px!important;
+  margin-bottom:2px!important;
+}
+
+html body #payModal #payContent .help-text{
+  font-size:10.8px!important;
+  line-height:1.6!important;
+}
+
+html body #payModal #payContent .help-expire{
+  margin-top:4px!important;
+  font-size:10px!important;
+}
+
+html body #payModal #payContent #checkPay,
+html body #payModal #payContent #retryKhqr{
+  min-height:42px!important;
+  border-radius:13px!important;
+  font-size:12px!important;
+  box-shadow:0 11px 24px rgba(231,43,75,.26),inset 0 1px 0 rgba(255,255,255,.16)!important;
+  transform:translateZ(15px)!important;
+}
+
+html body #payModal #payContent #checkPay:hover,
+html body #payModal #payContent #retryKhqr:hover{
+  transform:translateZ(15px) translateY(-1px)!important;
+}
+
+html body #payModal #payStatus{
+  min-height:38px!important;
+  margin:10px 0 0!important;
+  padding:8px 10px!important;
+  border-radius:12px!important;
+  font-size:10.8px!important;
+  line-height:1.5!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
+  position:relative!important;
+  z-index:1!important;
+  transform:translateZ(5px)!important;
+}
+
+@keyframes idramaPay3dIn{
+  0%{opacity:0;transform:translateY(28px) rotateX(-12deg) scale(.92)}
+  62%{opacity:1;transform:translateY(-3px) rotateX(2deg) scale(1.012)}
+  100%{opacity:1;transform:translateY(0) rotateX(0) scale(1)}
+}
+
+@media(max-width:600px){
+  html body #payModal.modal{padding:12px!important}
+  html body #payModal .paybox{
+    width:min(370px,calc(100vw - 18px))!important;
+    max-height:calc(100vh - 24px)!important;
+    padding:15px 14px 14px!important;
+    border-radius:21px!important;
+  }
+  html body #payModal .paybox h2{font-size:19px!important;margin-bottom:10px!important}
+  html body #payModal #payContent .qr-card{width:190px!important;padding:8px!important}
+  html body #payModal #payContent .qr-card .qr{width:172px!important}
+  html body #payModal #payContent .payment-summary{padding:9px 10px!important}
+  html body #payModal #payContent .payment-help{padding:9px 10px!important}
+  html body #payModal #payStatus{font-size:10.3px!important}
+}
+
+@media(max-height:690px){
+  html body #payModal .paybox{max-height:calc(100vh - 18px)!important;padding-top:14px!important}
+  html body #payModal #payContent{gap:7px!important}
+  html body #payModal #payContent .qr-card{width:180px!important;padding:7px!important}
+  html body #payModal #payContent .qr-card .qr{width:164px!important}
+  html body #payModal #payContent .payment-help{padding:8px 9px!important}
+  html body #payModal #payStatus{margin-top:7px!important}
+}
