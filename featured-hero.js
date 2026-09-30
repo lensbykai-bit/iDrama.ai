@@ -7,11 +7,11 @@
 
   window.renderFeaturedHero=function(list){
     const hero=document.querySelector('.hero');
-    if(!hero||!Array.isArray(list)||!list.length)return;
+    if(!hero||!Array.isArray(list)||!list.length)return false;
     const featured=list.filter(x=>x&&x.published!==false&&x.featured===true);
     const pool=(featured.length?featured:list.filter(x=>x&&x.published!==false)).slice();
     const movie=pool.sort((a,b)=>(Number(b.views)||0)-(Number(a.views)||0))[0];
-    if(!movie)return;
+    if(!movie)return false;
 
     const r=rating(movie.rating);
     const poster=movie.poster&&/^https?:\/\//i.test(movie.poster)?movie.poster:'';
@@ -44,9 +44,28 @@
       </div>`;
 
     const bg=hero.querySelector('.featured-bg');
-    if(poster){bg.style.backgroundImage=`url("${poster.replace(/"/g,'%22')}")`;hero.querySelector('#featuredPoster').innerHTML=`<img src="${htmlEscape(poster)}" alt="${htmlEscape(movie.title)}">`}
-    else{bg.style.background='linear-gradient(135deg,#4a1728,#1a2130)';hero.querySelector('#featuredPoster').innerHTML=`<div class="fill" style="background:linear-gradient(145deg,#ff566f,#5c376e)"><div class="word">${htmlEscape(movie.word||'DRAMA')}</div></div>`}
+    if(poster){
+      bg.style.backgroundImage=`url("${poster.replace(/"/g,'%22')}")`;
+      hero.querySelector('#featuredPoster').innerHTML=`<img src="${htmlEscape(poster)}" alt="${htmlEscape(movie.title)}">`;
+    }else{
+      bg.style.background='linear-gradient(135deg,#4a1728,#1a2130)';
+      hero.querySelector('#featuredPoster').innerHTML=`<div class="fill" style="background:linear-gradient(145deg,#ff566f,#5c376e)"><div class="word">${htmlEscape(movie.word||'DRAMA')}</div></div>`;
+    }
     hero.querySelector('#featuredOpen').onclick=()=>{if(typeof openDrama==='function')openDrama(movie.id)};
     hero.querySelector('#featuredBrowse').onclick=()=>document.querySelector('.sec')?.scrollIntoView({behavior:'smooth',block:'start'});
+    return true;
   };
+
+  // app.js loads the catalog asynchronously. Wait briefly and render as soon as it is ready.
+  let tries=0;
+  const timer=setInterval(()=>{
+    tries++;
+    try{
+      if(typeof all!=='undefined'&&Array.isArray(all)&&all.length&&window.renderFeaturedHero(all)){
+        clearInterval(timer);
+        return;
+      }
+    }catch(_e){}
+    if(tries>40)clearInterval(timer);
+  },150);
 })();
