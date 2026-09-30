@@ -1,0 +1,80 @@
+/* Compact desktop sizing for the cinematic movie detail popup. */
+@media (min-width:781px){
+  .movie-dialog{
+    width:min(1100px,calc(100vw - 46px));
+    max-height:88vh;
+    border-radius:26px;
+  }
+  .movie-showcase{
+    grid-template-columns:325px minmax(0,1fr);
+    gap:30px;
+    padding:28px 32px 28px 28px;
+    max-height:88vh;
+  }
+  .movie-left{gap:11px}
+  .poster-frame{border-radius:24px}
+  .detail-poster{border-radius:22px}
+  .poster-stats{padding:8px 10px;border-radius:14px}
+  .poster-rating span{font-size:13px}
+  .poster-rating b{font-size:12px}
+  .poster-view{font-size:10px}
+
+  .movie-right{padding:10px 0 0}
+  .detail-kicker{padding:6px 10px;font-size:11px}
+  .movie-right h2{
+    font-size:32px;
+    line-height:1.45;
+    margin-top:8px;
+  }
+  .title-swoosh{height:14px;margin-bottom:9px;max-width:470px}
+  .title-swoosh:before{top:6px}
+  .title-swoosh span{width:19px;height:19px}
+  .detail-meta{gap:7px;margin-bottom:12px}
+  .meta-chip{min-height:31px;padding:6px 10px;font-size:11px}
+  .meta-stars{font-size:12px}
+
+  .story-panel{padding:15px 17px 14px;border-radius:17px}
+  .story-title{font-size:14px;margin-bottom:8px}
+  .story-icon{width:25px;height:25px;font-size:13px}
+  .story{font-size:13.5px;line-height:1.85;max-height:160px;padding-left:14px}
+
+  .detail-info-grid{gap:8px;margin-top:11px}
+  .info-tile{min-height:66px;padding:9px 10px;border-radius:14px;gap:9px}
+  .info-icon{width:31px;height:31px;flex-basis:31px;font-size:14px}
+  .info-tile b{font-size:11px}
+  .info-tile small{font-size:9px;margin-top:2px}
+
+  .movie-info .buybox,.movie-right .buybox{
+    margin-top:12px;
+    padding:13px 15px;
+    min-height:90px;
+    border-radius:18px;
+  }
+  .movie-right .buybox:before{
+    flex-basis:50px;
+    width:50px;
+    height:50px;
+    border-radius:14px;
+    font-size:21px;
+  }
+  .movie-right .buybox b{font-size:25px}
+  .movie-right .buybox small{font-size:11px;margin-top:3px}
+  .purchase-btn,.movie-right .buybox .btn{
+    min-width:160px;
+    min-height:49px;
+    font-size:14px;
+  }
+  .movie-close{
+    width:41px!important;
+    height:41px!important;
+    top:14px!important;
+    right:14px!important;
+  }
+}
+
+@media (min-width:781px) and (max-width:1100px){
+  .movie-dialog{width:min(960px,calc(100vw - 28px))}
+  .movie-showcase{grid-template-columns:290px minmax(0,1fr);gap:24px;padding:24px}
+  .movie-right h2{font-size:28px}
+  .detail-info-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
