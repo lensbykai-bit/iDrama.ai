@@ -17,13 +17,22 @@ async function getEpisodes(itemId){let {data,error}=await db.from('idrama_episod
 async function getSource(episodeId){if(!episodeId)return '';let {data}=await db.from('idrama_episode_sources').select('video_url').eq('episode_id',episodeId).maybeSingle();return data?.video_url||''}
 async function getFreeTelegramLink(itemId){let eps=await getEpisodes(itemId),full=eps.filter(e=>!e.preview);if(!full.length)return '';let ids=full.map(e=>e.id);let {data}=await db.from('idrama_episode_sources').select('episode_id,video_url').in('episode_id',ids);let row=(data||[]).find(x=>/^(https?:\/\/)?(t\.me|telegram\.me|telegram\.dog)\//i.test(x.video_url||'')||/^tg:\/\//i.test(x.video_url||''));return row?.video_url||''}
 function showBuyButton(x){$('buybox').className='buybox';$('buybox').innerHTML=`<div class="purchase-copy"><span class="purchase-label">តម្លៃរឿងពេញ</span><b>${money(x)}</b><small>ទូទាត់ជាមួយ KHQR រួចនឹងទម្លាក់លីង រឿងពេញតែម្តង</small></div><button id="buyBtn" class="btn pink purchase-btn"><span class="cart-icon">🛒</span> ទិញរឿង</button>`;$('buyBtn').onclick=()=>startPurchase(x)}
+function renderDetailThumbs(x){
+  const host=$('detailThumbs');if(!host)return;
+  const others=all.filter(m=>String(m.id)!==String(x.id)).slice(0,3);
+  const picks=[x,...others];
+  host.innerHTML=`<button class="thumb-arrow" type="button" aria-label="ថយក្រោយ">‹</button>${picks.map((m,i)=>`<button class="poster-thumb ${i===0?'active':''}" type="button" data-thumb-id="${m.id}" title="${esc(m.title)}">${posterMarkup(m)}</button>`).join('')}<button class="thumb-arrow" type="button" aria-label="បន្ទាប់">›</button>`;
+  host.querySelectorAll('[data-thumb-id]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();openDrama(btn.dataset.thumbId)});
+  const arrows=host.querySelectorAll('.thumb-arrow');
+  arrows.forEach((btn,i)=>btn.onclick=e=>{e.stopPropagation();host.scrollBy({left:i===0?-180:180,behavior:'smooth'})});
+}
 function renderDetailMeta(x){
   const rating=ratingValue(x.rating),genres=genreList(x.genre),type=categoryLabel(x.category);
-  $('detailKicker').textContent=x.category==='ai'?'✦ រឿងភាគ AI':'✦ '+type;
-  $('posterStats').innerHTML=`<div class="poster-rating"><span>${ratingStars(rating)}</span><b>${rating.toFixed(1)}</b></div><div class="poster-view">◉ ${viewsText(x.views)} មើល</div>`;
+  $('detailKicker').textContent=x.category==='ai'?'♛ រឿងភាគ AI':'✦ '+type;
   $('detailMeta').innerHTML=`
     <span class="meta-chip rating-chip"><span class="meta-stars">${ratingStars(rating)}</span><b>${rating.toFixed(1)}</b></span>
     <span class="meta-chip">👁 ${viewsText(x.views)} មើល</span>
+    <span class="meta-chip">🎞 រឿងពេញ</span>
     <span class="meta-chip accent-chip">🎬 ${esc(type)}</span>
     ${genres.map(g=>`<span class="meta-chip">${esc(g)}</span>`).join('')}`;
   const primaryGenre=genres.join(' · ')||'មិនទាន់កំណត់';
@@ -35,26 +44,14 @@ function renderDetailMeta(x){
 }
 async function openDrama(id){
   let x=all.find(i=>String(i.id)===String(id));if(!x)return;
-  currentMovie=x;
-  $('dt').textContent=x.title;
-  $('detailPoster').innerHTML=posterMarkup(x,true);
-  $('story').textContent=(x.description||'').trim()||'មិនទាន់មានសេចក្ដីសង្ខេបសាច់រឿងទេ។';
-  renderDetailMeta(x);
+  currentMovie=x;$('dt').textContent=x.title;$('detailPoster').innerHTML=posterMarkup(x,true);$('story').textContent=(x.description||'').trim()||'មិនទាន់មានសេចក្ដីសង្ខេបសាច់រឿងទេ។';
+  renderDetailMeta(x);renderDetailThumbs(x);
   const backdrop=$('movieBackdrop');
-  if(backdrop){
-    if(x.poster&&/^https?:\/\//i.test(x.poster)){backdrop.style.backgroundImage=`url("${String(x.poster).replace(/"/g,'%22')}")`;backdrop.style.backgroundColor=''}
-    else{backdrop.style.backgroundImage='none';backdrop.style.background=grad(x.accent)}
-  }
-  $('buybox').className='buybox';
-  $('buybox').innerHTML='<div class="loadingline">កំពុងរៀបចំ...</div>';
-  $('movieModal').classList.add('show');
-  document.body.style.overflow='hidden';
-  if(!x.paid){
-    let tg=await getFreeTelegramLink(x.id);
-    $('buybox').className='buybox owned';
-    $('buybox').innerHTML=tg?`<div class="purchase-copy"><span class="purchase-label">រឿងឥតគិតថ្លៃ</span><b>FREE ✓</b><small>បើករឿងពេញក្នុង Telegram</small></div><a class="btn telegram purchase-btn" href="${esc(tg)}" target="_blank" rel="noopener noreferrer">បើក Telegram</a>`:`<div class="purchase-copy"><b>FREE</b><small>Telegram Link មិនទាន់បានដាក់សម្រាប់រឿងនេះទេ។</small></div>`;
-    return
-  }
+  if(backdrop){if(x.poster&&/^https?:\/\//i.test(x.poster)){backdrop.style.backgroundImage=`url("${String(x.poster).replace(/"/g,'%22')}")`;backdrop.style.backgroundColor=''}else{backdrop.style.backgroundImage='none';backdrop.style.background=grad(x.accent)}}
+  const posterAction=$('posterAction');
+  if(posterAction){posterAction.innerHTML=x.paid?'<span>▶</span> មើល / ទិញរឿងពេញ':'<span>▶</span> មើលរឿងពេញ';posterAction.onclick=async()=>{if(x.paid){if(typeof window.startPurchase==='function')window.startPurchase(x)}else{const tg=await getFreeTelegramLink(x.id);if(tg)window.open(tg,'_blank','noopener,noreferrer')}}}
+  $('buybox').className='buybox';$('buybox').innerHTML='<div class="loadingline">កំពុងរៀបចំ...</div>';$('movieModal').classList.add('show');document.body.style.overflow='hidden';
+  if(!x.paid){let tg=await getFreeTelegramLink(x.id);$('buybox').className='buybox owned';$('buybox').innerHTML=tg?`<div class="purchase-copy"><span class="purchase-label">រឿងឥតគិតថ្លៃ</span><b>FREE ✓</b><small>បើករឿងពេញក្នុង Telegram</small></div><a class="btn telegram purchase-btn" href="${esc(tg)}" target="_blank" rel="noopener noreferrer">បើក Telegram</a>`:`<div class="purchase-copy"><b>FREE</b><small>Telegram Link មិនទាន់បានដាក់សម្រាប់រឿងនេះទេ។</small></div>`;return}
   if(typeof window.renderGuestPurchaseState==='function'){await window.renderGuestPurchaseState(x)}else showBuyButton(x)
 }
 function closeMovie(){$('movieModal').classList.remove('show');document.body.style.overflow=''}
