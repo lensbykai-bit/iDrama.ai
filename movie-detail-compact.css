@@ -1,80 +1,83 @@
 /* Compact desktop sizing for the cinematic movie detail popup. */
 @media (min-width:781px){
   .movie-dialog{
-    width:min(1100px,calc(100vw - 46px));
-    max-height:88vh;
-    border-radius:26px;
+    width:min(1020px,calc(100vw - 56px));
+    max-height:84vh;
+    border-radius:24px;
   }
   .movie-showcase{
-    grid-template-columns:325px minmax(0,1fr);
-    gap:30px;
-    padding:28px 32px 28px 28px;
-    max-height:88vh;
+    grid-template-columns:300px minmax(0,1fr);
+    gap:25px;
+    padding:23px 27px 23px 23px;
+    max-height:84vh;
   }
-  .movie-left{gap:11px}
-  .poster-frame{border-radius:24px}
-  .detail-poster{border-radius:22px}
-  .poster-stats{padding:8px 10px;border-radius:14px}
-  .poster-rating span{font-size:13px}
-  .poster-rating b{font-size:12px}
-  .poster-view{font-size:10px}
+  .movie-left{gap:9px}
+  .poster-frame{border-radius:22px}
+  .detail-poster{border-radius:20px}
+  .poster-stats{padding:7px 9px;border-radius:13px}
+  .poster-rating span{font-size:12px}
+  .poster-rating b{font-size:11px}
+  .poster-view{font-size:9.5px}
 
-  .movie-right{padding:10px 0 0}
-  .detail-kicker{padding:6px 10px;font-size:11px}
+  .movie-right{padding:7px 0 0}
+  .detail-kicker{padding:5px 9px;font-size:10.5px}
   .movie-right h2{
-    font-size:32px;
-    line-height:1.45;
-    margin-top:8px;
+    font-size:29px;
+    line-height:1.42;
+    margin-top:7px;
+    margin-bottom:2px;
   }
-  .title-swoosh{height:14px;margin-bottom:9px;max-width:470px}
-  .title-swoosh:before{top:6px}
-  .title-swoosh span{width:19px;height:19px}
-  .detail-meta{gap:7px;margin-bottom:12px}
-  .meta-chip{min-height:31px;padding:6px 10px;font-size:11px}
-  .meta-stars{font-size:12px}
+  .title-swoosh{height:12px;margin-bottom:7px;max-width:430px}
+  .title-swoosh:before{top:5px;height:2px}
+  .title-swoosh span{width:17px;height:17px;border-width:2px}
+  .detail-meta{gap:6px;margin-bottom:10px}
+  .meta-chip{min-height:29px;padding:5px 9px;font-size:10.5px}
+  .meta-stars{font-size:11px}
 
-  .story-panel{padding:15px 17px 14px;border-radius:17px}
-  .story-title{font-size:14px;margin-bottom:8px}
-  .story-icon{width:25px;height:25px;font-size:13px}
-  .story{font-size:13.5px;line-height:1.85;max-height:160px;padding-left:14px}
+  .story-panel{padding:13px 15px 12px;border-radius:15px}
+  .story-title{font-size:13px;margin-bottom:7px;gap:8px}
+  .story-icon{width:23px;height:23px;font-size:12px}
+  .story{font-size:12.8px;line-height:1.78;max-height:145px;padding-left:12px}
 
-  .detail-info-grid{gap:8px;margin-top:11px}
-  .info-tile{min-height:66px;padding:9px 10px;border-radius:14px;gap:9px}
-  .info-icon{width:31px;height:31px;flex-basis:31px;font-size:14px}
-  .info-tile b{font-size:11px}
-  .info-tile small{font-size:9px;margin-top:2px}
+  .detail-info-grid{gap:7px;margin-top:9px}
+  .info-tile{min-height:58px;padding:8px 9px;border-radius:13px;gap:8px}
+  .info-icon{width:28px;height:28px;flex-basis:28px;font-size:13px}
+  .info-tile b{font-size:10.5px}
+  .info-tile small{font-size:8.5px;margin-top:2px}
 
   .movie-info .buybox,.movie-right .buybox{
-    margin-top:12px;
-    padding:13px 15px;
-    min-height:90px;
-    border-radius:18px;
+    margin-top:10px;
+    padding:11px 13px;
+    min-height:80px;
+    border-radius:16px;
   }
   .movie-right .buybox:before{
-    flex-basis:50px;
-    width:50px;
-    height:50px;
-    border-radius:14px;
-    font-size:21px;
+    flex-basis:44px;
+    width:44px;
+    height:44px;
+    border-radius:12px;
+    font-size:19px;
   }
-  .movie-right .buybox b{font-size:25px}
-  .movie-right .buybox small{font-size:11px;margin-top:3px}
+  .movie-right .buybox b{font-size:23px}
+  .movie-right .buybox small{font-size:10.5px;margin-top:2px}
+  .purchase-label{font-size:10px}
   .purchase-btn,.movie-right .buybox .btn{
-    min-width:160px;
-    min-height:49px;
-    font-size:14px;
+    min-width:145px;
+    min-height:45px;
+    font-size:13px;
+    border-radius:13px!important;
   }
   .movie-close{
-    width:41px!important;
-    height:41px!important;
-    top:14px!important;
-    right:14px!important;
+    width:38px!important;
+    height:38px!important;
+    top:12px!important;
+    right:12px!important;
   }
 }
 
 @media (min-width:781px) and (max-width:1100px){
-  .movie-dialog{width:min(960px,calc(100vw - 28px))}
-  .movie-showcase{grid-template-columns:290px minmax(0,1fr);gap:24px;padding:24px}
-  .movie-right h2{font-size:28px}
+  .movie-dialog{width:min(910px,calc(100vw - 30px));max-height:88vh}
+  .movie-showcase{grid-template-columns:270px minmax(0,1fr);gap:20px;padding:20px;max-height:88vh}
+  .movie-right h2{font-size:26px}
   .detail-info-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
