@@ -6,11 +6,26 @@ android {
     namespace 'ai.idrama.pay'
     compileSdk 35
 
+    signingConfigs {
+        stableDebug {
+            storeFile file('../idrama-debug.keystore')
+            storePassword 'android'
+            keyAlias 'idrama'
+            keyPassword 'android'
+        }
+    }
+
     defaultConfig {
         applicationId 'ai.idrama.pay'
         minSdk 24
         targetSdk 35
         versionCode 19
         versionName '1.9'
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.stableDebug
+        }
     }
 }
