@@ -40,30 +40,55 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Install app assets
+      - name: Install and patch app assets
         shell: bash
         run: |
           mkdir -p android-wallet/app/src/main/assets
           base64 --decode android-wallet/app_icon.b64 > android-wallet/app/src/main/res/drawable/ic_launcher_art.webp
           cat android-wallet/app_html.part1 android-wallet/app_html.part2 android-wallet/app_html.part3 | base64 --decode | gunzip > android-wallet/app/src/main/assets/index.html
-          grep -q 'iDrama Pay • v2.4' android-wallet/app/src/main/assets/index.html
+          python3 <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('android-wallet/app/src/main/assets/index.html')
+          s=p.read_text()
+          s=s.replace('iDrama Pay • v2.4','iDrama Pay • v2.5')
+          s=s.replace('          <div class="f"><label>Telegram Link រឿងពេញ</label><input id="autoTelegram" placeholder="https://t.me/c/1234567890/123"></div>\n','')
+          s=s.replace('      <div class="f"><label>Telegram Link រឿងពេញ (Default)</label><input id="telegramInput" placeholder="https://t.me/c/1234567890/123"></div>\n','')
+          s=s.replace('      <div class="notice okbox">⚡ QR Auto + Telegram Bot: Connected ✓<br><span class="hint">API/Secret នៅ Server។ អតិថិជនត្រូវចុច Connect Telegram Bot ម្តងសម្រាប់ Order នីមួយៗ មុនពេល Bot អាចផ្ញើ Link ទៅគណនីរបស់គេ។</span></div>\n','      <div class="notice okbox">⚡ QR Auto: Connected ✓<br><span class="hint">បង្កើត KHQR ដោយស្វ័យប្រវត្តិ និង Auto Verify ការទូទាត់។ មិនចាំបាច់បញ្ចូល Telegram Link ទេ។</span></div>\n')
+          s=s.replace('      <div class="btnrow"><button class="btn soft" id="openTelegram">បើក Telegram</button><button class="btn soft" id="exportData">ចែករំលែក Backup</button></div>\n','      <div class="btnrow"><button class="btn soft" id="exportData">ចែករំលែក Backup</button></div>\n')
+          s=s.replace("$('brandInput').value=settings.brand;$('telegramInput').value=settings.telegram;$('noteInput').value=settings.note;","$('brandInput').value=settings.brand;$('noteInput').value=settings.note;")
+          s=s.replace("$('autoCurrency').value=settings.currency;$('autoTelegram').value=settings.telegram||'';updateCard();","$('autoCurrency').value=settings.currency;updateCard();")
+          s=s.replace("settings={brand:$('brandInput').value.trim()||defaults.brand,telegram:$('telegramInput').value.trim(),note:","settings={brand:$('brandInput').value.trim()||defaults.brand,telegram:'',note:")
+          s=s.replace("$('openTelegram').onclick=()=>openUrl(settings.telegram);","")
+          s=s.replace(",tg=$('autoTelegram').value.trim();",";")
+          s=s.replace("telegram_url:tg","telegram_url:''")
+          s=re.sub(r"    let tgBox='';\n    if\(data\.telegram_bind_url&&data\.telegram_target_set\)\{.*?    out\.innerHTML=", "    const tgBox='';\n    out.innerHTML=", s, flags=re.S)
+          s=re.sub(r"      let deliveryHtml='';\n      if\(data\.delivery==='sent'\)\{.*?      out\.innerHTML=", "      stopAutoPolling();\n      const deliveryHtml='';\n      out.innerHTML=", s, flags=re.S)
+          s=s.replace("        const c=$('connectAfterPaid');if(c)c.onclick=()=>openUrl(currentAuto.telegram_bind_url);\n","")
+          s=s.replace("      if(data.delivery==='waiting_telegram'&&!autoPollTimer)autoPollTimer=setInterval(()=>checkAutoPayment(false),5000);\n","")
+          s=s.replace("addPaidHistory(currentAuto.amount,currentAuto.currency,currentAuto.orderId,data.delivery==='sent'?'Auto Verify + Telegram ✓':'Auto Verify Bakong ✓');","addPaidHistory(currentAuto.amount,currentAuto.currency,currentAuto.orderId,'Auto Verify Bakong ✓');")
+          s=re.sub(r"\n  if\(a\.telegram_bind_url\).*?\n  if\(a\.telegram_target_set\).*?;", "", s)
+          p.write_text(s)
+          PY
+          grep -q 'iDrama Pay • v2.5' android-wallet/app/src/main/assets/index.html
           grep -q 'KHQR Auto' android-wallet/app/src/main/assets/index.html
+          ! grep -q 'Telegram Link រឿងពេញ' android-wallet/app/src/main/assets/index.html
 
       - name: Build APK
         run: gradle -p android-wallet clean assembleDebug --no-daemon
 
       - name: Rename APK
-        run: cp android-wallet/app/build/outputs/apk/debug/app-debug.apk iDrama-Pay-v2.4.apk
+        run: cp android-wallet/app/build/outputs/apk/debug/app-debug.apk iDrama-Pay-v2.5.apk
 
       - name: Verify APK
         shell: bash
         run: |
-          test -s iDrama-Pay-v2.4.apk
-          unzip -t iDrama-Pay-v2.4.apk
+          test -s iDrama-Pay-v2.5.apk
+          unzip -t iDrama-Pay-v2.5.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: iDrama-Pay-v2.4-APK
-          path: iDrama-Pay-v2.4.apk
+          name: iDrama-Pay-v2.5-APK
+          path: iDrama-Pay-v2.5.apk
           retention-days: 30
