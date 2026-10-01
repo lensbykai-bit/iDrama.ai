@@ -49,7 +49,7 @@ jobs:
           import re
           p=Path('android-wallet/app/src/main/assets/index.html')
           s=p.read_text()
-          s=s.replace('iDrama Pay • v2.4','iDrama Pay • v2.6').replace('iDrama Pay • v2.5','iDrama Pay • v2.6')
+          s=s.replace('iDrama Pay • v2.4','iDrama Pay • v2.7').replace('iDrama Pay • v2.5','iDrama Pay • v2.7').replace('iDrama Pay • v2.6','iDrama Pay • v2.7')
           s=s.replace('          <div class="f"><label>Telegram Link រឿងពេញ</label><input id="autoTelegram" placeholder="https://t.me/c/1234567890/123"></div>\n','')
           s=s.replace('      <div class="f"><label>Telegram Link រឿងពេញ (Default)</label><input id="telegramInput" placeholder="https://t.me/c/1234567890/123"></div>\n','')
           s=s.replace('      <div class="notice okbox">⚡ QR Auto + Telegram Bot: Connected ✓<br><span class="hint">API/Secret នៅ Server។ អតិថិជនត្រូវចុច Connect Telegram Bot ម្តងសម្រាប់ Order នីមួយៗ មុនពេល Bot អាចផ្ញើ Link ទៅគណនីរបស់គេ។</span></div>\n','      <div class="notice okbox">⚡ QR Auto: Connected ✓<br><span class="hint">បង្កើត KHQR ដោយស្វ័យប្រវត្តិ និង Auto Verify ការទូទាត់។</span></div>\n')
@@ -66,31 +66,36 @@ jobs:
           s=s.replace("addPaidHistory(currentAuto.amount,currentAuto.currency,currentAuto.orderId,data.delivery==='sent'?'Auto Verify + Telegram ✓':'Auto Verify Bakong ✓');","addPaidHistory(currentAuto.amount,currentAuto.currency,currentAuto.orderId,'Auto Verify KHQR ✓');")
 
           card_js=r'''function rr(x,a,b,w,h,r){r=Math.min(r,w/2,h/2);x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath()}
-          function drawBot(x){
-            x.save();x.translate(250,410);x.shadowColor='#ff2b87';x.shadowBlur=28;
-            x.fillStyle='#fff';rr(x,-150,-190,300,245,70);x.fill();x.strokeStyle='#ff4b9c';x.lineWidth=12;x.stroke();
-            x.shadowBlur=0;x.fillStyle='#09050c';rr(x,-120,-155,240,155,55);x.fill();
-            x.strokeStyle='#ff43a1';x.lineWidth=16;x.lineCap='round';x.beginPath();x.arc(-58,-80,38,.25*Math.PI,.75*Math.PI);x.stroke();x.beginPath();x.arc(58,-80,38,.25*Math.PI,.75*Math.PI);x.stroke();
-            x.fillStyle='#fff';rr(x,-105,58,210,225,50);x.fill();x.strokeStyle='#ff4b9c';x.lineWidth=10;x.stroke();
-            x.fillStyle='#ff2b87';x.beginPath();x.moveTo(-25,120);x.lineTo(35,152);x.lineTo(-25,184);x.closePath();x.fill();
-            x.fillStyle='#111';x.font='800 28px system-ui';x.textAlign='center';x.fillText('iDrama',0,225);
-            x.fillStyle='rgba(255,48,145,.22)';x.beginPath();x.arc(-165,120,72,0,Math.PI*2);x.fill();x.strokeStyle='#ff2b87';x.lineWidth=9;x.stroke();x.fillStyle='#fff';x.font='900 58px system-ui';x.fillText('♥',-165,139);
-            x.restore();
+          function heart(x,cx,cy,s){x.save();x.translate(cx,cy);x.scale(s,s);x.beginPath();x.moveTo(0,9);x.bezierCurveTo(-18,-7,-28,-20,-18,-30);x.bezierCurveTo(-8,-40,4,-34,0,-23);x.bezierCurveTo(4,-34,18,-40,27,-30);x.bezierCurveTo(38,-18,22,-4,0,9);x.closePath();x.fill();x.restore()}
+          function bot3d(x){
+            x.save();x.translate(340,510);
+            const glow=x.createRadialGradient(0,0,20,0,0,330);glow.addColorStop(0,'rgba(255,62,158,.45)');glow.addColorStop(1,'rgba(255,62,158,0)');x.fillStyle=glow;x.fillRect(-350,-360,700,720);
+            x.shadowColor='#ff2c93';x.shadowBlur=40;
+            let g=x.createLinearGradient(-160,-220,160,120);g.addColorStop(0,'#ffffff');g.addColorStop(.45,'#ffd4e8');g.addColorStop(1,'#b8b8c8');x.fillStyle=g;rr(x,-170,-230,340,265,82);x.fill();x.strokeStyle='#ff2f93';x.lineWidth=11;x.stroke();
+            x.shadowBlur=0;g=x.createLinearGradient(-130,-180,130,20);g.addColorStop(0,'#04050a');g.addColorStop(.5,'#101424');g.addColorStop(1,'#020205');x.fillStyle=g;rr(x,-135,-185,270,165,58);x.fill();
+            x.strokeStyle='#ff50ad';x.lineWidth=15;x.lineCap='round';x.beginPath();x.arc(-62,-101,34,.18*Math.PI,.82*Math.PI);x.stroke();x.beginPath();x.arc(62,-101,34,.18*Math.PI,.82*Math.PI);x.stroke();x.beginPath();x.arc(0,-57,22,.18*Math.PI,.82*Math.PI);x.stroke();
+            g=x.createLinearGradient(-120,48,120,285);g.addColorStop(0,'#ffffff');g.addColorStop(.55,'#f8eaf0');g.addColorStop(1,'#aeb2bd');x.fillStyle=g;rr(x,-115,40,230,260,58);x.fill();x.strokeStyle='#ff3d9d';x.lineWidth=10;x.stroke();
+            x.fillStyle='#ff2c93';x.beginPath();x.moveTo(-28,118);x.lineTo(46,157);x.lineTo(-28,196);x.closePath();x.fill();x.fillStyle='#111';x.font='900 30px system-ui';x.textAlign='center';x.fillText('iDrama',0,244);
+            x.shadowColor='#ff38a0';x.shadowBlur=30;x.fillStyle='#ff35a0';heart(x,-165,75,1.55);x.shadowBlur=0;
+            x.strokeStyle='#ff40a4';x.lineWidth=9;x.beginPath();x.arc(-116,278,66,0,Math.PI*2);x.stroke();x.beginPath();x.arc(116,278,66,0,Math.PI*2);x.stroke();
+            x.restore()
           }
           async function makeBrandedQr(src,meta={}){
             return await new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>{try{
-              const W=1200,H=800,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
-              const g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#09030b');g.addColorStop(.5,'#250819');g.addColorStop(1,'#06050a');x.fillStyle=g;x.fillRect(0,0,W,H);
-              const rg=x.createRadialGradient(230,430,20,230,430,430);rg.addColorStop(0,'rgba(255,34,135,.48)');rg.addColorStop(1,'rgba(255,34,135,0)');x.fillStyle=rg;x.fillRect(0,0,W,H);
-              x.shadowColor='#ff2b87';x.shadowBlur=28;x.strokeStyle='#ff2b87';x.lineWidth=5;rr(x,20,20,W-40,H-40,38);x.stroke();x.shadowBlur=0;
-              drawBot(x);
-              x.shadowColor='#ff2b87';x.shadowBlur=24;x.fillStyle='#210515';rr(x,485,35,675,110,28);x.fill();x.strokeStyle='#ff3d95';x.lineWidth=4;x.stroke();x.shadowBlur=0;
-              x.fillStyle='#fff';x.font='900 64px system-ui';x.textAlign='center';x.textBaseline='middle';x.fillText('KHQR',820,90);
-              x.fillStyle='rgba(8,15,28,.94)';rr(x,520,165,620,220,28);x.fill();x.strokeStyle='#ff3d95';x.lineWidth=3;x.stroke();
+              const W=1600,H=1000,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+              let g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#050308');g.addColorStop(.35,'#220615');g.addColorStop(.7,'#090811');g.addColorStop(1,'#020205');x.fillStyle=g;x.fillRect(0,0,W,H);
+              for(let i=0;i<22;i++){const px=(i*173)%W,py=(i*97)%H,r=20+(i%5)*8;const q=x.createRadialGradient(px,py,0,px,py,r*3);q.addColorStop(0,'rgba(255,45,147,.27)');q.addColorStop(1,'rgba(255,45,147,0)');x.fillStyle=q;x.fillRect(px-r*3,py-r*3,r*6,r*6)}
+              x.shadowColor='#ff2d92';x.shadowBlur=34;x.strokeStyle='#ff2f96';x.lineWidth=8;rr(x,34,30,W-68,H-60,48);x.stroke();x.shadowBlur=0;
+              bot3d(x);
+              x.shadowColor='#ff2d92';x.shadowBlur=28;g=x.createLinearGradient(700,45,1500,165);g.addColorStop(0,'#5a0a35');g.addColorStop(.5,'#210415');g.addColorStop(1,'#070308');x.fillStyle=g;rr(x,670,44,850,132,38);x.fill();x.strokeStyle='#ff3a9b';x.lineWidth=5;x.stroke();x.shadowBlur=0;
+              x.fillStyle='#fff';x.font='900 78px system-ui';x.textAlign='center';x.textBaseline='middle';x.fillText('KHQR',1095,110);
+              g=x.createLinearGradient(690,205,1480,450);g.addColorStop(0,'#0b1220');g.addColorStop(1,'#05070c');x.fillStyle=g;rr(x,690,205,790,260,34);x.fill();x.strokeStyle='#ff3a9b';x.lineWidth=4;x.stroke();
               const brand=String(meta.brand||settings.brand||'iDrama_ai_Official').slice(0,34),amt=String(meta.amount||money($('amount').value,$('currency').value)),oid=String(meta.orderId||$('orderId').value||'');
-              x.textAlign='left';x.fillStyle='#fff';x.font='800 34px system-ui';x.fillText(brand,590,220);x.fillStyle='#ff2b87';x.font='900 46px system-ui';x.fillText(amt,590,292);x.fillStyle='#aaa1ad';x.font='700 28px system-ui';x.fillText('Order',590,350);x.fillStyle='#fff';x.fillText(oid,760,350);
-              x.shadowColor='#ff2b87';x.shadowBlur=20;x.fillStyle='#fff';rr(x,565,415,350,335,28);x.fill();x.shadowBlur=0;const m=28;x.drawImage(im,565+m,415+m,350-m*2,335-m*2);
-              x.fillStyle='#fff';x.font='900 42px system-ui';x.fillText('KHQR',955,495);x.font='700 31px system-ui';x.fillStyle='#f5e9f0';x.fillText('Scan to Pay',955,565);x.strokeStyle='#ff2b87';x.lineWidth=4;x.beginPath();x.moveTo(955,598);x.lineTo(1120,598);x.stroke();x.fillStyle='#ff2b87';x.font='900 52px system-ui';x.fillText('♥',955,670);
+              x.textAlign='left';x.fillStyle='#fff';x.font='900 43px system-ui';x.fillText(brand,835,275);x.fillStyle='#ff2090';x.font='900 63px system-ui';x.fillText(amt,835,360);x.fillStyle='#a89da8';x.font='800 34px system-ui';x.fillText('Order',835,430);x.fillStyle='#fff';x.fillText(oid,1050,430);
+              x.shadowColor='#ff2d92';x.shadowBlur=32;x.fillStyle='#fff';rr(x,725,505,440,400,36);x.fill();x.shadowBlur=0;const m=34;x.imageSmoothingEnabled=false;x.drawImage(im,725+m,505+m,440-m*2,400-m*2);
+              x.fillStyle='#fff';x.font='900 50px system-ui';x.fillText('KHQR',1210,610);x.font='800 40px system-ui';x.fillStyle='#fff5fa';x.fillText('Scan to Pay',1210,700);x.strokeStyle='#ff2b91';x.lineWidth=5;x.beginPath();x.moveTo(1210,740);x.lineTo(1470,740);x.stroke();x.fillStyle='#ff2b91';heart(x,1250,810,1.1);
+              g=x.createLinearGradient(665,920,1060,980);g.addColorStop(0,'#13050e');g.addColorStop(1,'#2b0a1b');x.fillStyle=g;rr(x,665,918,390,64,25);x.fill();x.strokeStyle='#ff2c92';x.lineWidth=4;x.stroke();x.fillStyle='#fff';x.font='800 34px system-ui';x.textAlign='center';x.fillText('Share',860,952);
+              g=x.createLinearGradient(1080,918,1510,982);g.addColorStop(0,'#ff087b');g.addColorStop(1,'#ff4ba8');x.fillStyle=g;rr(x,1080,918,430,64,25);x.fill();x.fillStyle='#fff';x.fillText('Save',1295,952);
               resolve(c.toDataURL('image/png',1));
             }catch(e){reject(e)}};im.onerror=reject;im.src=src})
           }'''
@@ -101,7 +106,7 @@ jobs:
           s=s.replace("const sh=$('shareAutoQr');if(sh)sh.onclick=()=>shareImage(currentAuto.image,'iDrama-'+currentAuto.orderId,autoShareText(currentAuto));","const sh=$('shareAutoQr');if(sh)sh.onclick=async()=>{const img=await makeBrandedQr(currentAuto.image,{amount:money(currentAuto.amount,currentAuto.currency),orderId:currentAuto.orderId,brand:settings.brand});shareImage(img,'iDrama-'+currentAuto.orderId,autoShareText(currentAuto))};")
           p.write_text(s)
           PY
-          grep -q 'iDrama Pay • v2.6' android-wallet/app/src/main/assets/index.html
+          grep -q 'iDrama Pay • v2.7' android-wallet/app/src/main/assets/index.html
           grep -q "fillText('KHQR'" android-wallet/app/src/main/assets/index.html
           ! grep -q 'Telegram Link រឿងពេញ' android-wallet/app/src/main/assets/index.html
 
@@ -109,17 +114,17 @@ jobs:
         run: gradle -p android-wallet clean assembleDebug --no-daemon
 
       - name: Rename APK
-        run: cp android-wallet/app/build/outputs/apk/debug/app-debug.apk iDrama-Pay-v2.6.apk
+        run: cp android-wallet/app/build/outputs/apk/debug/app-debug.apk iDrama-Pay-v2.7.apk
 
       - name: Verify APK
         shell: bash
         run: |
-          test -s iDrama-Pay-v2.6.apk
-          unzip -t iDrama-Pay-v2.6.apk
+          test -s iDrama-Pay-v2.7.apk
+          unzip -t iDrama-Pay-v2.7.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: iDrama-Pay-v2.6-APK
-          path: iDrama-Pay-v2.6.apk
+          name: iDrama-Pay-v2.7-APK
+          path: iDrama-Pay-v2.7.apk
           retention-days: 30
