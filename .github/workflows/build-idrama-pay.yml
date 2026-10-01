@@ -51,11 +51,11 @@ jobs:
         run: gradle -p android-wallet clean assembleDebug --no-daemon
 
       - name: Rename APK
-        run: cp android-wallet/app/build/outputs/apk/debug/app-debug.apk iDrama-Pay-v1.7.apk
+        run: cp android-wallet/app/build/outputs/apk/debug/app-debug.apk iDrama-Pay-v1.8.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: iDrama-Pay-v1.7-APK
-          path: iDrama-Pay-v1.7.apk
+          name: iDrama-Pay-v1.8-APK
+          path: iDrama-Pay-v1.8.apk
           retention-days: 30
