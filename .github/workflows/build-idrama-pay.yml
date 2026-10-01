@@ -45,8 +45,9 @@ jobs:
         run: |
           mkdir -p android-wallet/app/src/main/assets
           base64 --decode android-wallet/app_icon.b64 > android-wallet/app/src/main/res/drawable/ic_launcher_art.webp
-          base64 --decode android-wallet/app_html.gz.b64 | gunzip > android-wallet/app/src/main/assets/index.html
+          cat android-wallet/app_html.part1 android-wallet/app_html.part2 android-wallet/app_html.part3 | base64 --decode | gunzip > android-wallet/app/src/main/assets/index.html
           grep -q 'iDrama Pay • v2.4' android-wallet/app/src/main/assets/index.html
+          grep -q 'KHQR Auto' android-wallet/app/src/main/assets/index.html
 
       - name: Build APK
         run: gradle -p android-wallet clean assembleDebug --no-daemon
