@@ -7,10 +7,12 @@ android {
     compileSdk 35
 
     defaultConfig {
-        applicationId 'ai.idrama.pay'
-        minSdk 24
+        // New package ID avoids signature-conflict with older test builds,
+        // so v2.2 can install even when an older iDrama Pay is still present.
+        applicationId 'ai.idrama.pay.v22'
+        minSdk 21
         targetSdk 35
-        versionCode 21
-        versionName '2.1'
+        versionCode 22
+        versionName '2.2'
     }
 }
