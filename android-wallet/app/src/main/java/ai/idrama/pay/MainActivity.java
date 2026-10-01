@@ -5,28 +5,34 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.webkit.WebResourceError;
-import android.webkit.WebResourceRequest;
+import android.webkit.JavascriptInterface;
+import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
     private WebView webView;
-    private static final String START_URL = "https://lensbykai-bit.github.io/iDrama.ai/wallet.html";
+    private ValueCallback<Uri[]> fileCallback;
+    private static final int FILE_CHOOSER_REQUEST = 4701;
+    private static final String START_URL = "file:///android_asset/index.html";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         webView = new WebView(this);
-        webView.setBackgroundColor(Color.rgb(255,247,251));
+        webView.setBackgroundColor(Color.rgb(255, 246, 251));
         setContentView(webView);
 
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
         settings.setDatabaseEnabled(true);
+        settings.setAllowFileAccess(true);
+        settings.setAllowContentAccess(true);
         settings.setLoadWithOverviewMode(true);
         settings.setUseWideViewPort(true);
         settings.setBuiltInZoomControls(false);
@@ -34,19 +40,33 @@ public class MainActivity extends Activity {
         settings.setMediaPlaybackRequiresUserGesture(false);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
 
+        webView.addJavascriptInterface(new AndroidBridge(), "Android");
+
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+                if (fileCallback != null) fileCallback.onReceiveValue(null);
+                fileCallback = filePathCallback;
+                try {
+                    Intent intent = fileChooserParams.createIntent();
+                    intent.setType("image/*");
+                    startActivityForResult(intent, FILE_CHOOSER_REQUEST);
+                    return true;
+                } catch (Exception e) {
+                    fileCallback = null;
+                    Toast.makeText(MainActivity.this, "មិនអាចបើក Gallery បានទេ", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            }
+        });
+
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (url == null) return false;
-                if (url.startsWith("http://") || url.startsWith("https://")) return false;
-                try { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url))); } catch (Exception ignored) {}
+                if (url.startsWith("file:///android_asset/")) return false;
+                openExternal(url);
                 return true;
-            }
-
-            @Override
-            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                super.onReceivedError(view, request, error);
-                if (request != null && request.isForMainFrame()) showOfflinePage();
             }
         });
 
@@ -54,14 +74,53 @@ public class MainActivity extends Activity {
         else webView.restoreState(savedInstanceState);
     }
 
-    private void showOfflinePage() {
-        String html = "<!doctype html><html><head><meta name='viewport' content='width=device-width,initial-scale=1'>" +
-                "<style>body{margin:0;background:#fff7fb;color:#25151f;font-family:sans-serif;display:grid;place-items:center;min-height:100vh}" +
-                ".c{max-width:360px;margin:24px;padding:28px;background:white;border:1px solid #ffd4e5;border-radius:28px;text-align:center;box-shadow:0 14px 40px rgba(255,43,122,.14)}" +
-                ".l{width:72px;height:72px;border-radius:24px;background:linear-gradient(135deg,#ff2b7a,#ff66aa);display:grid;place-items:center;color:white;font-size:34px;margin:auto}" +
-                "h1{margin:16px 0 8px}p{color:#7c6573;line-height:1.6}button{border:0;border-radius:16px;padding:14px 22px;background:#ff2b7a;color:white;font-weight:800;font-size:16px}</style></head>" +
-                "<body><div class='c'><div class='l'>♥</div><h1>iDrama Pay</h1><p>មិនអាចភ្ជាប់អ៊ីនធឺណិតបានទេ។ សូមពិនិត្យ Internet ហើយសាកម្តងទៀត។</p><button onclick=\"location.href='" + START_URL + "'\">សាកម្តងទៀត</button></div></body></html>";
-        webView.loadDataWithBaseURL(START_URL, html, "text/html", "UTF-8", null);
+    private void openExternal(String url) {
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(this, "មិនអាចបើក Link បានទេ", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public class AndroidBridge {
+        @JavascriptInterface
+        public void shareText(final String text) {
+            runOnUiThread(() -> {
+                try {
+                    Intent send = new Intent(Intent.ACTION_SEND);
+                    send.setType("text/plain");
+                    send.putExtra(Intent.EXTRA_TEXT, text == null ? "" : text);
+                    startActivity(Intent.createChooser(send, "Share iDrama Pay"));
+                } catch (Exception e) {
+                    Toast.makeText(MainActivity.this, "មិនអាច Share បានទេ", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void openExternal(final String url) {
+            runOnUiThread(() -> MainActivity.this.openExternal(url));
+        }
+
+        @JavascriptInterface
+        public void toast(final String message) {
+            runOnUiThread(() -> Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show());
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == FILE_CHOOSER_REQUEST && fileCallback != null) {
+            Uri[] results = null;
+            if (resultCode == Activity.RESULT_OK && data != null) {
+                Uri uri = data.getData();
+                if (uri != null) results = new Uri[]{uri};
+            }
+            fileCallback.onReceiveValue(results);
+            fileCallback = null;
+        }
     }
 
     @Override
