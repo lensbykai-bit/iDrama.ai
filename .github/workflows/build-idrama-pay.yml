@@ -27,9 +27,7 @@ jobs:
           export ANDROID_SDK_ROOT="${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}"
           export ANDROID_HOME="$ANDROID_SDK_ROOT"
           SDKMANAGER="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
-          if [ ! -x "$SDKMANAGER" ]; then
-            SDKMANAGER="$(command -v sdkmanager)"
-          fi
+          if [ ! -x "$SDKMANAGER" ]; then SDKMANAGER="$(command -v sdkmanager)"; fi
           yes | "$SDKMANAGER" --licenses >/dev/null || true
           "$SDKMANAGER" 'platform-tools' 'platforms;android-35' 'build-tools;35.0.0'
           echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT" >> "$GITHUB_ENV"
@@ -51,44 +49,77 @@ jobs:
           import re
           p=Path('android-wallet/app/src/main/assets/index.html')
           s=p.read_text()
-          s=s.replace('iDrama Pay • v2.4','iDrama Pay • v2.5')
+          s=s.replace('iDrama Pay • v2.4','iDrama Pay • v2.6').replace('iDrama Pay • v2.5','iDrama Pay • v2.6')
           s=s.replace('          <div class="f"><label>Telegram Link រឿងពេញ</label><input id="autoTelegram" placeholder="https://t.me/c/1234567890/123"></div>\n','')
           s=s.replace('      <div class="f"><label>Telegram Link រឿងពេញ (Default)</label><input id="telegramInput" placeholder="https://t.me/c/1234567890/123"></div>\n','')
-          s=s.replace('      <div class="notice okbox">⚡ QR Auto + Telegram Bot: Connected ✓<br><span class="hint">API/Secret នៅ Server។ អតិថិជនត្រូវចុច Connect Telegram Bot ម្តងសម្រាប់ Order នីមួយៗ មុនពេល Bot អាចផ្ញើ Link ទៅគណនីរបស់គេ។</span></div>\n','      <div class="notice okbox">⚡ QR Auto: Connected ✓<br><span class="hint">បង្កើត KHQR ដោយស្វ័យប្រវត្តិ និង Auto Verify ការទូទាត់។ មិនចាំបាច់បញ្ចូល Telegram Link ទេ។</span></div>\n')
+          s=s.replace('      <div class="notice okbox">⚡ QR Auto + Telegram Bot: Connected ✓<br><span class="hint">API/Secret នៅ Server។ អតិថិជនត្រូវចុច Connect Telegram Bot ម្តងសម្រាប់ Order នីមួយៗ មុនពេល Bot អាចផ្ញើ Link ទៅគណនីរបស់គេ។</span></div>\n','      <div class="notice okbox">⚡ QR Auto: Connected ✓<br><span class="hint">បង្កើត KHQR ដោយស្វ័យប្រវត្តិ និង Auto Verify ការទូទាត់។</span></div>\n')
           s=s.replace('      <div class="btnrow"><button class="btn soft" id="openTelegram">បើក Telegram</button><button class="btn soft" id="exportData">ចែករំលែក Backup</button></div>\n','      <div class="btnrow"><button class="btn soft" id="exportData">ចែករំលែក Backup</button></div>\n')
           s=s.replace("$('brandInput').value=settings.brand;$('telegramInput').value=settings.telegram;$('noteInput').value=settings.note;","$('brandInput').value=settings.brand;$('noteInput').value=settings.note;")
           s=s.replace("$('autoCurrency').value=settings.currency;$('autoTelegram').value=settings.telegram||'';updateCard();","$('autoCurrency').value=settings.currency;updateCard();")
           s=s.replace("settings={brand:$('brandInput').value.trim()||defaults.brand,telegram:$('telegramInput').value.trim(),note:","settings={brand:$('brandInput').value.trim()||defaults.brand,telegram:'',note:")
           s=s.replace("$('openTelegram').onclick=()=>openUrl(settings.telegram);","")
-          s=s.replace(",tg=$('autoTelegram').value.trim();",";")
-          s=s.replace("telegram_url:tg","telegram_url:''")
+          s=s.replace(",tg=$('autoTelegram').value.trim();",";").replace("telegram_url:tg","telegram_url:''")
           s=re.sub(r"    let tgBox='';\n    if\(data\.telegram_bind_url&&data\.telegram_target_set\)\{.*?    out\.innerHTML=", "    const tgBox='';\n    out.innerHTML=", s, flags=re.S)
           s=re.sub(r"      let deliveryHtml='';\n      if\(data\.delivery==='sent'\)\{.*?      out\.innerHTML=", "      stopAutoPolling();\n      const deliveryHtml='';\n      out.innerHTML=", s, flags=re.S)
           s=s.replace("        const c=$('connectAfterPaid');if(c)c.onclick=()=>openUrl(currentAuto.telegram_bind_url);\n","")
           s=s.replace("      if(data.delivery==='waiting_telegram'&&!autoPollTimer)autoPollTimer=setInterval(()=>checkAutoPayment(false),5000);\n","")
-          s=s.replace("addPaidHistory(currentAuto.amount,currentAuto.currency,currentAuto.orderId,data.delivery==='sent'?'Auto Verify + Telegram ✓':'Auto Verify Bakong ✓');","addPaidHistory(currentAuto.amount,currentAuto.currency,currentAuto.orderId,'Auto Verify Bakong ✓');")
-          s=re.sub(r"\n  if\(a\.telegram_bind_url\).*?\n  if\(a\.telegram_target_set\).*?;", "", s)
+          s=s.replace("addPaidHistory(currentAuto.amount,currentAuto.currency,currentAuto.orderId,data.delivery==='sent'?'Auto Verify + Telegram ✓':'Auto Verify Bakong ✓');","addPaidHistory(currentAuto.amount,currentAuto.currency,currentAuto.orderId,'Auto Verify KHQR ✓');")
+
+          card_js=r'''function rr(x,a,b,w,h,r){r=Math.min(r,w/2,h/2);x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath()}
+          function drawBot(x){
+            x.save();x.translate(250,410);x.shadowColor='#ff2b87';x.shadowBlur=28;
+            x.fillStyle='#fff';rr(x,-150,-190,300,245,70);x.fill();x.strokeStyle='#ff4b9c';x.lineWidth=12;x.stroke();
+            x.shadowBlur=0;x.fillStyle='#09050c';rr(x,-120,-155,240,155,55);x.fill();
+            x.strokeStyle='#ff43a1';x.lineWidth=16;x.lineCap='round';x.beginPath();x.arc(-58,-80,38,.25*Math.PI,.75*Math.PI);x.stroke();x.beginPath();x.arc(58,-80,38,.25*Math.PI,.75*Math.PI);x.stroke();
+            x.fillStyle='#fff';rr(x,-105,58,210,225,50);x.fill();x.strokeStyle='#ff4b9c';x.lineWidth=10;x.stroke();
+            x.fillStyle='#ff2b87';x.beginPath();x.moveTo(-25,120);x.lineTo(35,152);x.lineTo(-25,184);x.closePath();x.fill();
+            x.fillStyle='#111';x.font='800 28px system-ui';x.textAlign='center';x.fillText('iDrama',0,225);
+            x.fillStyle='rgba(255,48,145,.22)';x.beginPath();x.arc(-165,120,72,0,Math.PI*2);x.fill();x.strokeStyle='#ff2b87';x.lineWidth=9;x.stroke();x.fillStyle='#fff';x.font='900 58px system-ui';x.fillText('♥',-165,139);
+            x.restore();
+          }
+          async function makeBrandedQr(src,meta={}){
+            return await new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>{try{
+              const W=1200,H=800,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+              const g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#09030b');g.addColorStop(.5,'#250819');g.addColorStop(1,'#06050a');x.fillStyle=g;x.fillRect(0,0,W,H);
+              const rg=x.createRadialGradient(230,430,20,230,430,430);rg.addColorStop(0,'rgba(255,34,135,.48)');rg.addColorStop(1,'rgba(255,34,135,0)');x.fillStyle=rg;x.fillRect(0,0,W,H);
+              x.shadowColor='#ff2b87';x.shadowBlur=28;x.strokeStyle='#ff2b87';x.lineWidth=5;rr(x,20,20,W-40,H-40,38);x.stroke();x.shadowBlur=0;
+              drawBot(x);
+              x.shadowColor='#ff2b87';x.shadowBlur=24;x.fillStyle='#210515';rr(x,485,35,675,110,28);x.fill();x.strokeStyle='#ff3d95';x.lineWidth=4;x.stroke();x.shadowBlur=0;
+              x.fillStyle='#fff';x.font='900 64px system-ui';x.textAlign='center';x.textBaseline='middle';x.fillText('KHQR',820,90);
+              x.fillStyle='rgba(8,15,28,.94)';rr(x,520,165,620,220,28);x.fill();x.strokeStyle='#ff3d95';x.lineWidth=3;x.stroke();
+              const brand=String(meta.brand||settings.brand||'iDrama_ai_Official').slice(0,34),amt=String(meta.amount||money($('amount').value,$('currency').value)),oid=String(meta.orderId||$('orderId').value||'');
+              x.textAlign='left';x.fillStyle='#fff';x.font='800 34px system-ui';x.fillText(brand,590,220);x.fillStyle='#ff2b87';x.font='900 46px system-ui';x.fillText(amt,590,292);x.fillStyle='#aaa1ad';x.font='700 28px system-ui';x.fillText('Order',590,350);x.fillStyle='#fff';x.fillText(oid,760,350);
+              x.shadowColor='#ff2b87';x.shadowBlur=20;x.fillStyle='#fff';rr(x,565,415,350,335,28);x.fill();x.shadowBlur=0;const m=28;x.drawImage(im,565+m,415+m,350-m*2,335-m*2);
+              x.fillStyle='#fff';x.font='900 42px system-ui';x.fillText('KHQR',955,495);x.font='700 31px system-ui';x.fillStyle='#f5e9f0';x.fillText('Scan to Pay',955,565);x.strokeStyle='#ff2b87';x.lineWidth=4;x.beginPath();x.moveTo(955,598);x.lineTo(1120,598);x.stroke();x.fillStyle='#ff2b87';x.font='900 52px system-ui';x.fillText('♥',955,670);
+              resolve(c.toDataURL('image/png',1));
+            }catch(e){reject(e)}};im.onerror=reject;im.src=src})
+          }'''
+          s=re.sub(r"async function makeBrandedQr\(src\)\{.*?\n\}\ndocument\.querySelectorAll", card_js+"\ndocument.querySelectorAll", s, flags=re.S, count=1)
+          s=s.replace("const sv=$('saveAutoPaid');if(sv)sv.onclick=()=>saveImage(currentAuto.image,'iDrama-'+currentAuto.orderId);","const sv=$('saveAutoPaid');if(sv)sv.onclick=async()=>{const img=await makeBrandedQr(currentAuto.image,{amount:money(currentAuto.amount,currentAuto.currency),orderId:currentAuto.orderId,brand:settings.brand});saveImage(img,'iDrama-'+currentAuto.orderId)};")
+          s=s.replace("const sh=$('shareAutoPaid');if(sh)sh.onclick=()=>shareImage(currentAuto.image,'iDrama-'+currentAuto.orderId,autoShareText(currentAuto));","const sh=$('shareAutoPaid');if(sh)sh.onclick=async()=>{const img=await makeBrandedQr(currentAuto.image,{amount:money(currentAuto.amount,currentAuto.currency),orderId:currentAuto.orderId,brand:settings.brand});shareImage(img,'iDrama-'+currentAuto.orderId,autoShareText(currentAuto))};")
+          s=s.replace("const sv=$('saveAutoQr');if(sv)sv.onclick=()=>saveImage(currentAuto.image,'iDrama-'+currentAuto.orderId);","const sv=$('saveAutoQr');if(sv)sv.onclick=async()=>{const img=await makeBrandedQr(currentAuto.image,{amount:money(currentAuto.amount,currentAuto.currency),orderId:currentAuto.orderId,brand:settings.brand});saveImage(img,'iDrama-'+currentAuto.orderId)};")
+          s=s.replace("const sh=$('shareAutoQr');if(sh)sh.onclick=()=>shareImage(currentAuto.image,'iDrama-'+currentAuto.orderId,autoShareText(currentAuto));","const sh=$('shareAutoQr');if(sh)sh.onclick=async()=>{const img=await makeBrandedQr(currentAuto.image,{amount:money(currentAuto.amount,currentAuto.currency),orderId:currentAuto.orderId,brand:settings.brand});shareImage(img,'iDrama-'+currentAuto.orderId,autoShareText(currentAuto))};")
           p.write_text(s)
           PY
-          grep -q 'iDrama Pay • v2.5' android-wallet/app/src/main/assets/index.html
-          grep -q 'KHQR Auto' android-wallet/app/src/main/assets/index.html
+          grep -q 'iDrama Pay • v2.6' android-wallet/app/src/main/assets/index.html
+          grep -q "fillText('KHQR'" android-wallet/app/src/main/assets/index.html
           ! grep -q 'Telegram Link រឿងពេញ' android-wallet/app/src/main/assets/index.html
 
       - name: Build APK
         run: gradle -p android-wallet clean assembleDebug --no-daemon
 
       - name: Rename APK
-        run: cp android-wallet/app/build/outputs/apk/debug/app-debug.apk iDrama-Pay-v2.5.apk
+        run: cp android-wallet/app/build/outputs/apk/debug/app-debug.apk iDrama-Pay-v2.6.apk
 
       - name: Verify APK
         shell: bash
         run: |
-          test -s iDrama-Pay-v2.5.apk
-          unzip -t iDrama-Pay-v2.5.apk
+          test -s iDrama-Pay-v2.6.apk
+          unzip -t iDrama-Pay-v2.6.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: iDrama-Pay-v2.5-APK
-          path: iDrama-Pay-v2.5.apk
+          name: iDrama-Pay-v2.6-APK
+          path: iDrama-Pay-v2.6.apk
           retention-days: 30
