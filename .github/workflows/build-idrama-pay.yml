@@ -49,7 +49,7 @@ jobs:
           import re
           p=Path('android-wallet/app/src/main/assets/index.html')
           s=p.read_text()
-          s=s.replace('iDrama Pay • v2.4','iDrama Pay • v2.7').replace('iDrama Pay • v2.5','iDrama Pay • v2.7').replace('iDrama Pay • v2.6','iDrama Pay • v2.7')
+          s=s.replace('iDrama Pay • v2.4','iDrama Pay • v2.8').replace('iDrama Pay • v2.5','iDrama Pay • v2.8').replace('iDrama Pay • v2.6','iDrama Pay • v2.8')
           s=s.replace('          <div class="f"><label>Telegram Link រឿងពេញ</label><input id="autoTelegram" placeholder="https://t.me/c/1234567890/123"></div>\n','')
           s=s.replace('      <div class="f"><label>Telegram Link រឿងពេញ (Default)</label><input id="telegramInput" placeholder="https://t.me/c/1234567890/123"></div>\n','')
           s=s.replace('      <div class="notice okbox">⚡ QR Auto + Telegram Bot: Connected ✓<br><span class="hint">API/Secret នៅ Server។ អតិថិជនត្រូវចុច Connect Telegram Bot ម្តងសម្រាប់ Order នីមួយៗ មុនពេល Bot អាចផ្ញើ Link ទៅគណនីរបស់គេ។</span></div>\n','      <div class="notice okbox">⚡ QR Auto: Connected ✓<br><span class="hint">បង្កើត KHQR ដោយស្វ័យប្រវត្តិ និង Auto Verify ការទូទាត់។</span></div>\n')
@@ -100,13 +100,13 @@ jobs:
             }catch(e){reject(e)}};im.onerror=reject;im.src=src})
           }'''
           s=re.sub(r"async function makeBrandedQr\(src\)\{.*?\n\}\ndocument\.querySelectorAll", card_js+"\ndocument.querySelectorAll", s, flags=re.S, count=1)
-          s=s.replace("const sv=$('saveAutoPaid');if(sv)sv.onclick=()=>saveImage(currentAuto.image,'iDrama-'+currentAuto.orderId);","const sv=$('saveAutoPaid');if(sv)sv.onclick=async()=>{const img=await makeBrandedQr(currentAuto.image,{amount:money(currentAuto.amount,currentAuto.currency),orderId:currentAuto.orderId,brand:settings.brand});saveImage(img,'iDrama-'+currentAuto.orderId)};")
+          s=s.replace("const sv=$('saveAutoPaid');if(sv)sv.onclick=()=>saveImage(currentAuto.image,'iDrama-'+currentAuto.orderId);","const sv=$('saveAutoPaid');if(sv)sv.onclick=()=>saveImage(currentAuto.image,'iDrama-'+currentAuto.orderId);")
           s=s.replace("const sh=$('shareAutoPaid');if(sh)sh.onclick=()=>shareImage(currentAuto.image,'iDrama-'+currentAuto.orderId,autoShareText(currentAuto));","const sh=$('shareAutoPaid');if(sh)sh.onclick=async()=>{const img=await makeBrandedQr(currentAuto.image,{amount:money(currentAuto.amount,currentAuto.currency),orderId:currentAuto.orderId,brand:settings.brand});shareImage(img,'iDrama-'+currentAuto.orderId,autoShareText(currentAuto))};")
-          s=s.replace("const sv=$('saveAutoQr');if(sv)sv.onclick=()=>saveImage(currentAuto.image,'iDrama-'+currentAuto.orderId);","const sv=$('saveAutoQr');if(sv)sv.onclick=async()=>{const img=await makeBrandedQr(currentAuto.image,{amount:money(currentAuto.amount,currentAuto.currency),orderId:currentAuto.orderId,brand:settings.brand});saveImage(img,'iDrama-'+currentAuto.orderId)};")
+          s=s.replace("const sv=$('saveAutoQr');if(sv)sv.onclick=()=>saveImage(currentAuto.image,'iDrama-'+currentAuto.orderId);","const sv=$('saveAutoQr');if(sv)sv.onclick=()=>saveImage(currentAuto.image,'iDrama-'+currentAuto.orderId);")
           s=s.replace("const sh=$('shareAutoQr');if(sh)sh.onclick=()=>shareImage(currentAuto.image,'iDrama-'+currentAuto.orderId,autoShareText(currentAuto));","const sh=$('shareAutoQr');if(sh)sh.onclick=async()=>{const img=await makeBrandedQr(currentAuto.image,{amount:money(currentAuto.amount,currentAuto.currency),orderId:currentAuto.orderId,brand:settings.brand});shareImage(img,'iDrama-'+currentAuto.orderId,autoShareText(currentAuto))};")
           p.write_text(s)
           PY
-          grep -q 'iDrama Pay • v2.7' android-wallet/app/src/main/assets/index.html
+          grep -q 'iDrama Pay • v2.8' android-wallet/app/src/main/assets/index.html
           grep -q "fillText('KHQR'" android-wallet/app/src/main/assets/index.html
           ! grep -q 'Telegram Link រឿងពេញ' android-wallet/app/src/main/assets/index.html
 
@@ -114,17 +114,17 @@ jobs:
         run: gradle -p android-wallet clean assembleDebug --no-daemon
 
       - name: Rename APK
-        run: cp android-wallet/app/build/outputs/apk/debug/app-debug.apk iDrama-Pay-v2.7.apk
+        run: cp android-wallet/app/build/outputs/apk/debug/app-debug.apk iDrama-Pay-v2.8.apk
 
       - name: Verify APK
         shell: bash
         run: |
-          test -s iDrama-Pay-v2.7.apk
-          unzip -t iDrama-Pay-v2.7.apk
+          test -s iDrama-Pay-v2.8.apk
+          unzip -t iDrama-Pay-v2.8.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: iDrama-Pay-v2.7-APK
-          path: iDrama-Pay-v2.7.apk
+          name: iDrama-Pay-v2.8-APK
+          path: iDrama-Pay-v2.8.apk
           retention-days: 30
