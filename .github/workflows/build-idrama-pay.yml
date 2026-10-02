@@ -50,7 +50,7 @@ jobs:
           import re
           p=Path('android-wallet/app/src/main/assets/index.html')
           s=p.read_text()
-          s=re.sub(r'iDrama Pay • v[0-9]+[.][0-9]+', 'iDrama Pay • v3.4', s)
+          s=re.sub(r'iDrama Pay • v[0-9]+[.][0-9]+', 'iDrama Pay • v3.5', s)
           s=s.replace('          <div class="f"><label>Telegram Link រឿងពេញ</label><input id="autoTelegram" placeholder="https://t.me/c/1234567890/123"></div>\n','')
           s=s.replace('      <div class="f"><label>Telegram Link រឿងពេញ (Default)</label><input id="telegramInput" placeholder="https://t.me/c/1234567890/123"></div>\n','')
           s=s.replace('      <div class="notice okbox">⚡ QR Auto + Telegram Bot: Connected ✓<br><span class="hint">API/Secret នៅ Server។ អតិថិជនត្រូវចុច Connect Telegram Bot ម្តងសម្រាប់ Order នីមួយៗ មុនពេល Bot អាចផ្ញើ Link ទៅគណនីរបស់គេ។</span></div>\n','      <div class="notice okbox">⚡ QR Auto: Connected ✓<br><span class="hint">បង្កើត KHQR ដោយស្វ័យប្រវត្តិ និង Auto Verify ការទូទាត់។</span></div>\n')
@@ -65,6 +65,52 @@ jobs:
           s=s.replace("        const c=$('connectAfterPaid');if(c)c.onclick=()=>openUrl(currentAuto.telegram_bind_url);\n","")
           s=s.replace("      if(data.delivery==='waiting_telegram'&&!autoPollTimer)autoPollTimer=setInterval(()=>checkAutoPayment(false),5000);\n","")
           s=s.replace("addPaidHistory(currentAuto.amount,currentAuto.currency,currentAuto.orderId,data.delivery==='sent'?'Auto Verify + Telegram ✓':'Auto Verify Bakong ✓');","addPaidHistory(currentAuto.amount,currentAuto.currency,currentAuto.orderId,'Auto Verify KHQR ✓');")
+
+          # Home UX/UI v3.5: replace old home layout with a visibly new 3D wallet dashboard
+          s=s.replace('<div class="logo">♥</div>','<div class="logo appLogo"><img src="app_icon.webp" alt="iDrama"></div>')
+          home_html=r'''
+          <section id="home" class="page active home35">
+            <div class="walletHero">
+              <div class="heroCopy">
+                <div class="eyebrow">PAYMENT WALLET</div>
+                <h1>iDrama Pay</h1>
+                <p>គ្រប់គ្រង KHQR ទូទាត់ ប្រវត្តិការទទួលប្រាក់ និងការកំណត់ ក្នុង App មួយ។</p>
+              </div>
+              <div class="walletArt" aria-hidden="true">
+                <div class="coin c1">$</div><div class="coin c2">៛</div>
+                <div class="walletBody"><span>♥</span></div>
+              </div>
+            </div>
+
+            <div class="stats35">
+              <div class="stat35 usd"><div class="statIco">$</div><div><b id="sumUsd">$0.00</b><span>សរុប USD</span></div><i>›</i></div>
+              <div class="stat35 khr"><div class="statIco">៛</div><div><b id="sumKhr">៛0</b><span>សរុប KHR</span></div><i>›</i></div>
+              <div class="stat35 tx"><div class="statIco">●</div><div><b id="txCount">0</b><span>ប្រតិបត្តិការ</span></div><i>›</i></div>
+            </div>
+
+            <div class="sectionTitle35">ប្រើប្រាស់រហ័ស</div>
+            <div class="quickGrid35">
+              <button class="quick35 qnormal" type="button" data-go="qr">
+                <span class="quickIcon">▦</span><span class="quickArrow">›</span>
+                <b>QR CODE ធម្មតា</b><small>Upload KHQR ឬ QR របស់អ្នក</small>
+              </button>
+              <button class="quick35 qauto" type="button" id="goAuto">
+                <span class="quickIcon">⚡</span><span class="quickArrow">›</span>
+                <b>QR CODE Auto</b><small>Auto Verify KHQR</small>
+              </button>
+              <button class="quick35 qhistory" type="button" data-go="history">
+                <span class="quickIcon">◷</span><span class="quickArrow">›</span>
+                <b>ប្រវត្តិ</b><small>មើលកំណត់ត្រាទទួលប្រាក់</small>
+              </button>
+              <button class="quick35 qsettings" type="button" data-go="settings">
+                <span class="quickIcon">⚙</span><span class="quickArrow">›</span>
+                <b>ការកំណត់</b><small>Brand និង Currency</small>
+              </button>
+            </div>
+
+            <div class="status35"><div id="homeStatus" class="notice">កំពុងពិនិត្យស្ថានភាព...</div></div>
+          </section>'''
+          s=re.sub(r'<section id="home" class="page active">.*?</section>',home_html,s,flags=re.S,count=1)
 
           # Home UX/UI refresh: pastel wallet + soft 3D cards, without changing payment logic
           s=s.replace('Auto Verify + Telegram Bot Delivery','Auto Verify KHQR')
@@ -150,6 +196,46 @@ jobs:
           }
           '''
           s=s.replace('</head>','<style>'+premium_css+'</style></head>')
+          home35_css=r'''
+          .appLogo{padding:0!important;overflow:hidden!important;background:#fff!important}
+          .appLogo img{width:100%;height:100%;object-fit:cover;display:block}
+          .home35{padding-bottom:8px}
+          .walletHero{position:relative;min-height:205px;border-radius:30px;padding:24px 210px 24px 24px;overflow:hidden;color:#fff;background:
+            radial-gradient(circle at 78% 28%,rgba(255,255,255,.28),transparent 25%),
+            linear-gradient(135deg,#ff2078 0%,#ff3891 46%,#ff78bb 100%);box-shadow:0 18px 44px rgba(255,41,131,.24);border:1px solid rgba(255,255,255,.76)}
+          .walletHero:before{content:"";position:absolute;inset:-120px -90px auto auto;width:300px;height:300px;border-radius:50%;border:52px solid rgba(255,255,255,.10)}
+          .heroCopy{position:relative;z-index:3}.eyebrow{font-size:13px;letter-spacing:.16em;font-weight:900;opacity:.92}
+          .walletHero h1{font-size:38px!important;margin:8px 0 7px!important;line-height:1.04;text-shadow:0 5px 14px rgba(132,0,55,.18)}
+          .walletHero p{font-size:14px;line-height:1.65;margin:0;opacity:.96}
+          .walletArt{position:absolute;right:22px;top:23px;width:170px;height:160px;z-index:2;filter:drop-shadow(0 16px 18px rgba(140,0,55,.22))}
+          .walletBody{position:absolute;right:0;bottom:12px;width:142px;height:104px;border-radius:32px 24px 34px 28px;background:linear-gradient(145deg,#ffbedc,#ff4e9a 58%,#e31870);border:4px solid rgba(255,255,255,.82);box-shadow:inset 0 6px 12px rgba(255,255,255,.48),inset 0 -10px 18px rgba(139,0,55,.18),0 12px 22px rgba(150,0,61,.26);transform:rotate(3deg)}
+          .walletBody:before{content:"";position:absolute;right:-6px;top:31px;width:48px;height:42px;border-radius:16px;background:linear-gradient(145deg,#ffecf5,#ff65aa);border:3px solid rgba(255,255,255,.9);box-shadow:0 6px 12px rgba(140,0,55,.18)}
+          .walletBody span{position:absolute;left:50%;top:50%;transform:translate(-50%,-46%);font-size:42px;color:#fff;text-shadow:0 5px 10px rgba(150,0,60,.25)}
+          .coin{position:absolute;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font-weight:950;font-size:24px;color:#fff4c3;background:radial-gradient(circle at 33% 25%,#fff8a8,#ffc400 47%,#e38100 76%);border:5px solid #ffe96c;box-shadow:inset 0 3px 5px rgba(255,255,255,.9),0 8px 15px rgba(153,80,0,.22)}
+          .coin.c1{left:8px;top:0;transform:rotate(-9deg)}.coin.c2{right:13px;top:7px;transform:rotate(11deg) scale(.9)}
+          .stats35{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0 6px}
+          .stat35{min-height:118px;position:relative;background:rgba(255,255,255,.94);border:1px solid rgba(255,64,145,.16);border-radius:25px;padding:15px 10px 12px;box-shadow:0 13px 30px rgba(255,61,145,.12);text-align:center}
+          .stat35 .statIco{width:48px;height:48px;border-radius:17px;margin:-4px auto 8px;display:grid;place-items:center;color:#fff;font-weight:950;font-size:23px;box-shadow:inset 0 3px 8px rgba(255,255,255,.5),0 9px 17px rgba(101,55,85,.16)}
+          .stat35.usd .statIco{background:linear-gradient(145deg,#ff2380,#ff6db5)}.stat35.khr .statIco{background:linear-gradient(145deg,#ffc324,#ff8e00)}.stat35.tx .statIco{background:linear-gradient(145deg,#8a48ff,#d06cff)}
+          .stat35 b{display:block;font-size:18px}.stat35 span{font-size:11px;color:var(--muted)}.stat35 i{display:none}
+          .sectionTitle35{font-size:24px;font-weight:950;margin:26px 4px 14px;position:relative}.sectionTitle35:after{content:"";display:block;width:42px;height:4px;border-radius:9px;margin-top:7px;background:linear-gradient(90deg,#ff2b7a,#ff7ab8)}
+          .quickGrid35{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+          .quick35{position:relative;min-height:185px;text-align:left;border:1px solid rgba(255,56,144,.16);border-radius:28px;padding:22px 20px 18px;background:linear-gradient(145deg,#fff,#fff8fc);box-shadow:0 16px 34px rgba(255,65,150,.12);color:var(--text);overflow:hidden}
+          .quick35:before{content:"";position:absolute;width:180px;height:180px;border-radius:50%;right:-90px;top:-85px;background:rgba(255,91,166,.08)}
+          .quick35 .quickIcon{width:70px;height:70px;border-radius:22px;display:grid;place-items:center;font-size:38px;font-weight:950;color:#fff;box-shadow:inset 0 5px 10px rgba(255,255,255,.48),0 12px 24px rgba(75,34,65,.16);transform:rotate(-4deg);margin-bottom:18px}
+          .qnormal .quickIcon{background:linear-gradient(145deg,#ff1d77,#ff63ae)}.qauto .quickIcon{background:linear-gradient(145deg,#ffd138,#ff9a00)}.qhistory .quickIcon{background:linear-gradient(145deg,#8a4dff,#c567ff)}.qsettings .quickIcon{background:linear-gradient(145deg,#21a8ff,#0d79e8)}
+          .quick35 b{display:block;font-size:18px;margin-bottom:7px}.quick35 small{display:block;color:var(--muted);font-size:12px;line-height:1.5;padding-right:24px}
+          .quickArrow{position:absolute;right:15px;bottom:15px;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-size:28px;font-weight:900;background:rgba(255,44,128,.10);color:#ff2b7a}
+          .qauto .quickArrow{background:rgba(255,164,0,.12);color:#ff9a00}.qhistory .quickArrow{background:rgba(157,78,255,.12);color:#9d4eff}.qsettings .quickArrow{background:rgba(25,137,255,.12);color:#1989ff}
+          .status35{margin-top:16px}.status35 .notice{border-radius:20px!important}
+          @media(max-width:430px){
+            .walletHero{min-height:190px;padding:21px 150px 20px 20px}.walletHero h1{font-size:32px!important}.walletHero p{font-size:12px}.walletArt{right:9px;top:32px;transform:scale(.78);transform-origin:top right}
+            .stats35{gap:8px}.stat35{min-height:108px;padding:13px 7px 10px}.stat35 .statIco{width:43px;height:43px;border-radius:15px;font-size:20px}.stat35 b{font-size:16px}
+            .quickGrid35{gap:10px}.quick35{min-height:168px;padding:18px 16px 16px;border-radius:24px}.quick35 .quickIcon{width:62px;height:62px;border-radius:19px;font-size:32px;margin-bottom:14px}.quick35 b{font-size:16px}.quick35 small{font-size:11px}
+          }
+          '''
+          s=s.replace('</head>','<style>'+home35_css+'</style></head>')
+
 
 
           card_js=r'''function rr(x,a,b,w,h,r){r=Math.min(r,w/2,h/2);x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath()}
@@ -205,7 +291,7 @@ jobs:
           s=s.replace("const sv=$('saveAutoQr');if(sv)sv.onclick=()=>saveImage(currentAuto.image,'iDrama-'+currentAuto.orderId);","const sv=$('saveAutoQr');if(sv)sv.onclick=async()=>{const img=await makeBrandedQr(currentAuto.image,{amount:money(currentAuto.amount,currentAuto.currency),orderId:currentAuto.orderId,brand:settings.brand});saveImage(img,'iDrama-'+currentAuto.orderId)};")
           p.write_text(s)
           PY
-          grep -q 'iDrama Pay • v3.4' android-wallet/app/src/main/assets/index.html
+          grep -q 'iDrama Pay • v3.5' android-wallet/app/src/main/assets/index.html
           grep -q "fillText('KHQR'" android-wallet/app/src/main/assets/index.html
           ! grep -q 'Telegram Link រឿងពេញ' android-wallet/app/src/main/assets/index.html
 
@@ -213,17 +299,17 @@ jobs:
         run: gradle -p android-wallet clean assembleDebug --no-daemon
 
       - name: Rename APK
-        run: cp android-wallet/app/build/outputs/apk/debug/app-debug.apk iDrama-Pay-v3.4.apk
+        run: cp android-wallet/app/build/outputs/apk/debug/app-debug.apk iDrama-Pay-v3.5.apk
 
       - name: Verify APK
         shell: bash
         run: |
-          test -s iDrama-Pay-v3.4.apk
-          unzip -t iDrama-Pay-v3.4.apk
+          test -s iDrama-Pay-v3.5.apk
+          unzip -t iDrama-Pay-v3.5.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: iDrama-Pay-v3.4-APK
-          path: iDrama-Pay-v3.4.apk
+          name: iDrama-Pay-v3.5-APK
+          path: iDrama-Pay-v3.5.apk
           retention-days: 30
