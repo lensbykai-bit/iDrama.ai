@@ -64,7 +64,8 @@ jobs:
           s=re.sub(r"      let deliveryHtml='';\n      if\(data\.delivery==='sent'\)\{.*?      out\.innerHTML=", "      stopAutoPolling();\n      const deliveryHtml='';\n      out.innerHTML=", s, flags=re.S)
           s=s.replace("        const c=$('connectAfterPaid');if(c)c.onclick=()=>openUrl(currentAuto.telegram_bind_url);\n","")
           s=s.replace("      if(data.delivery==='waiting_telegram'&&!autoPollTimer)autoPollTimer=setInterval(()=>checkAutoPayment(false),5000);\n","")
-          s=s.replace("addPaidHistory(currentAuto.amount,currentAuto.currency,currentAuto.orderId,data.delivery==='sent'?'Auto Verify + Telegram ✓':'Auto Verify Bakong ✓');","addPaidHistory(currentAuto.amount,currentAuto.currency,currentAuto.orderId,'Auto Verify KHQR ✓');
+          old_paid="addPaidHistory(currentAuto.amount,currentAuto.currency,currentAuto.orderId,data.delivery==='sent'?'Auto Verify + Telegram ✓':'Auto Verify Bakong ✓');"
+          new_paid=r"""addPaidHistory(currentAuto.amount,currentAuto.currency,currentAuto.orderId,'Auto Verify KHQR ✓');
       setTimeout(()=>{
         try{
           currentAuto=null;
@@ -78,7 +79,8 @@ jobs:
           }
           window.scrollTo({top:0,behavior:'smooth'});
         }catch(e){}
-      },1200);")
+      },1200);"""
+          s=s.replace(old_paid,new_paid)
 
           # Home UX/UI v3.8: replace old home layout with a visibly new 3D wallet dashboard
           s=s.replace('<div class="logo">♥</div>','<div class="logo brandHeart">♥</div>')
