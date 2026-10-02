@@ -50,7 +50,7 @@ jobs:
           import re
           p=Path('android-wallet/app/src/main/assets/index.html')
           s=p.read_text()
-          s=s.replace('iDrama Pay • v2.4','iDrama Pay • v3.2').replace('iDrama Pay • v2.5','iDrama Pay • v3.2').replace('iDrama Pay • v2.6','iDrama Pay • v3.2')
+          s=s.replace('iDrama Pay • v2.4','iDrama Pay • v3.3').replace('iDrama Pay • v2.5','iDrama Pay • v3.3').replace('iDrama Pay • v2.6','iDrama Pay • v3.3')
           s=s.replace('          <div class="f"><label>Telegram Link រឿងពេញ</label><input id="autoTelegram" placeholder="https://t.me/c/1234567890/123"></div>\n','')
           s=s.replace('      <div class="f"><label>Telegram Link រឿងពេញ (Default)</label><input id="telegramInput" placeholder="https://t.me/c/1234567890/123"></div>\n','')
           s=s.replace('      <div class="notice okbox">⚡ QR Auto + Telegram Bot: Connected ✓<br><span class="hint">API/Secret នៅ Server។ អតិថិជនត្រូវចុច Connect Telegram Bot ម្តងសម្រាប់ Order នីមួយៗ មុនពេល Bot អាចផ្ញើ Link ទៅគណនីរបស់គេ។</span></div>\n','      <div class="notice okbox">⚡ QR Auto: Connected ✓<br><span class="hint">បង្កើត KHQR ដោយស្វ័យប្រវត្តិ និង Auto Verify ការទូទាត់។</span></div>\n')
@@ -71,48 +71,45 @@ jobs:
           async function makeBrandedQr(src,meta={}){
             const [qr,logo]=await Promise.all([loadImg(src),loadImg('app_icon.webp')]);
             const W=1080,H=1920,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
-            let g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#06050a');g.addColorStop(.45,'#120711');g.addColorStop(1,'#050308');x.fillStyle=g;x.fillRect(0,0,W,H);
-            x.strokeStyle='rgba(255,24,126,.16)';x.lineWidth=2;for(let i=0;i<14;i++){x.beginPath();x.moveTo(0,120+i*125);x.lineTo(210+i*20,0);x.stroke();x.beginPath();x.moveTo(W,120+i*125);x.lineTo(W-210-i*20,0);x.stroke()}
-            x.shadowColor='#ff177f';x.shadowBlur=24;x.strokeStyle='#ff177f';x.lineWidth=7;rr(x,38,34,W-76,H-68,46);x.stroke();x.shadowBlur=0;
-            // 3D header: app icon + PAYMENT + KHQR
-            x.shadowColor='#ff1a85';x.shadowBlur=26;
-            let hg=x.createLinearGradient(70,55,255,245);hg.addColorStop(0,'#ffffff');hg.addColorStop(.18,'#ffd7ec');hg.addColorStop(.55,'#ff3b9a');hg.addColorStop(1,'#77002f');
-            x.fillStyle=hg;rr(x,66,62,188,188,46);x.fill();x.shadowBlur=0;
-            x.save();rr(x,76,72,168,168,38);x.clip();x.drawImage(logo,76,72,168,168);x.restore();
-            x.shadowColor='#ff1480';x.shadowBlur=30;
-            let pg=x.createLinearGradient(300,78,755,215);pg.addColorStop(0,'#ffffff');pg.addColorStop(.32,'#fff2f8');pg.addColorStop(.58,'#ff5ca9');pg.addColorStop(1,'#b70054');
-            x.fillStyle=pg;x.font='900 92px system-ui';x.textAlign='center';x.textBaseline='middle';x.fillText('PAYMENT',535,145);x.shadowBlur=0;
-            let kg=x.createLinearGradient(810,78,1005,176);kg.addColorStop(0,'#ff5fac');kg.addColorStop(.5,'#ff177f');kg.addColorStop(1,'#8b003d');
-            x.shadowColor='#ff177f';x.shadowBlur=24;x.fillStyle=kg;rr(x,815,84,185,92,28);x.fill();x.shadowBlur=0;
-            x.strokeStyle='rgba(255,255,255,.65)';x.lineWidth=3;rr(x,820,89,175,82,24);x.stroke();
-            x.fillStyle='#fff';x.font='900 40px system-ui';x.textAlign='center';x.fillText('KHQR',907,130);
-            // 3D info panel
-            x.shadowColor='#ff177f';x.shadowBlur=28;
-            let ig=x.createLinearGradient(80,290,1000,760);ig.addColorStop(0,'#242333');ig.addColorStop(.18,'#11121d');ig.addColorStop(.72,'#070811');ig.addColorStop(1,'#200616');
-            x.fillStyle=ig;rr(x,80,290,920,470,38);x.fill();x.shadowBlur=0;
-            x.strokeStyle='#ff2c8e';x.lineWidth=5;rr(x,80,290,920,470,38);x.stroke();
-            x.strokeStyle='rgba(255,255,255,.24)';x.lineWidth=2;rr(x,92,302,896,446,32);x.stroke();
+            let bg=x.createLinearGradient(0,0,W,H);bg.addColorStop(0,'#050309');bg.addColorStop(.48,'#120612');bg.addColorStop(1,'#050308');x.fillStyle=bg;x.fillRect(0,0,W,H);
+            for(let i=0;i<22;i++){const y=45+i*82;x.strokeStyle='rgba(255,24,126,'+(0.045+(i%4)*0.01)+')';x.lineWidth=2;x.beginPath();x.moveTo(0,y);x.lineTo(W,y-160);x.stroke()}
+            // chrome outer frame
+            x.shadowColor='#ff1780';x.shadowBlur=38;let og=x.createLinearGradient(22,20,W-22,H-20);og.addColorStop(0,'#ffffff');og.addColorStop(.06,'#ff5aa8');og.addColorStop(.14,'#4d4e59');og.addColorStop(.5,'#101019');og.addColorStop(.86,'#ff2d90');og.addColorStop(1,'#ffffff');x.strokeStyle=og;x.lineWidth=13;rr(x,34,28,W-68,H-56,55);x.stroke();x.shadowBlur=0;
+            x.strokeStyle='#ff167f';x.lineWidth=4;rr(x,48,42,W-96,H-84,48);x.stroke();
+
+            // big mascot/icon block, raised 3D
+            x.shadowColor='#ff1884';x.shadowBlur=34;let mg=x.createLinearGradient(58,50,310,320);mg.addColorStop(0,'#ffffff');mg.addColorStop(.20,'#ffc8e2');mg.addColorStop(.58,'#ff3b99');mg.addColorStop(1,'#640128');x.fillStyle=mg;rr(x,66,60,258,258,54);x.fill();x.shadowBlur=0;
+            x.save();rr(x,82,76,226,226,46);x.clip();x.drawImage(logo,82,76,226,226);x.restore();
+
+            // PAYMENT raised plaque
+            x.shadowColor='#ff1680';x.shadowBlur=34;let pg=x.createLinearGradient(345,98,785,260);pg.addColorStop(0,'#39071e');pg.addColorStop(.28,'#120812');pg.addColorStop(.66,'#2a0618');pg.addColorStop(1,'#5d0a31');x.fillStyle=pg;rr(x,342,95,455,175,32);x.fill();x.shadowBlur=0;
+            x.strokeStyle='#ff2a8e';x.lineWidth=6;rr(x,342,95,455,175,32);x.stroke();x.strokeStyle='rgba(255,255,255,.4)';x.lineWidth=2;rr(x,353,106,433,153,27);x.stroke();
+            let tg=x.createLinearGradient(370,110,760,245);tg.addColorStop(0,'#fff');tg.addColorStop(.37,'#fef6fa');tg.addColorStop(.68,'#ff5ba8');tg.addColorStop(1,'#a7004b');x.fillStyle=tg;x.font='900 78px system-ui';x.textAlign='center';x.textBaseline='middle';x.shadowColor='#ff1884';x.shadowBlur=18;x.fillText('PAYMENT',570,184);x.shadowBlur=0;
+
+            // KHQR crowned-looking badge
+            let kg=x.createLinearGradient(820,96,1000,230);kg.addColorStop(0,'#ff6ab3');kg.addColorStop(.48,'#ff1780');kg.addColorStop(1,'#7d0036');x.shadowColor='#ff1780';x.shadowBlur=28;x.fillStyle=kg;rr(x,818,110,190,132,34);x.fill();x.shadowBlur=0;x.strokeStyle='#fff';x.lineWidth=3;rr(x,826,118,174,116,28);x.stroke();x.fillStyle='#fff';x.font='900 38px system-ui';x.textAlign='center';x.fillText('KHQR',913,176);
+
+            // info panel
+            x.shadowColor='#ff1780';x.shadowBlur=25;let ig=x.createLinearGradient(62,350,1018,780);ig.addColorStop(0,'#242332');ig.addColorStop(.16,'#151620');ig.addColorStop(.72,'#080911');ig.addColorStop(1,'#260718');x.fillStyle=ig;rr(x,64,340,952,470,42);x.fill();x.shadowBlur=0;x.strokeStyle='#ff2d91';x.lineWidth=6;rr(x,64,340,952,470,42);x.stroke();x.strokeStyle='rgba(255,255,255,.25)';x.lineWidth=2;rr(x,78,354,924,442,34);x.stroke();
             const brand=String(meta.brand||settings.brand||'iDrama_ai_Official').slice(0,34),amt=String(meta.amount||money($('amount').value,$('currency').value)),oid=String(meta.orderId||$('orderId').value||'');
-            x.textAlign='left';x.fillStyle='#9298a5';x.font='700 34px system-ui';x.fillText('Merchant',135,355);x.fillStyle='#fff';x.font='900 50px system-ui';x.fillText(brand,135,415);
-            x.strokeStyle='rgba(255,255,255,.15)';x.lineWidth=2;x.beginPath();x.moveTo(130,455);x.lineTo(945,455);x.stroke();
-            x.fillStyle='#9298a5';x.font='700 34px system-ui';x.fillText('Amount',135,525);x.fillStyle='#ff177f';x.font='900 76px system-ui';x.fillText(amt,135,600);
-            x.strokeStyle='rgba(255,255,255,.15)';x.beginPath();x.moveTo(130,640);x.lineTo(945,640);x.stroke();
-            x.fillStyle='#9298a5';x.font='700 34px system-ui';x.fillText('Order ID',135,695);x.fillStyle='#fff';x.font='850 43px system-ui';x.fillText(oid,350,695);
-            // 3D QR frame: square QR, no horizontal stretching, no caption
-            x.shadowColor='#ff177f';x.shadowBlur=42;
-            let fg=x.createLinearGradient(78,792,1002,1720);fg.addColorStop(0,'#fdfdfd');fg.addColorStop(.09,'#ff8ec4');fg.addColorStop(.18,'#5b5d69');fg.addColorStop(.30,'#161722');fg.addColorStop(.82,'#090a10');fg.addColorStop(.92,'#ff3f9c');fg.addColorStop(1,'#ffffff');
-            x.fillStyle=fg;rr(x,72,787,936,936,52);x.fill();x.shadowBlur=0;
-            x.strokeStyle='#ff1580';x.lineWidth=6;rr(x,72,787,936,936,52);x.stroke();
-            x.fillStyle='#fff';rr(x,104,819,872,872,34);x.fill();
-            const qpad=38, qsize=872-qpad*2;
-            x.imageSmoothingEnabled=false;
-            x.drawImage(qr,104+qpad,819+qpad,qsize,qsize);
-            // Trust strip with mini logo OUTSIDE QR
-            let tg=x.createLinearGradient(125,1740,955,1865);tg.addColorStop(0,'#2b0a1d');tg.addColorStop(.45,'#140713');tg.addColorStop(1,'#320a22');x.fillStyle=tg;rr(x,125,1740,830,125,32);x.fill();
-            x.shadowColor='#ff177f';x.shadowBlur=18;x.strokeStyle='#ff3f9b';x.lineWidth=4;rr(x,125,1740,830,125,32);x.stroke();x.shadowBlur=0;
-            x.fillStyle='#fff';rr(x,150,1762,82,82,20);x.fill();x.save();rr(x,155,1767,72,72,17);x.clip();x.drawImage(logo,155,1767,72,72);x.restore();
-            x.textAlign='left';x.fillStyle='#fff';x.font='800 34px system-ui';x.fillText('iDrama_ai_Official',258,1790);x.fillStyle='#ff2b90';x.font='800 30px system-ui';x.fillText('Secure Payment • 10 នាទី',258,1833);
-            x.textAlign='center';x.fillStyle='#8e95a4';x.font='700 24px system-ui';x.fillText('Verify merchant name before payment',540,1890);
+            x.textAlign='left';x.fillStyle='#ff55a7';x.font='900 44px system-ui';x.fillText('▣',118,420);x.fillStyle='#a0a4b0';x.font='700 32px system-ui';x.fillText('Merchant',220,397);x.fillStyle='#fff';x.font='900 50px system-ui';x.fillText(brand,220,448);
+            x.strokeStyle='rgba(255,255,255,.19)';x.lineWidth=2;x.beginPath();x.moveTo(110,486);x.lineTo(940,486);x.stroke();
+            x.fillStyle='#ff55a7';x.font='900 43px system-ui';x.fillText('●●',116,565);x.fillStyle='#a0a4b0';x.font='700 32px system-ui';x.fillText('Amount',220,545);x.fillStyle='#ff1780';x.font='900 80px system-ui';x.fillText(amt,220,620);
+            x.strokeStyle='rgba(255,255,255,.19)';x.beginPath();x.moveTo(110,656);x.lineTo(940,656);x.stroke();
+            x.fillStyle='#ff55a7';x.font='900 44px system-ui';x.fillText('▤',118,735);x.fillStyle='#a0a4b0';x.font='700 32px system-ui';x.fillText('Order ID',220,715);x.fillStyle='#fff';x.font='850 44px system-ui';x.fillText(oid,415,715);
+
+            // big square QR panel, scan-safe
+            x.shadowColor='#ff1780';x.shadowBlur=46;let fg=x.createLinearGradient(52,835,1028,1745);fg.addColorStop(0,'#ffffff');fg.addColorStop(.08,'#ff8fc5');fg.addColorStop(.18,'#737580');fg.addColorStop(.32,'#171821');fg.addColorStop(.70,'#0b0c12');fg.addColorStop(.90,'#ff378f');fg.addColorStop(1,'#ffffff');x.fillStyle=fg;rr(x,56,840,968,968,56);x.fill();x.shadowBlur=0;
+            x.strokeStyle='#ff1880';x.lineWidth=6;rr(x,56,840,968,968,56);x.stroke();
+            x.fillStyle='#fff';rr(x,92,876,896,896,34);x.fill();
+            const qpad=26,qsize=896-qpad*2;x.imageSmoothingEnabled=false;x.drawImage(qr,92+qpad,876+qpad,qsize,qsize);
+
+            // footer trust card
+            let fg2=x.createLinearGradient(78,1835,1002,1910);fg2.addColorStop(0,'#2b0a1d');fg2.addColorStop(.45,'#130713');fg2.addColorStop(1,'#330a22');x.fillStyle=fg2;rr(x,78,1830,924,75,24);x.fill();x.shadowColor='#ff1780';x.shadowBlur=18;x.strokeStyle='#ff3f9b';x.lineWidth=4;rr(x,78,1830,924,75,24);x.stroke();x.shadowBlur=0;
+            x.fillStyle='#fff';rr(x,94,1839,56,56,14);x.fill();x.save();rr(x,98,1843,48,48,11);x.clip();x.drawImage(logo,98,1843,48,48);x.restore();
+            x.textAlign='left';x.fillStyle='#fff';x.font='800 28px system-ui';x.fillText('iDrama_ai_Official',175,1859);x.fillStyle='#ff36a0';x.font='800 24px system-ui';x.fillText('Secure Payment • 10 នាទី',175,1890);
+            // shield icon
+            x.strokeStyle='#ff5aa9';x.lineWidth=5;x.beginPath();x.moveTo(906,1845);x.lineTo(934,1835);x.lineTo(962,1845);x.lineTo(962,1868);x.quadraticCurveTo(948,1890,934,1899);x.quadraticCurveTo(920,1890,906,1868);x.closePath();x.stroke();x.beginPath();x.moveTo(920,1863);x.lineTo(930,1873);x.lineTo(948,1853);x.stroke();
             return c.toDataURL('image/png',1)
           }'''
           s=re.sub(r"async function makeBrandedQr\(src\)\{.*?\n\}\ndocument\.querySelectorAll", card_js+"\ndocument.querySelectorAll", s, flags=re.S, count=1)
@@ -122,7 +119,7 @@ jobs:
           s=s.replace("const sv=$('saveAutoQr');if(sv)sv.onclick=()=>saveImage(currentAuto.image,'iDrama-'+currentAuto.orderId);","const sv=$('saveAutoQr');if(sv)sv.onclick=async()=>{const img=await makeBrandedQr(currentAuto.image,{amount:money(currentAuto.amount,currentAuto.currency),orderId:currentAuto.orderId,brand:settings.brand});saveImage(img,'iDrama-'+currentAuto.orderId)};")
           p.write_text(s)
           PY
-          grep -q 'iDrama Pay • v3.2' android-wallet/app/src/main/assets/index.html
+          grep -q 'iDrama Pay • v3.3' android-wallet/app/src/main/assets/index.html
           grep -q "fillText('KHQR'" android-wallet/app/src/main/assets/index.html
           ! grep -q 'Telegram Link រឿងពេញ' android-wallet/app/src/main/assets/index.html
 
@@ -130,17 +127,17 @@ jobs:
         run: gradle -p android-wallet clean assembleDebug --no-daemon
 
       - name: Rename APK
-        run: cp android-wallet/app/build/outputs/apk/debug/app-debug.apk iDrama-Pay-v3.2.apk
+        run: cp android-wallet/app/build/outputs/apk/debug/app-debug.apk iDrama-Pay-v3.3.apk
 
       - name: Verify APK
         shell: bash
         run: |
-          test -s iDrama-Pay-v3.2.apk
-          unzip -t iDrama-Pay-v3.2.apk
+          test -s iDrama-Pay-v3.3.apk
+          unzip -t iDrama-Pay-v3.3.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: iDrama-Pay-v3.2-APK
-          path: iDrama-Pay-v3.2.apk
+          name: iDrama-Pay-v3.3-APK
+          path: iDrama-Pay-v3.3.apk
           retention-days: 30
