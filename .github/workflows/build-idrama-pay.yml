@@ -50,7 +50,7 @@ jobs:
           import re
           p=Path('android-wallet/app/src/main/assets/index.html')
           s=p.read_text()
-          s=s.replace('iDrama Pay • v2.4','iDrama Pay • v3.3').replace('iDrama Pay • v2.5','iDrama Pay • v3.3').replace('iDrama Pay • v2.6','iDrama Pay • v3.3')
+          s=re.sub(r'iDrama Pay • v\\d+\\.\\d+', 'iDrama Pay • v3.4', s)
           s=s.replace('          <div class="f"><label>Telegram Link រឿងពេញ</label><input id="autoTelegram" placeholder="https://t.me/c/1234567890/123"></div>\n','')
           s=s.replace('      <div class="f"><label>Telegram Link រឿងពេញ (Default)</label><input id="telegramInput" placeholder="https://t.me/c/1234567890/123"></div>\n','')
           s=s.replace('      <div class="notice okbox">⚡ QR Auto + Telegram Bot: Connected ✓<br><span class="hint">API/Secret នៅ Server។ អតិថិជនត្រូវចុច Connect Telegram Bot ម្តងសម្រាប់ Order នីមួយៗ មុនពេល Bot អាចផ្ញើ Link ទៅគណនីរបស់គេ។</span></div>\n','      <div class="notice okbox">⚡ QR Auto: Connected ✓<br><span class="hint">បង្កើត KHQR ដោយស្វ័យប្រវត្តិ និង Auto Verify ការទូទាត់។</span></div>\n')
@@ -65,6 +65,92 @@ jobs:
           s=s.replace("        const c=$('connectAfterPaid');if(c)c.onclick=()=>openUrl(currentAuto.telegram_bind_url);\n","")
           s=s.replace("      if(data.delivery==='waiting_telegram'&&!autoPollTimer)autoPollTimer=setInterval(()=>checkAutoPayment(false),5000);\n","")
           s=s.replace("addPaidHistory(currentAuto.amount,currentAuto.currency,currentAuto.orderId,data.delivery==='sent'?'Auto Verify + Telegram ✓':'Auto Verify Bakong ✓');","addPaidHistory(currentAuto.amount,currentAuto.currency,currentAuto.orderId,'Auto Verify KHQR ✓');")
+
+          # Home UX/UI refresh: pastel wallet + soft 3D cards, without changing payment logic
+          s=s.replace('Auto Verify + Telegram Bot Delivery','Auto Verify KHQR')
+          s=s.replace('Upload KHQR តាមរូបភាព','Upload KHQR ឬ QR របស់អ្នក')
+          s=s.replace('Brand, Telegram និង Currency','Brand និង Currency')
+          premium_css=r'''
+          :root{
+            --ux-pink:#ff2f8d;--ux-pink2:#ff77b8;--ux-ink:#171522;--ux-muted:#786b7c;
+            --ux-card:rgba(255,255,255,.92);--ux-line:rgba(255,60,145,.18);
+            --ux-shadow:0 14px 34px rgba(255,62,147,.16),0 4px 12px rgba(66,36,60,.08);
+          }
+          html{scroll-behavior:smooth}
+          body{
+            background:
+              radial-gradient(circle at 8% 6%,rgba(255,193,222,.55),transparent 24%),
+              radial-gradient(circle at 92% 22%,rgba(255,224,239,.6),transparent 28%),
+              linear-gradient(180deg,#fff9fc 0%,#fff4f9 55%,#fff 100%)!important;
+            color:var(--ux-ink);
+          }
+          body,.app,.page,.screen{letter-spacing:.01em}
+          header,.header,.topbar,.app-header{
+            position:relative;z-index:5;
+            backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+          }
+          .card,.panel,.tile,.service-card,.menu-card,.stat-card,.wallet-card,[class*="card"]{
+            border:1px solid var(--ux-line)!important;
+            border-radius:26px!important;
+            box-shadow:var(--ux-shadow)!important;
+            transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+          }
+          .card:active,.tile:active,.service-card:active,.menu-card:active,[class*="card"]:active{
+            transform:scale(.985);
+            box-shadow:0 8px 20px rgba(255,62,147,.13)!important;
+          }
+          .hero,.banner,.wallet-hero,[class*="hero"]{
+            border-radius:30px!important;
+            overflow:hidden!important;
+            box-shadow:0 18px 42px rgba(255,42,137,.22)!important;
+            border:1px solid rgba(255,255,255,.75)!important;
+          }
+          h1,h2,h3,.title,.section-title{letter-spacing:-.02em}
+          h2,.section-title{font-weight:900!important}
+          button,.btn,.action,.cta{
+            border-radius:18px!important;
+            min-height:50px;
+            font-weight:800!important;
+            transition:transform .15s ease,filter .15s ease,box-shadow .15s ease;
+          }
+          button:active,.btn:active,.action:active,.cta:active{transform:scale(.97)}
+          input,select,textarea{
+            border-radius:18px!important;
+            min-height:52px;
+            border:1.5px solid rgba(255,61,145,.18)!important;
+            background:rgba(255,255,255,.92)!important;
+            box-shadow:inset 0 1px 0 rgba(255,255,255,.8);
+          }
+          input:focus,select:focus,textarea:focus{
+            outline:none!important;border-color:rgba(255,47,141,.55)!important;
+            box-shadow:0 0 0 4px rgba(255,47,141,.09)!important;
+          }
+          nav,.nav,.bottom-nav,.tabbar,[class*="bottom"][class*="nav"]{
+            background:rgba(255,255,255,.92)!important;
+            backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+            border-top:1px solid rgba(255,72,151,.13)!important;
+            box-shadow:0 -8px 28px rgba(67,40,59,.08)!important;
+          }
+          .active,[aria-selected="true"],.nav .on,.bottom-nav .on{
+            color:var(--ux-pink)!important;
+          }
+          .badge,.pill,[class*="badge"]{
+            border-radius:999px!important;
+            box-shadow:0 6px 16px rgba(255,47,141,.15);
+          }
+          .muted,.sub,.subtitle,.hint{color:var(--ux-muted)!important}
+          .grid,.cards,.service-grid,[class*="grid"]{gap:16px!important}
+          @media(max-width:520px){
+            body{padding-bottom:92px}
+            .card,.panel,.tile,.service-card,.menu-card,.stat-card,[class*="card"]{border-radius:22px!important}
+            .hero,.banner,.wallet-hero,[class*="hero"]{border-radius:24px!important}
+            .grid,.cards,.service-grid,[class*="grid"]{gap:12px!important}
+            h1{font-size:clamp(26px,8vw,38px)!important}
+            h2{font-size:clamp(22px,6.6vw,32px)!important}
+          }
+          '''
+          s=s.replace('</head>','<style>'+premium_css+'</style></head>')
+
 
           card_js=r'''function rr(x,a,b,w,h,r){r=Math.min(r,w/2,h/2);x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath()}
           function loadImg(src){return new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=reject;i.src=src})}
@@ -119,7 +205,7 @@ jobs:
           s=s.replace("const sv=$('saveAutoQr');if(sv)sv.onclick=()=>saveImage(currentAuto.image,'iDrama-'+currentAuto.orderId);","const sv=$('saveAutoQr');if(sv)sv.onclick=async()=>{const img=await makeBrandedQr(currentAuto.image,{amount:money(currentAuto.amount,currentAuto.currency),orderId:currentAuto.orderId,brand:settings.brand});saveImage(img,'iDrama-'+currentAuto.orderId)};")
           p.write_text(s)
           PY
-          grep -q 'iDrama Pay • v3.3' android-wallet/app/src/main/assets/index.html
+          grep -q 'iDrama Pay • v3.4' android-wallet/app/src/main/assets/index.html
           grep -q "fillText('KHQR'" android-wallet/app/src/main/assets/index.html
           ! grep -q 'Telegram Link រឿងពេញ' android-wallet/app/src/main/assets/index.html
 
@@ -127,17 +213,17 @@ jobs:
         run: gradle -p android-wallet clean assembleDebug --no-daemon
 
       - name: Rename APK
-        run: cp android-wallet/app/build/outputs/apk/debug/app-debug.apk iDrama-Pay-v3.3.apk
+        run: cp android-wallet/app/build/outputs/apk/debug/app-debug.apk iDrama-Pay-v3.4.apk
 
       - name: Verify APK
         shell: bash
         run: |
-          test -s iDrama-Pay-v3.3.apk
-          unzip -t iDrama-Pay-v3.3.apk
+          test -s iDrama-Pay-v3.4.apk
+          unzip -t iDrama-Pay-v3.4.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: iDrama-Pay-v3.3-APK
-          path: iDrama-Pay-v3.3.apk
+          name: iDrama-Pay-v3.4-APK
+          path: iDrama-Pay-v3.4.apk
           retention-days: 30
