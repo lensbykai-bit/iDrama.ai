@@ -88,6 +88,27 @@
     if(!found.length)showCatalog('មិនមានរឿងដែលត្រូវនឹងការស្វែងរកនេះទេ។','empty',false);
     else state.hidden=true;
   }
+
+  function renderHeroGallery(){
+    var withPosters=movies.filter(function(item){return Boolean(externalImage(item.poster))});
+    var tiles=document.querySelectorAll('.gallery-poster');
+    var order=withPosters.length>=3?[withPosters[1],withPosters[2],withPosters[0]]
+      :withPosters.length===2?[withPosters[1],null,withPosters[0]]
+      :[null,null,withPosters[0]||null];
+    tiles.forEach(function(tile,index){
+      var item=order[index];
+      if(!item)return;
+      var img=document.createElement('img');
+      img.src=externalImage(item.poster);
+      img.alt=''; img.loading='lazy'; img.decoding='async';
+      img.addEventListener('error',function(){img.remove()},{once:true});
+      tile.appendChild(img);
+      tile.classList.add('has-poster');
+    });
+    var label=document.getElementById('heroFeaturePrice');
+    if(label&&withPosters.length)label.textContent=price(withPosters[0]);
+  }
+
   async function loadMovies(){
     if(!db){showCatalog('មិនអាចភ្ជាប់ប្រព័ន្ធរឿងបាន។ សូមសាកម្តងទៀត។','error',true);return}
     showCatalog('កំពុងទាញយករឿង...','loading',false);
@@ -95,6 +116,7 @@
       var response=await db.from('idrama_items').select('*').eq('published',true).order('featured',{ascending:false}).order('created_at',{ascending:false});
       if(response.error)throw response.error;
       movies=Array.isArray(response.data)?response.data:[];
+      renderHeroGallery();
       drawCards();
     }catch(error){
       console.error('Catalog unavailable:',error.message);
