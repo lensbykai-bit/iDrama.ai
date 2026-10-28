@@ -10,8 +10,32 @@ function ratingStars(v){const r=ratingValue(v),full=Math.max(0,Math.min(5,Math.r
 function categoryLabel(v){return v==='ai'?'រឿង AI':v==='live'?'រឿងមនុស្ស':v==='anime'?'រឿងគំនូរ':'រឿង'}
 function genreList(v){return String(v||'').split(/[,/•|]+/).map(s=>s.trim()).filter(Boolean).slice(0,3)}
 function posterMarkup(x,detail=false){if(x.poster&&/^https?:\/\//i.test(x.poster))return `<img src="${esc(x.poster)}" loading="lazy" alt="${esc(x.title)}">`;return `<div class="fill${detail?' detail-fill':''}" style="background:${grad(x.accent)}"><div class="word">${esc(x.word||'DRAMA')}</div></div>`}
-function card(x){return `<article class="card" data-id="${x.id}"><div class="poster">${posterMarkup(x)}<span class="poster-star" title="ពេញនិយម">★</span></div><div class="card-info"><h3 title="${esc(x.title)}">${esc(x.title)}</h3><div class="card-bottom"><div class="card-meta"><span class="views"><span class="eye">◉</span>${viewsText(x.views)} មើល</span></div><b class="price-pill ${x.paid?'':'free-price'}">${money(x)}</b></div></div></article>`}
-function render(){let list=all.filter(x=>(filter==='all'||x.cats.includes(filter))&&x.title.toLowerCase().includes(query.toLowerCase()));$('grid').innerHTML=list.map(card).join('');$('empty').style.display=list.length?'none':'block';$('empty').textContent='រកមិនឃើញរឿងដែលត្រូវនឹងការស្វែងរកទេ។';document.querySelectorAll('[data-id]').forEach(e=>e.onclick=()=>openDrama(e.dataset.id))}
+function card(x){
+  // Only poster and price are shown to visitors; the title stays accessible.
+  return `<article class="card poster-only" data-id="${esc(x.id)}" role="button" tabindex="0" aria-label="${esc(x.title)} — ${esc(money(x))}">
+    <div class="poster">${posterMarkup(x)}</div>
+    <div class="poster-price"><span class="price-pill ${x.paid?'':'free-price'}">${money(x)}</span><span class="poster-arrow" aria-hidden="true">↗</span></div>
+  </article>`;
+}
+function render(){
+  const list=all.filter(x=>(filter==='all'||x.cats.includes(filter))&&x.title.toLowerCase().includes(query.toLowerCase()));
+  $('grid').innerHTML=list.map(card).join('');
+  $('empty').style.display=list.length?'none':'block';
+  $('empty').textContent='រកមិនឃើញរឿងដែលត្រូវនឹងការស្វែងរកទេ។';
+  document.querySelectorAll('#grid [data-id]').forEach(el=>{
+    const open=()=>{
+      const movie=all.find(x=>String(x.id)===String(el.dataset.id));
+      if(!movie)return;
+      if(movie.paid && typeof window.startPurchase==='function'){
+        window.startPurchase(movie); // server verifies payment; link is never on the public card
+      }else{
+        openDrama(movie.id); // free titles use the existing Telegram access view
+      }
+    };
+    el.addEventListener('click',open);
+    el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}});
+  });
+}
 async function load(){let [a,s]=await Promise.all([db.from('idrama_items').select('*').eq('published',true).order('featured',{ascending:false}).order('created_at',{ascending:false}),db.from('site_settings').select('bakong_qr_url,payment_note').eq('id',1).maybeSingle()]);if(a.error){$('empty').textContent='មិនអាចទាញយកទិន្នន័យបាន';return}if(s.data)settings=s.data;all=(a.data||[]).map(x=>({...x,cats:cats(x)}));render();if(typeof window.renderFeaturedHero==='function')window.renderFeaturedHero(all)}
 async function getEpisodes(itemId){let {data,error}=await db.from('idrama_episodes').select('id,number,preview,published').eq('item_id',itemId).eq('published',true).order('number');return error?[]:(data||[])}
 async function getSource(episodeId){if(!episodeId)return '';let {data}=await db.from('idrama_episode_sources').select('video_url').eq('episode_id',episodeId).maybeSingle();return data?.video_url||''}

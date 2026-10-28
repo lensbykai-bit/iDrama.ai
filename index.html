@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#f6f9ff">
+<meta name="theme-color" content="#090b1c">
+<meta name="description" content="iDrama.ai — រើសរឿងដែលអ្នកពេញចិត្ត ទូទាត់ KHQR ហើយទទួល Telegram Link រឿងពេញ។">
 <title>iDrama.ai — រឿងខ្លី និងរឿងពេញក្នុង Telegram</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,12 +17,15 @@
 <link rel="stylesheet" href="reference-ui.css">
 <link rel="stylesheet" href="payment-3d.css?v=5">
 <link rel="stylesheet" href="site-3d.css?v=1">
-<link rel="stylesheet" href="pink-blue-theme.css?v=1">
+<link rel="stylesheet" href="cinema-neon.css?v=20261028">
 </head>
 <body>
 <header class="top app-topbar">
   <nav class="nav">
-    <a class="logo" href="#"><span class="logo-play">▶</span><span>iDrama<b>.ai</b></span></a>
+    <a class="logo id-brand" href="index.html" aria-label="iDrama.ai">
+      <span class="id-brand-mark" aria-hidden="true"><span class="id-brand-play"></span></span>
+      <span class="id-brand-copy"><span class="id-brand-name">iDrama<span class="id-brand-ai">.ai</span></span><span class="id-brand-tagline">AI CINEMA &amp; STORIES</span></span>
+    </a>
     <div class="links">
       <button class="active" data-f="all">⌂ ទំព័រដើម</button>
       <button data-f="ai">▣ ភាពយន្ត AI</button>
@@ -29,7 +33,7 @@
       <button data-f="romance">♡ ស្នេហា</button>
     </div>
     <label class="search"><input id="q" placeholder="ស្វែងរករឿង..."></label>
-    <div class="top-actions" aria-hidden="true"><span class="top-icon">♧</span><span class="profile-dot">iD</span></div>
+    <a class="header-discover" href="#catalog">មើលរឿង <span aria-hidden="true">↗</span></a>
   </nav>
 </header>
 
@@ -43,12 +47,20 @@
 </aside>
 
 <main class="wrap app-main">
-  <section class="hero">
-    <div>
-      <div class="ey">iDrama.ai • Short Drama</div>
-      <h1>ជ្រើសរឿង → ទូទាត់ Bakong → បើក Telegram ភ្លាម</h1>
-      <p>មិនចាំបាច់ចុះឈ្មោះ ឬ Login ទេ។ មើលរូប Poster, អានសេចក្ដីសង្ខេបសាច់រឿង និងតម្លៃ រួចទូទាត់តាម Bakong KHQR ដើម្បីទទួលលីងរឿងពេញ។</p>
+  <section class="brand-stage" aria-labelledby="stage-title">
+    <div class="stage-orb stage-orb-pink" aria-hidden="true"></div>
+    <div class="stage-orb stage-orb-blue" aria-hidden="true"></div>
+    <div class="stage-content">
+      <span class="stage-eyebrow"><span class="live-dot" aria-hidden="true"></span> YOUR CINEMA. YOUR STORIES.</span>
+      <div class="stage-brand id-brand" aria-label="iDrama.ai">
+        <span class="id-brand-mark" aria-hidden="true"><span class="id-brand-play"></span></span>
+        <span class="id-brand-copy"><span class="id-brand-name">iDrama<span class="id-brand-ai">.ai</span></span><span class="id-brand-tagline">AI CINEMA &amp; STORIES</span></span>
+      </div>
+      <h1 id="stage-title" class="stage-headline">ជ្រើសរឿង • ទូទាត់ KHQR • ទទួល Telegram Link</h1>
+      <p class="stage-description">មើល Poster និងតម្លៃរឿង។ ទូទាត់ជោគជ័យ ទើបទទួលតំណរឿងពេញ។ មិនតម្រូវឱ្យចុះឈ្មោះទេ។</p>
+      <a href="#catalog" class="stage-button">ជ្រើសរើសរឿង <span aria-hidden="true">↗</span></a>
     </div>
+    <div class="stage-footer" aria-hidden="true"><span>✦ AI CINEMA</span><span>KHQR SECURE CHECKOUT</span></div>
   </section>
 
   <div class="chips">
@@ -62,11 +74,11 @@
     <button class="chip" data-f="family">គ្រួសារ</button>
   </div>
 
-  <section class="sec">
+  <section class="sec" id="catalog">
     <div class="head">
       <div>
         <h2>ជ្រើសរើសរឿង</h2>
-        <div class="sub">ចុចលើរូបភាព ដើម្បីមើលសាច់រឿង ពិន្ទុ និងតម្លៃ</div>
+        <div class="sub">ចុចលើរូប Poster ដើម្បីទូទាត់ និងទទួល Telegram Link ក្រោយការផ្ទៀងផ្ទាត់</div>
       </div>
     </div>
     <div id="grid" class="grid"></div>
@@ -77,8 +89,8 @@
 <footer class="site-footer">
   <div class="footer-main">
     <div class="footer-brand">
-      <a class="footer-logo" href="#">iDrama<span>.ai</span></a>
-      <p>មើល Poster និងសង្ខេបសាច់រឿងបានងាយៗ ហើយទូទាត់តាម KHQR ដើម្បីទទួលលីងរឿងពេញ។</p>
+      <a class="footer-logo id-brand" href="index.html" aria-label="iDrama.ai"><span class="id-brand-mark" aria-hidden="true"><span class="id-brand-play"></span></span><span class="id-brand-copy"><span class="id-brand-name">iDrama<span class="id-brand-ai">.ai</span></span><span class="id-brand-tagline">AI CINEMA &amp; STORIES</span></span></a>
+      <p>បង្ហាញរូប Poster និងតម្លៃ។ ទូទាត់ KHQR ហើយទទួល Telegram Link រឿងពេញ ក្រោយផ្ទៀងផ្ទាត់ជោគជ័យ។</p>
       <div class="footer-note">🎬 រឿងខ្លី • 💳 KHQR • 📲 Telegram</div>
     </div>
     <div class="footer-col">
@@ -91,7 +103,7 @@
       <h3>តាមដានពួកយើង</h3>
       <div class="footer-socials"><span>Telegram</span><span>TikTok</span><span>Facebook</span><span>YouTube</span></div>
     </div>
-    <div class="footer-col footer-ad-col"><h3>ផ្សាយពាណិជ្ជកម្ម</h3><div class="footer-ad">Ad Space<br><small>300 × 250</small></div></div>
+    <div class="footer-col footer-ad-col"><h3>របៀបប្រើប្រាស់</h3><p class="footer-flow">① ជ្រើសរឿង<br>② ទូទាត់ Bakong KHQR<br>③ ទទួល Telegram Link</p></div>
   </div>
   <div class="footer-bottom"><div>© 2026 iDrama.ai</div><div class="footer-bottom-links"><span>អំពីយើង</span><span>ទំនាក់ទំនង</span><span>គោលការណ៍ឯកជនភាព</span><span>លក្ខខណ្ឌប្រើប្រាស់</span><a class="admin" href="admin.html">Admin</a></div></div>
 </footer>
@@ -152,7 +164,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.min.js"></script>
-<script src="featured-hero.js"></script>
+
 <script src="app.js"></script>
 <script src="rating-card.js"></script>
 <script src="guest-function-client.js"></script>
