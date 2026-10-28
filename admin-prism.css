@@ -1,0 +1,112 @@
+/* iDrama.ai — Prism Admin Dashboard, safe visual enhancement (2026) */
+:root{color-scheme:dark;--prism-pink:#ff4fcb;--prism-violet:#b151f0;--prism-blue:#755dff;--prism-cyan:#31cfff;--prism-gold:#ffb65b;--prism-gradient:linear-gradient(112deg,#ff4fcb 0%,#b151f0 46%,#755dff 77%,#31cfff 100%);--bg:#080b1e;--card:#12162f;--line:#6d56877a;--ink:#faf7ff;--muted:#adb1d2;--b:#ff4fcb;--ok:#4feac4;--danger:#ff89aa}
+html{scroll-padding-top:93px}body{background:radial-gradient(ellipse 750px 450px at -9% 6%,#9d218443,transparent 76%),radial-gradient(ellipse 600px 450px at 105% 10%,#225dbe3c,transparent 75%),linear-gradient(180deg,#080a1d,#0b1026 57%,#080b1d)!important;color:#faf8ff;font-family:Inter,"Noto Sans Khmer",Battambang,sans-serif!important}
+h1,h2,h3,p,.f label,.section-guide p,.login-card-description{font-family:Inter,"Noto Sans Khmer",Battambang,sans-serif}
+.prism-accent-strip{height:4px;background:var(--prism-gradient);box-shadow:0 0 18px #e02ac959;position:relative;z-index:21}
+.admin-mark{background:linear-gradient(135deg,#ffe2fb,#ff4fcb 27%,#755dff 55%,#31cfff 78%,#ffb65b)!important;box-shadow:0 0 26px #f14bc969,0 10px 22px #0009!important}
+.admin-mark-play{border-left-color:#fa63d2!important}.admin-brand-words strong{background:linear-gradient(130deg,#ffcbf3,#ec63d3 53%,#a671ec)!important;background-clip:text!important;-webkit-background-clip:text!important;color:transparent!important}
+.admin-ai{background:linear-gradient(120deg,#d5b0ff,#83b8ff,#31cfff)!important;background-clip:text!important;-webkit-background-clip:text!important;color:transparent!important}
+.admin-head-label{border-color:#ca73cb80!important;color:#f2b7e7!important;background:#471d6069;border-radius:999px!important}
+.login{max-width:1180px;gap:clamp(35px,5vw,80px);padding:45px 26px}.login-brand .admin-mark{--sz:105px!important}
+.login-visual h1{font-family:"Noto Sans Khmer",sans-serif!important;font-size:clamp(25px,3vw,38px)!important}
+.login-visual h1 span{background:var(--prism-gradient)!important;background-clip:text!important;-webkit-background-clip:text!important;color:transparent!important}
+.login-card{border:1px solid #a26bb3aa!important;border-radius:27px!important;background:radial-gradient(ellipse at 90% 3%,#2e57a839,transparent 48%),linear-gradient(160deg,#1a1532,#10162e)!important;box-shadow:0 25px 80px #0009,0 0 34px #bf29be26!important}
+.login-card input{min-height:52px!important;background:#0c1128!important;border-color:#64527d!important;color:#fff!important}
+.login-lock,.login-submit,.btn.pink,.btn.active{background:var(--prism-gradient)!important;color:#fff!important;border:1px solid #faace58c!important;box-shadow:0 9px 22px #ce36ba37!important}
+.login-security{color:#9d9fba!important}.login-visual-features span{background:#27173fb3!important;border-color:#755e938a!important}
+.top{background:#080c20ef!important;border-bottom:1px solid #a052af5e!important;height:79px!important;box-shadow:0 12px 35px #0008!important}
+.top .brand{flex-shrink:0}.top .admin-brand-words strong{font-size:26px!important}.top .right{gap:9px}
+.top .right .btn{border-radius:12px!important}
+.main{max-width:1530px!important;padding:33px clamp(19px,3vw,47px) 75px!important;display:grid;grid-template-columns:minmax(210px,232px) minmax(0,1fr);grid-template-rows:auto auto 1fr;column-gap:23px;row-gap:18px}
+.dashboard-intro{grid-column:1/-1;grid-row:1;min-height:193px;position:relative;overflow:hidden;margin:0!important;border-radius:25px!important;border:1px solid #9961ba99!important;padding:35px 36px!important;background:radial-gradient(ellipse at 12% 85%,#ba279d47,transparent 52%),radial-gradient(ellipse at 91% 20%,#255bc050,transparent 50%),linear-gradient(112deg,#16122f,#101936)!important;box-shadow:0 24px 56px #0007,inset 0 1px #ffffff20!important}
+.dashboard-intro:after{width:420px!important;height:420px!important;border:1px solid #b85acf25!important;right:-105px!important;top:-180px!important}
+.dashboard-intro:before{content:"▶";display:grid;place-items:center;position:absolute;right:25%;top:29px;width:113px;height:113px;border-radius:29px;color:#f95cd1;font:900 52px Inter,sans-serif;border:4px solid #d469ef;background:linear-gradient(140deg,#2a1646,#0c1027);box-shadow:0 0 0 5px #5445c277,0 0 30px #d63cc54a;transform:rotate(-9deg)}
+.dashboard-intro h1{font-size:clamp(29px,3.1vw,42px)!important}.dashboard-intro h1 span{background:var(--prism-gradient)!important;background-clip:text!important;-webkit-background-clip:text!important;color:transparent!important}
+.dashboard-intro p{color:#bec0dd!important;font-size:12px!important}.dashboard-eyebrow{color:#ef9cdb!important}
+.dashboard-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;position:relative;z-index:3}
+.dashboard-payment-link{display:inline-flex;gap:10px;align-items:center;white-space:nowrap;border-radius:12px;padding:12px 17px;color:#fff;font:800 12px "Noto Sans Khmer",sans-serif;cursor:pointer;background:var(--prism-gradient);border:1px solid #f8a1e084;box-shadow:0 10px 26px #ca31bf45}
+.dashboard-site-link{font:800 12px "Noto Sans Khmer",sans-serif!important;background:#292143!important;border:1px solid #9d71b88c!important;box-shadow:none!important}
+.stats{grid-column:2;grid-row:2;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important;margin:0!important}
+.stat{min-height:127px!important;border-radius:18px!important;background:linear-gradient(145deg,#1c1735,#111831)!important;border:1px solid #6c538786!important;box-shadow:0 13px 34px #0006,inset 0 1px #ffffff14!important;padding:18px!important}
+.stat:after{background:var(--prism-gradient)!important;height:3px!important}
+.stat:nth-child(2):after{background:linear-gradient(90deg,#755dff,#31cfff)!important}.stat:nth-child(3):after{background:linear-gradient(90deg,#ffb65b,#ff4fcb)!important}
+.stat b{font-size:clamp(25px,2.4vw,34px)!important;color:white!important}
+.stat-icon{background:#8b2eab2b!important;border-color:#e46edd64!important;color:#faace6!important}
+.stat:nth-child(2) .stat-icon{color:#72dfff!important}.stat:nth-child(3) .stat-icon{color:#ffc77f!important}.stat:nth-child(4) .stat-icon{color:#bfa4ff!important}
+.stat span:not(.stat-icon){font-size:11px!important;color:#b4b3d5!important}
+.tabs{grid-column:1;grid-row:2/span 2;display:flex!important;flex-direction:column!important;flex-wrap:nowrap!important;gap:8px!important;align-self:start;position:sticky;top:100px;padding:17px!important;border:1px solid #6751817a!important;border-radius:20px!important;background:linear-gradient(160deg,#1c1634,#111630)!important;box-shadow:0 18px 39px #0007!important;min-height:382px}
+.prism-tabs-title{padding:4px 8px 17px;border-bottom:1px solid #ffffff1a;margin-bottom:8px}.prism-tabs-title span{display:block;color:#fc94e0;letter-spacing:1.8px;font:900 11px Inter,sans-serif}.prism-tabs-title small{display:block;color:#999fbd;letter-spacing:1px;font:700 9px Inter,sans-serif;margin-top:8px}
+.tabs .btn{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:11px;text-align:left;border-radius:13px!important;padding:13px 14px!important;min-height:47px!important;flex:0 0 auto!important;font:750 12px "Noto Sans Khmer",sans-serif!important;background:transparent;color:#bab3d4;border:1px solid transparent!important}
+.tabs .btn:hover{background:#343054b3!important;color:#ffe2fa!important;transform:translateX(2px)}
+.tabs .btn.active{background:linear-gradient(115deg,#b83eaa,#7542c8 74%,#404eac)!important;border-color:#e78bdfa4!important;box-shadow:0 8px 21px #c32db13b!important;color:#fff!important}
+.prism-sidebar-foot{margin-top:auto;padding:16px 9px 5px;border-top:1px solid #ffffff1c}.prism-sidebar-foot strong{display:block;color:#ffb1ed;font-size:12px}.prism-sidebar-foot small{display:block;color:#8d97be;margin-top:7px;font-size:9px}
+.main>section{grid-column:2;grid-row:3;min-width:0}.main>section.hide{display:none!important}
+.section-guide{padding:14px 16px!important;border-color:#745b9290!important;background:#18152fbb!important;color:#c4c1da!important}
+.section-guide span{color:#fd9ade!important}
+.section-guide p{font-size:12px!important;line-height:1.9!important}
+.panel{border-radius:19px!important;background:linear-gradient(155deg,#1a1733,#10172e)!important;border:1px solid #62517e91!important;box-shadow:0 17px 39px #0005,inset 0 1px #ffffff0a!important}
+.head{margin-bottom:18px!important}.head h2{color:#fff6ff!important;font-size:clamp(17px,1.8vw,22px)!important}.head h2:before{background:var(--prism-gradient)!important;box-shadow:0 0 13px #ff4fcb88!important}
+.prism-pill{padding:5px 10px;border-radius:999px;font:800 9px Inter,sans-serif;letter-spacing:.3px;color:#ffade6;border:1px solid #cf75d17a;background:#55226473;margin-left:9px;white-space:nowrap}
+input,textarea,select{border-color:#5b507e!important;border-radius:12px!important;background:#0e122a!important;color:#fff!important}
+input:focus,textarea:focus,select:focus{border-color:#f16cd8!important;box-shadow:0 0 0 3px #ed55c22d!important;outline:0!important}
+input[type=checkbox]{accent-color:#f05aca!important}.f label{color:#ded5f4!important}
+.btn{transition:filter .15s ease,transform .15s ease;background:#26203f;border-radius:11px!important}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.11)}
+.btn.soft{color:#edc6ff!important;background:#281e42!important;border-color:#765594!important;box-shadow:none!important}
+.btn.danger{background:#3a1d35!important;border-color:#8c4967!important;color:#ffc3cf!important}
+.row{border-color:#5e4d7f8f!important;background:linear-gradient(120deg,#171833,#11182e)!important;border-radius:14px!important;padding:13px!important}
+.row:hover{border-color:#c067cc!important;box-shadow:0 12px 29px #0005!important}
+.row .meta{color:#a7acc9!important}.thumb{border-radius:11px!important}.status.paid{background:#173c39!important;color:#6af6d7!important}.status.pending{background:#4a371d!important;color:#ffd68f!important}
+#movieFormWrap{scroll-margin-top:95px}
+.prism-advanced{grid-column:1/-1;margin:13px 0 3px;padding:15px 16px;border:1px solid #65527f95;border-radius:14px;background:#151630}
+.prism-advanced summary{cursor:pointer;color:#d9b9e8;font:750 12px "Noto Sans Khmer",sans-serif;list-style:none}
+.prism-advanced summary:before{content:"+";display:inline-grid;place-items:center;font:800 16px Inter,sans-serif;background:#b24eca40;border:1px solid #a46ecca6;width:26px;height:26px;border-radius:8px;margin-right:9px}
+.prism-advanced[open] summary:before{content:"−"}
+.prism-advanced-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 14px;padding-top:12px}
+.prism-advanced-fields>.f.full{grid-column:1/-1}
+/* Payment center */
+.payment-overview{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 15px}
+.payment-state-card{position:relative;display:flex;flex-direction:column;gap:8px;min-height:150px;padding:19px 16px;border:1px solid #78629791;border-radius:17px;background:linear-gradient(145deg,#1e173a,#10192f);box-shadow:0 12px 30px #0005}
+.payment-state-card:nth-child(2){background:linear-gradient(145deg,#171c41,#11182f)}.payment-state-card:nth-child(3){background:linear-gradient(145deg,#241933,#11172d)}
+.payment-state-icon{position:absolute;right:17px;top:16px;font-size:22px;color:#f58adf}
+.payment-state-card:nth-child(2) .payment-state-icon{color:#4fdcf5}.payment-state-card:nth-child(3) .payment-state-icon{color:#ffca7c}
+.payment-state-card small{font:800 10px Inter,sans-serif;color:#b3a6d7;text-transform:uppercase;letter-spacing:.7px;padding-right:24px}
+.payment-state-card strong{font:850 18px "Noto Sans Khmer",Inter,sans-serif;color:#fff;line-height:1.6;margin-top:5px}
+.payment-state-card span:last-child{font-size:10px;color:#a9b2ce;line-height:1.8}
+.payment-state-card[data-state="ready"] strong{color:#65f2d2}.payment-state-card[data-state="attention"] strong{color:#ffd493}.payment-state-card[data-state="error"] strong{color:#ff9db6}
+.payment-service-note{display:flex;align-items:center;gap:14px;padding:15px 17px;border:1px solid #84639886;border-radius:15px;background:#151b359c;margin-bottom:16px}
+.payment-service-icon{flex:0 0 39px;width:39px;height:39px;border-radius:13px;display:grid;place-items:center;background:#4741847d}
+.payment-service-note>div{flex:1;min-width:0}.payment-service-note strong{font-size:12px;color:#f7dbff}.payment-service-note p{color:#afbdd9;font-size:11px;line-height:1.9;margin:4px 0 0}
+.payment-service-note>a{border:1px solid #8d78c08a;background:#282347;padding:10px 12px;border-radius:11px;white-space:nowrap;color:#e4c1ff;font:800 10px Inter,sans-serif}
+.payment-config-panel .head{border-bottom:1px solid #ffffff1b;padding-bottom:15px;margin-bottom:18px}
+.payment-config-panel form>.actions{margin-top:22px}
+.payment-config-panel form>.actions button{min-width:170px;min-height:49px}
+.payment-config-panel form>.msg{margin-top:12px}
+#dynamicKhqrGuide.prism-dynamic-guide{background:linear-gradient(120deg,#21163f,#122047)!important;border:1px solid #9a60b5a3!important;border-radius:16px!important;padding:19px!important;margin-bottom:18px!important}
+#dynamicKhqrGuide.prism-dynamic-guide>div:first-child{font:800 15px "Noto Sans Khmer",sans-serif!important;color:#fce9ff}
+#dynamicKhqrGuide.prism-dynamic-guide div{line-height:1.9}
+#dynamicKhqrState span{border:1px solid #ffffff20!important;font:700 10px Inter,"Noto Sans Khmer",sans-serif!important}
+.prism-config-grid{display:grid;grid-template-columns:minmax(0,1.28fr) minmax(230px,.72fr);gap:15px;align-items:start}
+.prism-config-group{min-width:0;padding:18px;border:1px solid #63528487;border-radius:17px;background:#11182fa8}
+.prism-config-group h3{margin:0 0 6px;color:#fff7ff;font:800 15px "Noto Sans Khmer",sans-serif}
+.prism-config-group>p{font-size:11px;color:#adb4d0;line-height:1.9;margin:0 0 18px}
+.prism-config-group.merchant .grid{gap:8px 12px}
+.prism-config-group.merchant .check{margin:7px 0 12px!important}
+.prism-config-group.merchant .check label{width:100%;padding:13px 15px;border-radius:12px;background:#201c40!important;border:1px solid #9969ad8a!important;color:#ffd4f0!important;gap:13px}
+.prism-config-group.merchant>.meta,.prism-config-group.merchant .meta{margin-top:12px;color:#9ca9cb;font:500 10px/1.8 "Noto Sans Khmer",sans-serif}
+.prism-config-group.fallback>.f{margin-bottom:15px}
+.prism-config-group.fallback input[type=file]{background:#191c37!important;padding:10px;font-size:11px}
+.prism-config-group.fallback input[type=file]::file-selector-button{border:0;border-radius:9px;padding:9px 12px;color:#fff;background:var(--prism-gradient);margin-right:9px}
+#khqrPreview{box-shadow:0 0 0 4px #dd75d718,0 12px 27px #0009}
+.payment-helpfoot{margin-top:15px;padding:14px 16px;background:#161b35a3;border:1px solid #554e7c76;border-radius:13px;color:#b8b6d5;font-size:11px;line-height:1.8}
+.prism-check-settings{display:inline-flex;gap:8px;align-items:center;padding:10px 14px;background:#24214b;border:1px solid #8356a9;border-radius:12px;color:#edc7fc;font:800 11px "Noto Sans Khmer",sans-serif;margin-top:12px}
+.prism-account-panel{max-width:860px}
+.prism-account-user{display:flex;align-items:center;gap:14px;padding:15px;border:1px solid #6a53898d;border-radius:13px;background:#141b38;margin-bottom:20px}
+.prism-account-user>span{display:grid;place-items:center;width:49px;height:49px;border-radius:14px;color:#ffd1f6;background:var(--prism-gradient);font-size:24px}
+.prism-account-user strong,.prism-account-user small{display:block}.prism-account-user strong{font-size:14px}.prism-account-user small{color:#b2bada;font-size:11px;margin-top:6px}
+/* laptop and mobile layout */
+@media(max-width:1200px){.main{grid-template-columns:minmax(185px,208px) minmax(0,1fr);column-gap:16px}.stats{gap:9px!important}.stat{padding:13px!important}.dashboard-intro:before{right:31%}.prism-config-grid{grid-template-columns:1fr}.payment-overview{gap:8px}}
+@media(max-width:940px){.main{display:block!important;padding:20px 17px 50px!important}.dashboard-intro{margin-bottom:16px!important;padding:26px 24px!important}.dashboard-intro:before{display:none}.stats{margin-bottom:17px!important;grid-template-columns:repeat(4,minmax(0,1fr))!important}.tabs{position:static!important;min-height:0!important;display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;padding:9px!important;margin-bottom:18px!important;gap:5px!important}.tabs .btn{flex:1 1 auto!important;justify-content:center!important;min-height:42px!important;font-size:11px!important;padding:9px 10px!important}.prism-tabs-title,.prism-sidebar-foot{display:none!important}.payment-overview{grid-template-columns:repeat(3,minmax(0,1fr))}.prism-config-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:720px){.top{height:70px!important}.top .admin-brand-words strong{font-size:22px!important}.dashboard-actions{width:100%}.dashboard-intro{flex-direction:column!important;align-items:flex-start!important}.stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}.payment-overview{grid-template-columns:1fr 1fr}.payment-overview .payment-state-card:last-child{grid-column:1/-1}.payment-service-note{align-items:flex-start;flex-wrap:wrap}.payment-service-note>a{margin-left:53px}.prism-config-grid{grid-template-columns:1fr}.prism-advanced-fields{grid-template-columns:1fr}.prism-advanced-fields>.f.full{grid-column:auto}.login{padding:29px 17px}.login-card{padding:23px!important}}
+@media(max-width:450px){.top .admin-head-label{display:none}.main{padding:12px 12px 40px!important}.dashboard-intro{padding:22px 19px!important}.dashboard-actions a,.dashboard-actions button{font-size:10px!important;padding:10px!important}.tabs .btn{font-size:10px!important;padding:9px 7px!important}.prism-pill{display:none}.payment-overview{grid-template-columns:1fr}.payment-overview .payment-state-card:last-child{grid-column:auto}.payment-state-card{min-height:115px}.payment-config-panel{padding:14px!important}.prism-config-group{padding:13px}.login-brand .admin-mark{--sz:68px!important}}
+@media(prefers-reduced-motion:reduce){.btn,.tabs .btn{transition:none!important}}
