@@ -65,6 +65,8 @@ public class MainActivity extends Activity {
     private void createWebView() {
         webView = new WebView(this);
         webView.setBackgroundColor(Color.rgb(246, 247, 251));
+        // Avoid blank content when a device WebView GPU rasterizer rejects font buffers.
+        webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         container.addView(webView, 0, new FrameLayout.LayoutParams(-1, -1));
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
@@ -95,9 +97,7 @@ public class MainActivity extends Activity {
                 handler.removeCallbacks(timeout);
                 if (progress != null) progress.setVisibility(View.GONE);
                 if (!failed && errorPanel != null) errorPanel.setVisibility(View.GONE);
-                if (HOME.equals(url)) view.evaluateJavascript(
-                    "(function(){var w=document.querySelector('.wrap'),r=w.getBoundingClientRect(),s=getComputedStyle(w);return JSON.stringify({ready:document.readyState,width:innerWidth,height:innerHeight,scroll:scrollY,body:document.body.innerText,wrap:{x:r.x,y:r.y,w:r.width,h:r.height,display:s.display,visibility:s.visibility,opacity:s.opacity}})})()",
-                    result -> android.util.Log.i("WalletDebug", result));
+
             }
             @Override public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 if (request.isForMainFrame()) showError("មិនអាចផ្ទុកទំព័របានទេ។ សូមសាកម្តងទៀត ឬត្រឡប់ទៅទំព័រមេ។");

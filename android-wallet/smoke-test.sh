@@ -11,10 +11,11 @@ for attempt in 1 2 3 4 5; do
   adb shell uiautomator dump /sdcard/window.xml
   adb pull /sdcard/window.xml android-wallet/test-output/offline.xml
   adb exec-out screencap -p > android-wallet/test-output/offline.png
-  if grep -q 'Generate QR' android-wallet/test-output/offline.xml; then break; fi
+  if grep -q 'Generate QR' android-wallet/test-output/offline.xml && python3 android-wallet/assert-screen.py android-wallet/test-output/offline.png; then break; fi
 done
 grep -q 'Generate QR' android-wallet/test-output/offline.xml
 grep -q 'iDrama Pay' android-wallet/test-output/offline.xml
+python3 android-wallet/assert-screen.py android-wallet/test-output/offline.png
 adb shell am force-stop ai.idrama.pay.recovery
 adb shell am start -W -n ai.idrama.pay.recovery/ai.idrama.pay.MainActivity
 sleep 6
@@ -22,5 +23,6 @@ adb shell uiautomator dump /sdcard/window.xml
 adb pull /sdcard/window.xml android-wallet/test-output/relaunch.xml
 adb exec-out screencap -p > android-wallet/test-output/relaunch.png
 grep -q 'Generate QR' android-wallet/test-output/relaunch.xml
+python3 android-wallet/assert-screen.py android-wallet/test-output/relaunch.png
 adb logcat -d -s AndroidRuntime:E > android-wallet/test-output/crash.log
 if grep -q 'FATAL EXCEPTION' android-wallet/test-output/crash.log; then exit 1; fi
