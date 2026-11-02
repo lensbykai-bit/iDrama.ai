@@ -1,398 +1,52 @@
 name: Build iDrama Pay APK
-
 on:
   push:
-    branches: [ main ]
-    paths:
-      - 'android-wallet/**'
-      - '.github/workflows/build-idrama-pay.yml'
+    branches: [ main, 'fix/idrama-pay-v1.6-white-screen' ]
+    paths: [ 'android-wallet/**', '.github/workflows/build-idrama-pay.yml' ]
   workflow_dispatch:
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Set up Java 17
-        uses: actions/setup-java@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
-
-      - name: Install Android SDK packages
-        shell: bash
-        run: |
-          export ANDROID_SDK_ROOT="${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}"
-          export ANDROID_HOME="$ANDROID_SDK_ROOT"
-          SDKMANAGER="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
-          if [ ! -x "$SDKMANAGER" ]; then SDKMANAGER="$(command -v sdkmanager)"; fi
-          yes | "$SDKMANAGER" --licenses >/dev/null || true
-          "$SDKMANAGER" 'platform-tools' 'platforms;android-35' 'build-tools;35.0.0'
-          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT" >> "$GITHUB_ENV"
-          echo "ANDROID_HOME=$ANDROID_SDK_ROOT" >> "$GITHUB_ENV"
-
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+      - uses: android-actions/setup-android@v3
+      - run: sdkmanager 'platform-tools' 'platforms;android-35' 'build-tools;35.0.0'
+      - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
-
-      - name: Install and patch app assets
-        shell: bash
+      - name: Build and verify bundled screen
         run: |
-          mkdir -p android-wallet/app/src/main/assets
-          base64 --decode android-wallet/app_icon.b64 > android-wallet/app/src/main/res/drawable/ic_launcher_art.webp
-          cp android-wallet/app/src/main/res/drawable/ic_launcher_art.webp android-wallet/app/src/main/assets/app_icon.webp
-          cat android-wallet/app_html.part1 android-wallet/app_html.part2 android-wallet/app_html.part3 | base64 --decode | gunzip > android-wallet/app/src/main/assets/index.html
-          python3 <<'PY'
-          from pathlib import Path
-          import re
-          p=Path('android-wallet/app/src/main/assets/index.html')
-          s=p.read_text()
-          s=re.sub(r'iDrama Pay • v[0-9]+[.][0-9]+', 'iDrama Pay • v3.9', s)
-          s=s.replace('          <div class="f"><label>Telegram Link រឿងពេញ</label><input id="autoTelegram" placeholder="https://t.me/c/1234567890/123"></div>\n','')
-          s=s.replace('      <div class="f"><label>Telegram Link រឿងពេញ (Default)</label><input id="telegramInput" placeholder="https://t.me/c/1234567890/123"></div>\n','')
-          s=s.replace('      <div class="notice okbox">⚡ QR Auto + Telegram Bot: Connected ✓<br><span class="hint">API/Secret នៅ Server។ អតិថិជនត្រូវចុច Connect Telegram Bot ម្តងសម្រាប់ Order នីមួយៗ មុនពេល Bot អាចផ្ញើ Link ទៅគណនីរបស់គេ។</span></div>\n','      <div class="notice okbox">⚡ QR Auto: Connected ✓<br><span class="hint">បង្កើត KHQR ដោយស្វ័យប្រវត្តិ និង Auto Verify ការទូទាត់។</span></div>\n')
-          s=s.replace('      <div class="btnrow"><button class="btn soft" id="openTelegram">បើក Telegram</button><button class="btn soft" id="exportData">ចែករំលែក Backup</button></div>\n','      <div class="btnrow"><button class="btn soft" id="exportData">ចែករំលែក Backup</button></div>\n')
-          s=s.replace("$('brandInput').value=settings.brand;$('telegramInput').value=settings.telegram;$('noteInput').value=settings.note;","$('brandInput').value=settings.brand;$('noteInput').value=settings.note;")
-          s=s.replace("$('autoCurrency').value=settings.currency;$('autoTelegram').value=settings.telegram||'';updateCard();","$('autoCurrency').value=settings.currency;updateCard();")
-          s=s.replace("settings={brand:$('brandInput').value.trim()||defaults.brand,telegram:$('telegramInput').value.trim(),note:","settings={brand:$('brandInput').value.trim()||defaults.brand,telegram:'',note:")
-          s=s.replace("$('openTelegram').onclick=()=>openUrl(settings.telegram);","")
-          s=s.replace(",tg=$('autoTelegram').value.trim();",";").replace("telegram_url:tg","telegram_url:''")
-          s=re.sub(r"    let tgBox='';\n    if\(data\.telegram_bind_url&&data\.telegram_target_set\)\{.*?    out\.innerHTML=", "    const tgBox='';\n    out.innerHTML=", s, flags=re.S)
-          s=re.sub(r"      let deliveryHtml='';\n      if\(data\.delivery==='sent'\)\{.*?      out\.innerHTML=", "      stopAutoPolling();\n      const deliveryHtml='';\n      out.innerHTML=", s, flags=re.S)
-          s=s.replace("        const c=$('connectAfterPaid');if(c)c.onclick=()=>openUrl(currentAuto.telegram_bind_url);\n","")
-          s=s.replace("      if(data.delivery==='waiting_telegram'&&!autoPollTimer)autoPollTimer=setInterval(()=>checkAutoPayment(false),5000);\n","")
-          s=s.replace("addPaidHistory(currentAuto.amount,currentAuto.currency,currentAuto.orderId,data.delivery==='sent'?'Auto Verify + Telegram ✓':'Auto Verify Bakong ✓');","addPaidHistory(currentAuto.amount,currentAuto.currency,currentAuto.orderId,'Auto Verify KHQR ✓');"+chr(10)+"      setTimeout(()=>{try{currentAuto=null;stopAutoPolling();const h=document.querySelector('[data-go=home]');if(h){h.click();}else{document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));const hp=$('home');if(hp)hp.classList.add('active');}window.scrollTo({top:0,behavior:'smooth'});}catch(e){}},1200);")
-
-          # Home UX/UI v3.9: replace old home layout with a visibly new 3D wallet dashboard
-          s=s.replace('<div class="logo">♥</div>','<div class="logo brandHeart">♥</div>')
-          home_html=r'''
-          <section id="home" class="page active home36">
-            <div class="walletHero36">
-              <div class="heroText36">
-                <div class="eyebrow36">PAYMENT WALLET</div>
-                <h1>iDrama Pay</h1>
-                <p>គ្រប់គ្រង QR ទូទាត់ ប្រវត្តិការទទួលប្រាក់ និងការកំណត់ក្នុង App មួយ។</p>
-              </div>
-              <div class="heroArt36" aria-hidden="true">
-                <div class="coin36 coinA">$</div>
-                <div class="coin36 coinB">៛</div>
-                <div class="coin36 coinC">$</div>
-                <div class="wallet36"><span>♥</span><i></i></div>
-                <div class="spark s1">✦</div><div class="spark s2">✦</div>
-              </div>
-            </div>
-
-            <div class="stats36">
-              <div class="stat36 usd36">
-                <div class="statTop36"><div class="statIcon36">$</div><div class="statArrow36">›</div></div>
-                <b id="sumUsd">$0.00</b><span>សរុប USD</span>
-              </div>
-              <div class="stat36 khr36">
-                <div class="statTop36"><div class="statIcon36">៛</div><div class="statArrow36">›</div></div>
-                <b id="sumKhr">៛0</b><span>សរុប KHR</span>
-              </div>
-              <div class="stat36 tx36">
-                <div class="statTop36"><div class="statIcon36">●</div><div class="statArrow36">›</div></div>
-                <b id="txCount">0</b><span>ប្រតិបត្តិការ</span>
-              </div>
-            </div>
-
-            <div class="sectionTitle36">ប្រើប្រាស់រហ័ស</div>
-            <div class="quickGrid36">
-              <button class="quick36 normal36" type="button" data-go="qr">
-                <div class="quickVisual36 qrVisual36"><span>▦</span></div>
-                <b>QR CODE ធម្មតា</b>
-                <small>Upload KHQR ឬ QR របស់អ្នក</small>
-                <i>›</i>
-              </button>
-              <button class="quick36 auto36" type="button" id="goAuto">
-                <div class="quickVisual36 autoVisual36"><span>⚡</span></div>
-                <b>QR CODE Auto</b>
-                <small>Auto Verify KHQR</small>
-                <i>›</i>
-              </button>
-              <button class="quick36 history36" type="button" data-go="history">
-                <div class="quickVisual36 histVisual36"><span>◷</span></div>
-                <b>ប្រវត្តិ</b>
-                <small>មើលកំណត់ត្រាទទួលប្រាក់ក្នុង App</small>
-                <i>›</i>
-              </button>
-              <button class="quick36 settings36" type="button" data-go="settings">
-                <div class="quickVisual36 setVisual36"><span>⚙</span></div>
-                <b>ការកំណត់</b>
-                <small>Brand និង Currency</small>
-                <i>›</i>
-              </button>
-            </div>
-
-            <div class="status36"><div id="homeStatus" class="notice">កំពុងពិនិត្យស្ថានភាព...</div></div>
-          </section>'''
-          s=re.sub(r'<section id="home" class="page active">.*?</section>',home_html,s,flags=re.S,count=1)
-
-          # Home UX/UI refresh: pastel wallet + soft 3D cards, without changing payment logic
-          s=s.replace('Auto Verify + Telegram Bot Delivery','Auto Verify KHQR')
-          s=s.replace('Upload KHQR តាមរូបភាព','Upload KHQR ឬ QR របស់អ្នក')
-          s=s.replace('Brand, Telegram និង Currency','Brand និង Currency')
-          premium_css=r'''
-          :root{
-            --ux-pink:#ff2f8d;--ux-pink2:#ff77b8;--ux-ink:#171522;--ux-muted:#786b7c;
-            --ux-card:rgba(255,255,255,.92);--ux-line:rgba(255,60,145,.18);
-            --ux-shadow:0 14px 34px rgba(255,62,147,.16),0 4px 12px rgba(66,36,60,.08);
-          }
-          html{scroll-behavior:smooth}
-          body{
-            background:
-              radial-gradient(circle at 8% 6%,rgba(255,193,222,.55),transparent 24%),
-              radial-gradient(circle at 92% 22%,rgba(255,224,239,.6),transparent 28%),
-              linear-gradient(180deg,#fff9fc 0%,#fff4f9 55%,#fff 100%)!important;
-            color:var(--ux-ink);
-          }
-          body,.app,.page,.screen{letter-spacing:.01em}
-          header,.header,.topbar,.app-header{
-            position:relative;z-index:5;
-            backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
-          }
-          .card,.panel,.tile,.service-card,.menu-card,.stat-card,.wallet-card,[class*="card"]{
-            border:1px solid var(--ux-line)!important;
-            border-radius:26px!important;
-            box-shadow:var(--ux-shadow)!important;
-            transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
-          }
-          .card:active,.tile:active,.service-card:active,.menu-card:active,[class*="card"]:active{
-            transform:scale(.985);
-            box-shadow:0 8px 20px rgba(255,62,147,.13)!important;
-          }
-          .hero,.banner,.wallet-hero,[class*="hero"]{
-            border-radius:30px!important;
-            overflow:hidden!important;
-            box-shadow:0 18px 42px rgba(255,42,137,.22)!important;
-            border:1px solid rgba(255,255,255,.75)!important;
-          }
-          h1,h2,h3,.title,.section-title{letter-spacing:-.02em}
-          h2,.section-title{font-weight:900!important}
-          button,.btn,.action,.cta{
-            border-radius:18px!important;
-            min-height:50px;
-            font-weight:800!important;
-            transition:transform .15s ease,filter .15s ease,box-shadow .15s ease;
-          }
-          button:active,.btn:active,.action:active,.cta:active{transform:scale(.97)}
-          input,select,textarea{
-            border-radius:18px!important;
-            min-height:52px;
-            border:1.5px solid rgba(255,61,145,.18)!important;
-            background:rgba(255,255,255,.92)!important;
-            box-shadow:inset 0 1px 0 rgba(255,255,255,.8);
-          }
-          input:focus,select:focus,textarea:focus{
-            outline:none!important;border-color:rgba(255,47,141,.55)!important;
-            box-shadow:0 0 0 4px rgba(255,47,141,.09)!important;
-          }
-          nav,.nav,.bottom-nav,.tabbar,[class*="bottom"][class*="nav"]{
-            background:rgba(255,255,255,.92)!important;
-            backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-            border-top:1px solid rgba(255,72,151,.13)!important;
-            box-shadow:0 -8px 28px rgba(67,40,59,.08)!important;
-          }
-          .active,[aria-selected="true"],.nav .on,.bottom-nav .on{
-            color:var(--ux-pink)!important;
-          }
-          .badge,.pill,[class*="badge"]{
-            border-radius:999px!important;
-            box-shadow:0 6px 16px rgba(255,47,141,.15);
-          }
-          .muted,.sub,.subtitle,.hint{color:var(--ux-muted)!important}
-          .grid,.cards,.service-grid,[class*="grid"]{gap:16px!important}
-          @media(max-width:520px){
-            body{padding-bottom:92px}
-            .card,.panel,.tile,.service-card,.menu-card,.stat-card,[class*="card"]{border-radius:22px!important}
-            .hero,.banner,.wallet-hero,[class*="hero"]{border-radius:24px!important}
-            .grid,.cards,.service-grid,[class*="grid"]{gap:12px!important}
-            h1{font-size:clamp(26px,8vw,38px)!important}
-            h2{font-size:clamp(22px,6.6vw,32px)!important}
-          }
-          '''
-          s=s.replace('</head>','<style>'+premium_css+'</style></head>')
-          home36_css=r'''
-          .brandHeart{
-            display:grid!important;place-items:center!important;
-            color:#fff!important;font-size:29px!important;font-weight:900!important;
-            background:
-              linear-gradient(145deg,rgba(255,255,255,.65),rgba(255,255,255,0) 34%),
-              linear-gradient(145deg,#ff82bf 0%,#ff2585 58%,#c90058 100%)!important;
-            border:2px solid rgba(255,255,255,.9)!important;
-            box-shadow:
-              inset 0 6px 10px rgba(255,255,255,.58),
-              inset 0 -8px 12px rgba(130,0,49,.2),
-              0 11px 0 #d80a63,
-              0 18px 30px rgba(255,35,126,.3)!important;
-            transform:translateY(-2px)
-          }
-          .home36{padding-bottom:14px}
-          .walletHero36{
-            position:relative;min-height:235px;border-radius:30px;overflow:hidden;
-            padding:30px 45% 28px 27px;color:#fff;
-            background:
-              radial-gradient(circle at 78% 16%,rgba(255,255,255,.24),transparent 22%),
-              linear-gradient(135deg,#ff2b78 0%,#ff2f8d 48%,#ff79bb 100%);
-            box-shadow:0 12px 0 #dc176a,0 22px 42px rgba(255,47,141,.30),inset 0 5px 0 rgba(255,255,255,.45),inset 0 -10px 20px rgba(155,0,56,.16);
-            border:1px solid rgba(255,255,255,.78)
-          }
-          .walletHero36:before{
-            content:"";position:absolute;right:-50px;top:-110px;width:330px;height:330px;border-radius:50%;
-            border:54px solid rgba(255,255,255,.095)
-          }
-          .walletHero36:after{
-            content:"";position:absolute;left:-20px;bottom:-78px;width:340px;height:150px;
-            background:radial-gradient(ellipse,rgba(255,255,255,.15),transparent 68%);transform:rotate(-8deg)
-          }
-          .heroText36{position:relative;z-index:3}
-          .eyebrow36{font-size:14px;font-weight:800;letter-spacing:.07em;opacity:.94;margin-bottom:10px;white-space:nowrap}
-          .walletHero36 h1{font-size:38px!important;line-height:1.02!important;margin:0 0 12px!important;text-shadow:0 5px 13px rgba(138,0,56,.20)}
-          .walletHero36 p{font-size:14px;line-height:1.7;margin:0;opacity:.96;max-width:330px}
-          .heroArt36{position:absolute;right:15px;top:10px;width:260px;height:218px;z-index:2;filter:drop-shadow(0 18px 18px rgba(137,0,54,.22))}
-          .wallet36{position:absolute;right:18px;bottom:20px;width:170px;height:118px;border-radius:35px 25px 35px 28px;
-            background:linear-gradient(145deg,#ffbedb,#ff5ea8 48%,#e41772);
-            border:5px solid rgba(255,255,255,.92);box-shadow:inset 0 10px 16px rgba(255,255,255,.58),inset 0 -16px 20px rgba(143,0,60,.24),0 10px 0 #c70b5b,0 22px 34px rgba(143,0,60,.33);transform:rotate(3deg) perspective(500px) rotateY(-5deg)}
-          .wallet36:before{content:"";position:absolute;right:-8px;top:38px;width:58px;height:50px;border-radius:18px;background:linear-gradient(145deg,#fff0f7,#ff69ad);border:3px solid #fff;box-shadow:0 8px 15px rgba(139,0,57,.18)}
-          .wallet36 span{position:absolute;left:53%;top:51%;transform:translate(-50%,-50%);font-size:45px;color:#fff;text-shadow:0 5px 9px rgba(139,0,57,.25)}
-          .wallet36 i{position:absolute;left:11px;right:15px;top:15px;height:2px;border-top:2px dashed rgba(255,255,255,.68)}
-          .coin36{position:absolute;width:62px;height:62px;border-radius:50%;display:grid;place-items:center;font-weight:950;font-size:25px;color:#fff4bf;
-            background:radial-gradient(circle at 35% 27%,#fff9b3,#ffc410 46%,#e38400 74%);
-            border:5px solid #fff083;box-shadow:inset 0 7px 9px rgba(255,255,255,.95),inset 0 -8px 12px rgba(181,102,0,.22),0 7px 0 #d98b00,0 14px 20px rgba(161,84,0,.28)}
-          .coinA{left:44px;top:9px;transform:rotate(-8deg)}.coinB{right:24px;top:21px;transform:rotate(12deg) scale(.9)}.coinC{right:-3px;bottom:27px;transform:rotate(9deg) scale(.82)}
-          .spark{position:absolute;color:#fff8d5;font-size:28px;text-shadow:0 0 10px #fff}.s1{right:0;top:70px}.s2{left:24px;top:86px;font-size:20px}
-
-          .stats36{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin:18px 0 8px}
-          .stat36{position:relative;min-height:135px;padding:15px 17px 13px;border-radius:26px;background:linear-gradient(145deg,#fff,#fffafd);
-            border:2px solid rgba(255,255,255,.95);box-shadow:0 7px 0 #f0cddd,0 14px 28px rgba(255,70,153,.16),inset 0 5px 9px rgba(255,255,255,.95),inset 0 -7px 12px rgba(230,190,212,.2);transform:translateY(-2px)}
-          .statTop36{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
-          .statIcon36{width:55px;height:55px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:24px;font-weight:950;
-            box-shadow:inset 0 7px 10px rgba(255,255,255,.7),inset 0 -7px 10px rgba(70,20,60,.15),0 6px 0 rgba(126,36,94,.26),0 12px 20px rgba(72,37,64,.19);border:3px solid rgba(255,255,255,.88)}
-          .usd36 .statIcon36{background:radial-gradient(circle at 35% 24%,#ff85c0,#ff2380 60%,#cf075d)}
-          .khr36 .statIcon36{background:radial-gradient(circle at 35% 24%,#fff06e,#ffb40b 60%,#e27d00)}
-          .tx36 .statIcon36{background:radial-gradient(circle at 35% 24%,#d094ff,#9b48ff 60%,#6a20d7)}
-          .statArrow36{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-size:27px;font-weight:900}
-          .usd36 .statArrow36{background:#ffe5f0;color:#ff2e82}.khr36 .statArrow36{background:#fff1d3;color:#f4a000}.tx36 .statArrow36{background:#f1dffd;color:#b14cff}
-          .stat36 b{display:block;font-size:23px;line-height:1.05;margin:0 0 7px}.stat36 span{font-size:12px;color:#7d7080}
-
-          .sectionTitle36{font-size:27px;font-weight:950;margin:28px 3px 16px;color:#171420;position:relative;line-height:1.2}
-          .sectionTitle36:after{content:"";display:block;width:46px;height:5px;border-radius:10px;margin-top:7px;background:linear-gradient(90deg,#ff2a7d,#ff6fb3)}
-
-          .quickGrid36{display:grid;grid-template-columns:1fr 1fr;gap:15px}
-          .quick36{position:relative;min-height:245px;border-radius:28px;padding:20px 20px 22px;text-align:left;overflow:hidden;border:1px solid rgba(255,58,144,.16);
-            box-shadow:0 8px 0 rgba(224,175,201,.62),0 16px 32px rgba(255,62,148,.15),inset 0 5px 8px rgba(255,255,255,.95),inset 0 -10px 16px rgba(221,186,205,.18);color:#1e1822;transform:translateY(-3px)}
-          .quick36:before{content:"";position:absolute;inset:0;background:
-            linear-gradient(145deg,rgba(255,255,255,.95) 0%,rgba(255,255,255,.28) 32%,rgba(255,255,255,.06) 56%,rgba(255,255,255,.55) 100%);
-            pointer-events:none}
-          .quick36 .quickVisual36:after{content:"";position:absolute;left:12%;top:8%;width:64%;height:22%;border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,0));filter:blur(.4px);transform:rotate(-4deg)}
-          .quick36:after{content:"";position:absolute;right:-76px;top:-70px;width:220px;height:220px;border-radius:50%;border:34px solid rgba(255,255,255,.35)}
-          .normal36{background:linear-gradient(145deg,#fff6fb,#ffd9ec)}
-          .auto36{background:linear-gradient(145deg,#fff9e8,#ffe9ad)}
-          .history36{background:linear-gradient(145deg,#faf4ff,#e8d7ff)}
-          .settings36{background:linear-gradient(145deg,#f1fbff,#cfefff)}
-          .quickVisual36{position:relative;z-index:2;width:112px;height:112px;border-radius:30px;display:grid;place-items:center;margin:2px 0 16px 4px;
-            transform:rotate(-5deg) perspective(500px) rotateX(6deg) rotateY(-7deg);box-shadow:inset 0 10px 14px rgba(255,255,255,.66),inset 0 -16px 20px rgba(0,0,0,.10),0 10px 0 rgba(104,44,78,.20),0 20px 31px rgba(87,42,72,.22);border:3px solid rgba(255,255,255,.9)}
-          .quickVisual36 span{font-size:56px;color:#fff;font-weight:950;text-shadow:0 3px 7px rgba(0,0,0,.12)}
-          .qrVisual36{background:linear-gradient(145deg,#ff5aa8,#ff187d 66%,#cd075a)}
-          .autoVisual36{background:linear-gradient(145deg,#ffd94f,#ffa500 64%,#e47b00)}
-          .histVisual36{background:linear-gradient(145deg,#c679ff,#8e42ff 64%,#6720d5)}
-          .setVisual36{background:linear-gradient(145deg,#52c8ff,#148dff 64%,#006dd1)}
-          .quick36 b{position:relative;z-index:2;display:block;font-size:20px;line-height:1.15;margin:0 0 8px}
-          .quick36 small{position:relative;z-index:2;display:block;color:#746877;font-size:13px;line-height:1.45;max-width:78%}
-          .quick36 i{position:absolute;z-index:2;right:17px;bottom:18px;width:43px;height:43px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:31px;font-weight:900}
-          .normal36 i{background:#ffddec;color:#ff2e83}.auto36 i{background:#fff0ca;color:#ff9f00}.history36 i{background:#eadbff;color:#9b48ff}.settings36 i{background:#d7efff;color:#148dff}
-          .quick36:active{transform:translateY(3px) scale(.985)!important;box-shadow:0 3px 0 rgba(224,175,201,.62),0 8px 18px rgba(255,62,148,.12)!important}
-          .stat36:active{transform:translateY(2px) scale(.99)}
-          .status36{margin-top:18px}.status36 .notice{border-radius:22px!important}
-
-          @media(max-width:430px){
-            .walletHero36{min-height:220px;padding:25px 42% 24px 23px}.walletHero36 h1{font-size:34px!important}.walletHero36 p{font-size:12px;line-height:1.65}.eyebrow36{font-size:12px}
-            .heroArt36{right:0;top:10px;transform:scale(.83);transform-origin:top right}
-            .stats36{gap:8px}.stat36{min-height:123px;padding:13px 11px}.statIcon36{width:49px;height:49px}.statArrow36{width:32px;height:32px}.stat36 b{font-size:20px}.stat36 span{font-size:11px}
-            .sectionTitle36{font-size:24px}
-            .quickGrid36{gap:10px}.quick36{min-height:220px;padding:16px 14px 18px;border-radius:24px}.quickVisual36{width:94px;height:94px;border-radius:26px}.quickVisual36 span{font-size:47px}.quick36 b{font-size:17px}.quick36 small{font-size:11.5px;max-width:80%}
-          }
-          '''
-          s=s.replace('</head>','<style>'+home36_css+'</style></head>')
-
-
-
-          card_js=r'''function rr(x,a,b,w,h,r){r=Math.min(r,w/2,h/2);x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath()}
-          function loadImg(src){return new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=reject;i.src=src})}
-          async function makeBrandedQr(src,meta={}){
-            const [qr,logo]=await Promise.all([loadImg(src),loadImg('app_icon.webp')]);
-            const W=1080,H=1920,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
-            let bg=x.createLinearGradient(0,0,W,H);bg.addColorStop(0,'#050309');bg.addColorStop(.48,'#120612');bg.addColorStop(1,'#050308');x.fillStyle=bg;x.fillRect(0,0,W,H);
-            for(let i=0;i<22;i++){const y=45+i*82;x.strokeStyle='rgba(255,24,126,'+(0.045+(i%4)*0.01)+')';x.lineWidth=2;x.beginPath();x.moveTo(0,y);x.lineTo(W,y-160);x.stroke()}
-            // chrome outer frame
-            x.shadowColor='#ff1780';x.shadowBlur=38;let og=x.createLinearGradient(22,20,W-22,H-20);og.addColorStop(0,'#ffffff');og.addColorStop(.06,'#ff5aa8');og.addColorStop(.14,'#4d4e59');og.addColorStop(.5,'#101019');og.addColorStop(.86,'#ff2d90');og.addColorStop(1,'#ffffff');x.strokeStyle=og;x.lineWidth=13;rr(x,34,28,W-68,H-56,55);x.stroke();x.shadowBlur=0;
-            x.strokeStyle='#ff167f';x.lineWidth=4;rr(x,48,42,W-96,H-84,48);x.stroke();
-
-            // big mascot/icon block, raised 3D
-            x.shadowColor='#ff1884';x.shadowBlur=34;let mg=x.createLinearGradient(58,50,310,320);mg.addColorStop(0,'#ffffff');mg.addColorStop(.20,'#ffc8e2');mg.addColorStop(.58,'#ff3b99');mg.addColorStop(1,'#640128');x.fillStyle=mg;rr(x,66,60,258,258,54);x.fill();x.shadowBlur=0;
-            x.save();rr(x,82,76,226,226,46);x.clip();x.drawImage(logo,82,76,226,226);x.restore();
-
-            // PAYMENT raised plaque
-            x.shadowColor='#ff1680';x.shadowBlur=34;let pg=x.createLinearGradient(345,98,785,260);pg.addColorStop(0,'#39071e');pg.addColorStop(.28,'#120812');pg.addColorStop(.66,'#2a0618');pg.addColorStop(1,'#5d0a31');x.fillStyle=pg;rr(x,342,95,455,175,32);x.fill();x.shadowBlur=0;
-            x.strokeStyle='#ff2a8e';x.lineWidth=6;rr(x,342,95,455,175,32);x.stroke();x.strokeStyle='rgba(255,255,255,.4)';x.lineWidth=2;rr(x,353,106,433,153,27);x.stroke();
-            let tg=x.createLinearGradient(370,110,760,245);tg.addColorStop(0,'#fff');tg.addColorStop(.37,'#fef6fa');tg.addColorStop(.68,'#ff5ba8');tg.addColorStop(1,'#a7004b');x.fillStyle=tg;x.font='900 78px system-ui';x.textAlign='center';x.textBaseline='middle';x.shadowColor='#ff1884';x.shadowBlur=18;x.fillText('PAYMENT',570,184);x.shadowBlur=0;
-
-            // KHQR crowned-looking badge
-            let kg=x.createLinearGradient(820,96,1000,230);kg.addColorStop(0,'#ff6ab3');kg.addColorStop(.48,'#ff1780');kg.addColorStop(1,'#7d0036');x.shadowColor='#ff1780';x.shadowBlur=28;x.fillStyle=kg;rr(x,818,110,190,132,34);x.fill();x.shadowBlur=0;x.strokeStyle='#fff';x.lineWidth=3;rr(x,826,118,174,116,28);x.stroke();x.fillStyle='#fff';x.font='900 38px system-ui';x.textAlign='center';x.fillText('KHQR',913,176);
-
-            // info panel
-            x.shadowColor='#ff1780';x.shadowBlur=25;let ig=x.createLinearGradient(62,350,1018,780);ig.addColorStop(0,'#242332');ig.addColorStop(.16,'#151620');ig.addColorStop(.72,'#080911');ig.addColorStop(1,'#260718');x.fillStyle=ig;rr(x,64,340,952,470,42);x.fill();x.shadowBlur=0;x.strokeStyle='#ff2d91';x.lineWidth=6;rr(x,64,340,952,470,42);x.stroke();x.strokeStyle='rgba(255,255,255,.25)';x.lineWidth=2;rr(x,78,354,924,442,34);x.stroke();
-            const brand=String(meta.brand||settings.brand||'iDrama_ai_Official').slice(0,34),amt=String(meta.amount||money($('amount').value,$('currency').value)),oid=String(meta.orderId||$('orderId').value||'');
-            x.textAlign='left';x.fillStyle='#ff55a7';x.font='900 44px system-ui';x.fillText('▣',118,420);x.fillStyle='#a0a4b0';x.font='700 32px system-ui';x.fillText('Merchant',220,397);x.fillStyle='#fff';x.font='900 50px system-ui';x.fillText(brand,220,448);
-            x.strokeStyle='rgba(255,255,255,.19)';x.lineWidth=2;x.beginPath();x.moveTo(110,486);x.lineTo(940,486);x.stroke();
-            x.fillStyle='#ff55a7';x.font='900 43px system-ui';x.fillText('●●',116,565);x.fillStyle='#a0a4b0';x.font='700 32px system-ui';x.fillText('Amount',220,545);x.fillStyle='#ff1780';x.font='900 80px system-ui';x.fillText(amt,220,620);
-            x.strokeStyle='rgba(255,255,255,.19)';x.beginPath();x.moveTo(110,656);x.lineTo(940,656);x.stroke();
-            x.fillStyle='#ff55a7';x.font='900 44px system-ui';x.fillText('▤',118,735);x.fillStyle='#a0a4b0';x.font='700 32px system-ui';x.fillText('Order ID',220,715);x.fillStyle='#fff';x.font='850 44px system-ui';x.fillText(oid,415,715);
-
-            // big square QR panel, scan-safe
-            x.shadowColor='#ff1780';x.shadowBlur=46;let fg=x.createLinearGradient(52,835,1028,1745);fg.addColorStop(0,'#ffffff');fg.addColorStop(.08,'#ff8fc5');fg.addColorStop(.18,'#737580');fg.addColorStop(.32,'#171821');fg.addColorStop(.70,'#0b0c12');fg.addColorStop(.90,'#ff378f');fg.addColorStop(1,'#ffffff');x.fillStyle=fg;rr(x,56,840,968,968,56);x.fill();x.shadowBlur=0;
-            x.strokeStyle='#ff1880';x.lineWidth=6;rr(x,56,840,968,968,56);x.stroke();
-            x.fillStyle='#fff';rr(x,92,876,896,896,34);x.fill();
-            const qpad=26,qsize=896-qpad*2;x.imageSmoothingEnabled=false;x.drawImage(qr,92+qpad,876+qpad,qsize,qsize);
-
-            // footer trust card
-            let fg2=x.createLinearGradient(78,1835,1002,1910);fg2.addColorStop(0,'#2b0a1d');fg2.addColorStop(.45,'#130713');fg2.addColorStop(1,'#330a22');x.fillStyle=fg2;rr(x,78,1830,924,75,24);x.fill();x.shadowColor='#ff1780';x.shadowBlur=18;x.strokeStyle='#ff3f9b';x.lineWidth=4;rr(x,78,1830,924,75,24);x.stroke();x.shadowBlur=0;
-            x.fillStyle='#fff';rr(x,94,1839,56,56,14);x.fill();x.save();rr(x,98,1843,48,48,11);x.clip();x.drawImage(logo,98,1843,48,48);x.restore();
-            x.textAlign='left';x.fillStyle='#fff';x.font='800 28px system-ui';x.fillText('iDrama_ai_Official',175,1859);x.fillStyle='#ff36a0';x.font='800 24px system-ui';x.fillText('Secure Payment • 10 នាទី',175,1890);
-            // shield icon
-            x.strokeStyle='#ff5aa9';x.lineWidth=5;x.beginPath();x.moveTo(906,1845);x.lineTo(934,1835);x.lineTo(962,1845);x.lineTo(962,1868);x.quadraticCurveTo(948,1890,934,1899);x.quadraticCurveTo(920,1890,906,1868);x.closePath();x.stroke();x.beginPath();x.moveTo(920,1863);x.lineTo(930,1873);x.lineTo(948,1853);x.stroke();
-            return c.toDataURL('image/png',1)
-          }'''
-          s=re.sub(r"async function makeBrandedQr\(src\)\{.*?\n\}\ndocument\.querySelectorAll", card_js+"\ndocument.querySelectorAll", s, flags=re.S, count=1)
-          s=s.replace("const sh=$('shareAutoPaid');if(sh)sh.onclick=()=>shareImage(currentAuto.image,'iDrama-'+currentAuto.orderId,autoShareText(currentAuto));","const sh=$('shareAutoPaid');if(sh)sh.onclick=async()=>{const img=await makeBrandedQr(currentAuto.image,{amount:money(currentAuto.amount,currentAuto.currency),orderId:currentAuto.orderId,brand:settings.brand});shareImage(img,'iDrama-'+currentAuto.orderId,autoShareText(currentAuto))};")
-          s=s.replace("const sh=$('shareAutoQr');if(sh)sh.onclick=()=>shareImage(currentAuto.image,'iDrama-'+currentAuto.orderId,autoShareText(currentAuto));","const sh=$('shareAutoQr');if(sh)sh.onclick=async()=>{const img=await makeBrandedQr(currentAuto.image,{amount:money(currentAuto.amount,currentAuto.currency),orderId:currentAuto.orderId,brand:settings.brand});shareImage(img,'iDrama-'+currentAuto.orderId,autoShareText(currentAuto))};")
-          s=s.replace("const sv=$('saveAutoPaid');if(sv)sv.onclick=()=>saveImage(currentAuto.image,'iDrama-'+currentAuto.orderId);","const sv=$('saveAutoPaid');if(sv)sv.onclick=async()=>{const img=await makeBrandedQr(currentAuto.image,{amount:money(currentAuto.amount,currentAuto.currency),orderId:currentAuto.orderId,brand:settings.brand});saveImage(img,'iDrama-'+currentAuto.orderId)};")
-          s=s.replace("const sv=$('saveAutoQr');if(sv)sv.onclick=()=>saveImage(currentAuto.image,'iDrama-'+currentAuto.orderId);","const sv=$('saveAutoQr');if(sv)sv.onclick=async()=>{const img=await makeBrandedQr(currentAuto.image,{amount:money(currentAuto.amount,currentAuto.currency),orderId:currentAuto.orderId,brand:settings.brand});saveImage(img,'iDrama-'+currentAuto.orderId)};")
-          p.write_text(s)
-          PY
-          grep -q 'iDrama Pay • v3.9' android-wallet/app/src/main/assets/index.html
-          grep -q "fillText('KHQR'" android-wallet/app/src/main/assets/index.html
-          ! grep -q 'Telegram Link រឿងពេញ' android-wallet/app/src/main/assets/index.html
-
-      - name: Build APK
-        run: gradle -p android-wallet clean assembleDebug --no-daemon
-
-      - name: Rename APK
-        run: cp android-wallet/app/build/outputs/apk/debug/app-debug.apk iDrama-Pay-v3.9.apk
-
-      - name: Verify APK
-        shell: bash
-        run: |
-          test -s iDrama-Pay-v3.9.apk
-          unzip -t iDrama-Pay-v3.9.apk
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+          test -s android-wallet/app/src/main/assets/index.html
+          gradle -p android-wallet clean assembleDebug --no-daemon
+          cp android-wallet/app/build/outputs/apk/debug/app-debug.apk iDrama-Pay-v1.6.apk
+          unzip -t iDrama-Pay-v1.6.apk
+          unzip -p iDrama-Pay-v1.6.apk assets/index.html | grep -q 'Personal Wallet · v1.6'
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify iDrama-Pay-v1.6.apk
+      - uses: actions/upload-artifact@v4
         with:
-          name: iDrama-Pay-v3.9-APK
-          path: iDrama-Pay-v3.9.apk
+          name: iDrama-Pay-v1.6-APK
+          path: iDrama-Pay-v1.6.apk
+          retention-days: 30
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Test offline launch on Android
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          arch: x86_64
+          profile: pixel_2
+          disable-animations: true
+          script: bash android-wallet/smoke-test.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iDrama-Pay-v1.6-Android-test
+          path: android-wallet/test-output/
           retention-days: 30

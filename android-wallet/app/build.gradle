@@ -1,16 +1,12 @@
-plugins {
-    id 'com.android.application'
-}
-
+plugins { id 'com.android.application' }
 android {
     namespace 'ai.idrama.pay'
     compileSdk 35
-
     defaultConfig {
-        applicationId 'ai.idrama.pay.v22'
-        minSdk 21
+        applicationId 'ai.idrama.pay.recovery'
+        minSdk 24
         targetSdk 35
-        versionCode 39
-        versionName '3.9'
+        versionCode 16
+        versionName '1.6'
     }
 }
