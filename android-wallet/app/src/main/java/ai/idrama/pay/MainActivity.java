@@ -43,6 +43,13 @@ public class MainActivity extends Activity {
         container = new FrameLayout(this);
         container.setBackgroundColor(Color.rgb(246, 247, 251));
         setContentView(container);
+        if (android.os.Build.VERSION.SDK_INT >= 35) {
+            container.setOnApplyWindowInsetsListener((view, insets) -> {
+                android.graphics.Insets bars = insets.getInsets(android.view.WindowInsets.Type.systemBars());
+                view.setPadding(bars.left, bars.top, bars.right, bars.bottom);
+                return insets;
+            });
+        }
         createWebView();
         progress = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
         FrameLayout.LayoutParams bar = new FrameLayout.LayoutParams(-1, dp(3), Gravity.TOP);
